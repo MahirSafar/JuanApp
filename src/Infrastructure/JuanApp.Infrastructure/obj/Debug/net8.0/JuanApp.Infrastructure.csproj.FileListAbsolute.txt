@@ -1,0 +1,11 @@
+C:\Users\Mahir\Desktop\JuanApp\src\Infrastructure\JuanApp.Infrastructure\bin\Debug\net8.0\JuanApp.Infrastructure.deps.json
+C:\Users\Mahir\Desktop\JuanApp\src\Infrastructure\JuanApp.Infrastructure\bin\Debug\net8.0\JuanApp.Infrastructure.dll
+C:\Users\Mahir\Desktop\JuanApp\src\Infrastructure\JuanApp.Infrastructure\bin\Debug\net8.0\JuanApp.Infrastructure.pdb
+C:\Users\Mahir\Desktop\JuanApp\src\Infrastructure\JuanApp.Infrastructure\obj\Debug\net8.0\JuanApp.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Mahir\Desktop\JuanApp\src\Infrastructure\JuanApp.Infrastructure\obj\Debug\net8.0\JuanApp.Infrastructure.AssemblyInfoInputs.cache
+C:\Users\Mahir\Desktop\JuanApp\src\Infrastructure\JuanApp.Infrastructure\obj\Debug\net8.0\JuanApp.Infrastructure.AssemblyInfo.cs
+C:\Users\Mahir\Desktop\JuanApp\src\Infrastructure\JuanApp.Infrastructure\obj\Debug\net8.0\JuanApp.Infrastructure.csproj.CoreCompileInputs.cache
+C:\Users\Mahir\Desktop\JuanApp\src\Infrastructure\JuanApp.Infrastructure\obj\Debug\net8.0\JuanApp.Infrastructure.dll
+C:\Users\Mahir\Desktop\JuanApp\src\Infrastructure\JuanApp.Infrastructure\obj\Debug\net8.0\refint\JuanApp.Infrastructure.dll
+C:\Users\Mahir\Desktop\JuanApp\src\Infrastructure\JuanApp.Infrastructure\obj\Debug\net8.0\JuanApp.Infrastructure.pdb
+C:\Users\Mahir\Desktop\JuanApp\src\Infrastructure\JuanApp.Infrastructure\obj\Debug\net8.0\ref\JuanApp.Infrastructure.dll

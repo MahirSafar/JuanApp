@@ -1,0 +1,11 @@
+C:\Users\Mahir\Desktop\JuanApp\src\Core\JuanApp.Domain\bin\Debug\net8.0\JuanApp.Domain.deps.json
+C:\Users\Mahir\Desktop\JuanApp\src\Core\JuanApp.Domain\bin\Debug\net8.0\JuanApp.Domain.dll
+C:\Users\Mahir\Desktop\JuanApp\src\Core\JuanApp.Domain\bin\Debug\net8.0\JuanApp.Domain.pdb
+C:\Users\Mahir\Desktop\JuanApp\src\Core\JuanApp.Domain\obj\Debug\net8.0\JuanApp.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Mahir\Desktop\JuanApp\src\Core\JuanApp.Domain\obj\Debug\net8.0\JuanApp.Domain.AssemblyInfoInputs.cache
+C:\Users\Mahir\Desktop\JuanApp\src\Core\JuanApp.Domain\obj\Debug\net8.0\JuanApp.Domain.AssemblyInfo.cs
+C:\Users\Mahir\Desktop\JuanApp\src\Core\JuanApp.Domain\obj\Debug\net8.0\JuanApp.Domain.csproj.CoreCompileInputs.cache
+C:\Users\Mahir\Desktop\JuanApp\src\Core\JuanApp.Domain\obj\Debug\net8.0\JuanApp.Domain.dll
+C:\Users\Mahir\Desktop\JuanApp\src\Core\JuanApp.Domain\obj\Debug\net8.0\refint\JuanApp.Domain.dll
+C:\Users\Mahir\Desktop\JuanApp\src\Core\JuanApp.Domain\obj\Debug\net8.0\JuanApp.Domain.pdb
+C:\Users\Mahir\Desktop\JuanApp\src\Core\JuanApp.Domain\obj\Debug\net8.0\ref\JuanApp.Domain.dll

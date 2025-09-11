@@ -1,0 +1,11 @@
+C:\Users\Mahir\Desktop\JuanApp\src\Infrastructure\JuanApp.Persistance\bin\Debug\net8.0\JuanApp.Persistance.deps.json
+C:\Users\Mahir\Desktop\JuanApp\src\Infrastructure\JuanApp.Persistance\bin\Debug\net8.0\JuanApp.Persistance.dll
+C:\Users\Mahir\Desktop\JuanApp\src\Infrastructure\JuanApp.Persistance\bin\Debug\net8.0\JuanApp.Persistance.pdb
+C:\Users\Mahir\Desktop\JuanApp\src\Infrastructure\JuanApp.Persistance\obj\Debug\net8.0\JuanApp.Persistance.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Mahir\Desktop\JuanApp\src\Infrastructure\JuanApp.Persistance\obj\Debug\net8.0\JuanApp.Persistance.AssemblyInfoInputs.cache
+C:\Users\Mahir\Desktop\JuanApp\src\Infrastructure\JuanApp.Persistance\obj\Debug\net8.0\JuanApp.Persistance.AssemblyInfo.cs
+C:\Users\Mahir\Desktop\JuanApp\src\Infrastructure\JuanApp.Persistance\obj\Debug\net8.0\JuanApp.Persistance.csproj.CoreCompileInputs.cache
+C:\Users\Mahir\Desktop\JuanApp\src\Infrastructure\JuanApp.Persistance\obj\Debug\net8.0\JuanApp.Persistance.dll
+C:\Users\Mahir\Desktop\JuanApp\src\Infrastructure\JuanApp.Persistance\obj\Debug\net8.0\refint\JuanApp.Persistance.dll
+C:\Users\Mahir\Desktop\JuanApp\src\Infrastructure\JuanApp.Persistance\obj\Debug\net8.0\JuanApp.Persistance.pdb
+C:\Users\Mahir\Desktop\JuanApp\src\Infrastructure\JuanApp.Persistance\obj\Debug\net8.0\ref\JuanApp.Persistance.dll
