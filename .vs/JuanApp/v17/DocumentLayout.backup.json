@@ -1,26 +1,50 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\Mahir\\Desktop\\JuanApp\\",
+  "WorkspaceRootPath": "C:\\Users\\Mahir\\Saved Games\\JuanApp\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{D86CBBEA-AB36-43A4-8ABB-9ADA00363185}|src\\Presentation\\JuanApp.MVC\\JuanApp.MVC.csproj|c:\\users\\mahir\\desktop\\juanapp\\src\\presentation\\juanapp.mvc\\views\\_viewimports.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{D86CBBEA-AB36-43A4-8ABB-9ADA00363185}|src\\Presentation\\JuanApp.MVC\\JuanApp.MVC.csproj|solutionrelative:src\\presentation\\juanapp.mvc\\views\\_viewimports.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{D86CBBEA-AB36-43A4-8ABB-9ADA00363185}|src\\Presentation\\JuanApp.MVC\\JuanApp.MVC.csproj|c:\\users\\mahir\\saved games\\juanapp\\src\\presentation\\juanapp.mvc\\serviceregistration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D86CBBEA-AB36-43A4-8ABB-9ADA00363185}|src\\Presentation\\JuanApp.MVC\\JuanApp.MVC.csproj|solutionrelative:src\\presentation\\juanapp.mvc\\serviceregistration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{D86CBBEA-AB36-43A4-8ABB-9ADA00363185}|src\\Presentation\\JuanApp.MVC\\JuanApp.MVC.csproj|c:\\users\\mahir\\desktop\\juanapp\\src\\presentation\\juanapp.mvc\\views\\_viewstart.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{D86CBBEA-AB36-43A4-8ABB-9ADA00363185}|src\\Presentation\\JuanApp.MVC\\JuanApp.MVC.csproj|solutionrelative:src\\presentation\\juanapp.mvc\\views\\_viewstart.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{88E5F927-E075-4758-86C9-9631637C4C9D}|src\\Infrastructure\\JuanApp.Persistance\\JuanApp.Persistance.csproj|c:\\users\\mahir\\saved games\\juanapp\\src\\infrastructure\\juanapp.persistance\\serviceregistration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{88E5F927-E075-4758-86C9-9631637C4C9D}|src\\Infrastructure\\JuanApp.Persistance\\JuanApp.Persistance.csproj|solutionrelative:src\\infrastructure\\juanapp.persistance\\serviceregistration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{D86CBBEA-AB36-43A4-8ABB-9ADA00363185}|src\\Presentation\\JuanApp.MVC\\JuanApp.MVC.csproj|c:\\users\\mahir\\desktop\\juanapp\\src\\presentation\\juanapp.mvc\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{D86CBBEA-AB36-43A4-8ABB-9ADA00363185}|src\\Presentation\\JuanApp.MVC\\JuanApp.MVC.csproj|solutionrelative:src\\presentation\\juanapp.mvc\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{DD326830-A15C-4DCF-A910-BC5F982B9D60}|src\\Core\\JuanApp.Application\\JuanApp.Application.csproj|c:\\users\\mahir\\saved games\\juanapp\\src\\core\\juanapp.application\\serviceregistration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DD326830-A15C-4DCF-A910-BC5F982B9D60}|src\\Core\\JuanApp.Application\\JuanApp.Application.csproj|solutionrelative:src\\core\\juanapp.application\\serviceregistration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{D86CBBEA-AB36-43A4-8ABB-9ADA00363185}|src\\Presentation\\JuanApp.MVC\\JuanApp.MVC.csproj|c:\\users\\mahir\\desktop\\juanapp\\src\\presentation\\juanapp.mvc\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{D86CBBEA-AB36-43A4-8ABB-9ADA00363185}|src\\Presentation\\JuanApp.MVC\\JuanApp.MVC.csproj|solutionrelative:src\\presentation\\juanapp.mvc\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{88E5F927-E075-4758-86C9-9631637C4C9D}|src\\Infrastructure\\JuanApp.Persistance\\JuanApp.Persistance.csproj|c:\\users\\mahir\\saved games\\juanapp\\src\\infrastructure\\juanapp.persistance\\juanapp.persistance.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{88E5F927-E075-4758-86C9-9631637C4C9D}|src\\Infrastructure\\JuanApp.Persistance\\JuanApp.Persistance.csproj|solutionrelative:src\\infrastructure\\juanapp.persistance\\juanapp.persistance.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{D86CBBEA-AB36-43A4-8ABB-9ADA00363185}|src\\Presentation\\JuanApp.MVC\\JuanApp.MVC.csproj|c:\\users\\mahir\\desktop\\juanapp\\src\\presentation\\juanapp.mvc\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D86CBBEA-AB36-43A4-8ABB-9ADA00363185}|src\\Presentation\\JuanApp.MVC\\JuanApp.MVC.csproj|solutionrelative:src\\presentation\\juanapp.mvc\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{D86CBBEA-AB36-43A4-8ABB-9ADA00363185}|src\\Presentation\\JuanApp.MVC\\JuanApp.MVC.csproj|c:\\users\\mahir\\saved games\\juanapp\\src\\presentation\\juanapp.mvc\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D86CBBEA-AB36-43A4-8ABB-9ADA00363185}|src\\Presentation\\JuanApp.MVC\\JuanApp.MVC.csproj|solutionrelative:src\\presentation\\juanapp.mvc\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3AAE2502-AF91-482A-BD06-547E0EF3E688}|src\\Core\\JuanApp.Domain\\JuanApp.Domain.csproj|c:\\users\\mahir\\saved games\\juanapp\\src\\core\\juanapp.domain\\models\\appuser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3AAE2502-AF91-482A-BD06-547E0EF3E688}|src\\Core\\JuanApp.Domain\\JuanApp.Domain.csproj|solutionrelative:src\\core\\juanapp.domain\\models\\appuser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{88E5F927-E075-4758-86C9-9631637C4C9D}|src\\Infrastructure\\JuanApp.Persistance\\JuanApp.Persistance.csproj|c:\\users\\mahir\\saved games\\juanapp\\src\\infrastructure\\juanapp.persistance\\dal\\context\\juanappcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{88E5F927-E075-4758-86C9-9631637C4C9D}|src\\Infrastructure\\JuanApp.Persistance\\JuanApp.Persistance.csproj|solutionrelative:src\\infrastructure\\juanapp.persistance\\dal\\context\\juanappcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3AAE2502-AF91-482A-BD06-547E0EF3E688}|src\\Core\\JuanApp.Domain\\JuanApp.Domain.csproj|c:\\users\\mahir\\saved games\\juanapp\\src\\core\\juanapp.domain\\common\\baseentity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3AAE2502-AF91-482A-BD06-547E0EF3E688}|src\\Core\\JuanApp.Domain\\JuanApp.Domain.csproj|solutionrelative:src\\core\\juanapp.domain\\common\\baseentity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3AAE2502-AF91-482A-BD06-547E0EF3E688}|src\\Core\\JuanApp.Domain\\JuanApp.Domain.csproj|c:\\users\\mahir\\saved games\\juanapp\\src\\core\\juanapp.domain\\common\\auditentity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3AAE2502-AF91-482A-BD06-547E0EF3E688}|src\\Core\\JuanApp.Domain\\JuanApp.Domain.csproj|solutionrelative:src\\core\\juanapp.domain\\common\\auditentity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D86CBBEA-AB36-43A4-8ABB-9ADA00363185}|src\\Presentation\\JuanApp.MVC\\JuanApp.MVC.csproj|c:\\users\\mahir\\saved games\\juanapp\\src\\presentation\\juanapp.mvc\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{D86CBBEA-AB36-43A4-8ABB-9ADA00363185}|src\\Presentation\\JuanApp.MVC\\JuanApp.MVC.csproj|solutionrelative:src\\presentation\\juanapp.mvc\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3AAE2502-AF91-482A-BD06-547E0EF3E688}|src\\Core\\JuanApp.Domain\\JuanApp.Domain.csproj|c:\\users\\mahir\\saved games\\juanapp\\src\\core\\juanapp.domain\\juanapp.domain.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{3AAE2502-AF91-482A-BD06-547E0EF3E688}|src\\Core\\JuanApp.Domain\\JuanApp.Domain.csproj|solutionrelative:src\\core\\juanapp.domain\\juanapp.domain.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
     }
   ],
   "DocumentGroupContainers": [
@@ -30,7 +54,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Bookmark",
@@ -38,68 +62,136 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "_ViewStart.cshtml",
-              "DocumentMoniker": "C:\\Users\\Mahir\\Desktop\\JuanApp\\src\\Presentation\\JuanApp.MVC\\Views\\_ViewStart.cshtml",
-              "RelativeDocumentMoniker": "src\\Presentation\\JuanApp.MVC\\Views\\_ViewStart.cshtml",
-              "ToolTip": "C:\\Users\\Mahir\\Desktop\\JuanApp\\src\\Presentation\\JuanApp.MVC\\Views\\_ViewStart.cshtml",
-              "RelativeToolTip": "src\\Presentation\\JuanApp.MVC\\Views\\_ViewStart.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-09-11T16:58:17.626Z",
+              "DocumentIndex": 0,
+              "Title": "ServiceRegistration.cs",
+              "DocumentMoniker": "C:\\Users\\Mahir\\Saved Games\\JuanApp\\src\\Presentation\\JuanApp.MVC\\ServiceRegistration.cs",
+              "RelativeDocumentMoniker": "src\\Presentation\\JuanApp.MVC\\ServiceRegistration.cs",
+              "ToolTip": "C:\\Users\\Mahir\\Saved Games\\JuanApp\\src\\Presentation\\JuanApp.MVC\\ServiceRegistration.cs",
+              "RelativeToolTip": "src\\Presentation\\JuanApp.MVC\\ServiceRegistration.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAABZAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-11T17:49:16.794Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "_ViewImports.cshtml",
-              "DocumentMoniker": "C:\\Users\\Mahir\\Desktop\\JuanApp\\src\\Presentation\\JuanApp.MVC\\Views\\_ViewImports.cshtml",
-              "RelativeDocumentMoniker": "src\\Presentation\\JuanApp.MVC\\Views\\_ViewImports.cshtml",
-              "ToolTip": "C:\\Users\\Mahir\\Desktop\\JuanApp\\src\\Presentation\\JuanApp.MVC\\Views\\_ViewImports.cshtml",
-              "RelativeToolTip": "src\\Presentation\\JuanApp.MVC\\Views\\_ViewImports.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-09-11T16:58:15.602Z",
-              "EditorCaption": ""
+              "DocumentIndex": 1,
+              "Title": "ServiceRegistration.cs",
+              "DocumentMoniker": "C:\\Users\\Mahir\\Saved Games\\JuanApp\\src\\Infrastructure\\JuanApp.Persistance\\ServiceRegistration.cs",
+              "RelativeDocumentMoniker": "src\\Infrastructure\\JuanApp.Persistance\\ServiceRegistration.cs",
+              "ToolTip": "C:\\Users\\Mahir\\Saved Games\\JuanApp\\src\\Infrastructure\\JuanApp.Persistance\\ServiceRegistration.cs",
+              "RelativeToolTip": "src\\Infrastructure\\JuanApp.Persistance\\ServiceRegistration.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-11T17:45:45.632Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "_Layout.cshtml",
-              "DocumentMoniker": "C:\\Users\\Mahir\\Desktop\\JuanApp\\src\\Presentation\\JuanApp.MVC\\Views\\Shared\\_Layout.cshtml",
-              "RelativeDocumentMoniker": "src\\Presentation\\JuanApp.MVC\\Views\\Shared\\_Layout.cshtml",
-              "ToolTip": "C:\\Users\\Mahir\\Desktop\\JuanApp\\src\\Presentation\\JuanApp.MVC\\Views\\Shared\\_Layout.cshtml",
-              "RelativeToolTip": "src\\Presentation\\JuanApp.MVC\\Views\\Shared\\_Layout.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-09-11T16:56:58.499Z",
-              "EditorCaption": ""
+              "Title": "ServiceRegistration.cs",
+              "DocumentMoniker": "C:\\Users\\Mahir\\Saved Games\\JuanApp\\src\\Core\\JuanApp.Application\\ServiceRegistration.cs",
+              "RelativeDocumentMoniker": "src\\Core\\JuanApp.Application\\ServiceRegistration.cs",
+              "ToolTip": "C:\\Users\\Mahir\\Saved Games\\JuanApp\\src\\Core\\JuanApp.Application\\ServiceRegistration.cs",
+              "RelativeToolTip": "src\\Core\\JuanApp.Application\\ServiceRegistration.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-11T17:45:27.609Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 3,
-              "Title": "Index.cshtml",
-              "DocumentMoniker": "C:\\Users\\Mahir\\Desktop\\JuanApp\\src\\Presentation\\JuanApp.MVC\\Views\\Home\\Index.cshtml",
-              "RelativeDocumentMoniker": "src\\Presentation\\JuanApp.MVC\\Views\\Home\\Index.cshtml",
-              "ToolTip": "C:\\Users\\Mahir\\Desktop\\JuanApp\\src\\Presentation\\JuanApp.MVC\\Views\\Home\\Index.cshtml",
-              "RelativeToolTip": "src\\Presentation\\JuanApp.MVC\\Views\\Home\\Index.cshtml",
+              "Title": "JuanApp.Persistance.csproj",
+              "DocumentMoniker": "C:\\Users\\Mahir\\Saved Games\\JuanApp\\src\\Infrastructure\\JuanApp.Persistance\\JuanApp.Persistance.csproj",
+              "RelativeDocumentMoniker": "src\\Infrastructure\\JuanApp.Persistance\\JuanApp.Persistance.csproj",
+              "ToolTip": "C:\\Users\\Mahir\\Saved Games\\JuanApp\\src\\Infrastructure\\JuanApp.Persistance\\JuanApp.Persistance.csproj",
+              "RelativeToolTip": "src\\Infrastructure\\JuanApp.Persistance\\JuanApp.Persistance.csproj",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-09-11T16:56:53.265Z",
-              "EditorCaption": ""
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2025-09-11T17:28:52.343Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "JuanAppContext.cs",
+              "DocumentMoniker": "C:\\Users\\Mahir\\Saved Games\\JuanApp\\src\\Infrastructure\\JuanApp.Persistance\\DAL\\Context\\JuanAppContext.cs",
+              "RelativeDocumentMoniker": "src\\Infrastructure\\JuanApp.Persistance\\DAL\\Context\\JuanAppContext.cs",
+              "ToolTip": "C:\\Users\\Mahir\\Saved Games\\JuanApp\\src\\Infrastructure\\JuanApp.Persistance\\DAL\\Context\\JuanAppContext.cs",
+              "RelativeToolTip": "src\\Infrastructure\\JuanApp.Persistance\\DAL\\Context\\JuanAppContext.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAcAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-11T17:29:22.786Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\Mahir\\Saved Games\\JuanApp\\src\\Presentation\\JuanApp.MVC\\appsettings.json",
+              "RelativeDocumentMoniker": "src\\Presentation\\JuanApp.MVC\\appsettings.json",
+              "ToolTip": "C:\\Users\\Mahir\\Saved Games\\JuanApp\\src\\Presentation\\JuanApp.MVC\\appsettings.json",
+              "RelativeToolTip": "src\\Presentation\\JuanApp.MVC\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-09-11T17:27:34.824Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 4,
-              "Title": "HomeController.cs",
-              "DocumentMoniker": "C:\\Users\\Mahir\\Desktop\\JuanApp\\src\\Presentation\\JuanApp.MVC\\Controllers\\HomeController.cs",
-              "RelativeDocumentMoniker": "src\\Presentation\\JuanApp.MVC\\Controllers\\HomeController.cs",
-              "ToolTip": "C:\\Users\\Mahir\\Desktop\\JuanApp\\src\\Presentation\\JuanApp.MVC\\Controllers\\HomeController.cs",
-              "RelativeToolTip": "src\\Presentation\\JuanApp.MVC\\Controllers\\HomeController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAFAAAAAAAAAA==",
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\Mahir\\Saved Games\\JuanApp\\src\\Presentation\\JuanApp.MVC\\Program.cs",
+              "RelativeDocumentMoniker": "src\\Presentation\\JuanApp.MVC\\Program.cs",
+              "ToolTip": "C:\\Users\\Mahir\\Saved Games\\JuanApp\\src\\Presentation\\JuanApp.MVC\\Program.cs",
+              "RelativeToolTip": "src\\Presentation\\JuanApp.MVC\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-11T16:56:34.902Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-11T17:21:32.462Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "AppUser.cs",
+              "DocumentMoniker": "C:\\Users\\Mahir\\Saved Games\\JuanApp\\src\\Core\\JuanApp.Domain\\Models\\AppUser.cs",
+              "RelativeDocumentMoniker": "src\\Core\\JuanApp.Domain\\Models\\AppUser.cs",
+              "ToolTip": "C:\\Users\\Mahir\\Saved Games\\JuanApp\\src\\Core\\JuanApp.Domain\\Models\\AppUser.cs",
+              "RelativeToolTip": "src\\Core\\JuanApp.Domain\\Models\\AppUser.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-11T17:16:54.94Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "AuditEntity.cs",
+              "DocumentMoniker": "C:\\Users\\Mahir\\Saved Games\\JuanApp\\src\\Core\\JuanApp.Domain\\Common\\AuditEntity.cs",
+              "RelativeDocumentMoniker": "src\\Core\\JuanApp.Domain\\Common\\AuditEntity.cs",
+              "ToolTip": "C:\\Users\\Mahir\\Saved Games\\JuanApp\\src\\Core\\JuanApp.Domain\\Common\\AuditEntity.cs",
+              "RelativeToolTip": "src\\Core\\JuanApp.Domain\\Common\\AuditEntity.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAA0AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-11T17:15:50.596Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "BaseEntity.cs",
+              "DocumentMoniker": "C:\\Users\\Mahir\\Saved Games\\JuanApp\\src\\Core\\JuanApp.Domain\\Common\\BaseEntity.cs",
+              "RelativeDocumentMoniker": "src\\Core\\JuanApp.Domain\\Common\\BaseEntity.cs",
+              "ToolTip": "C:\\Users\\Mahir\\Saved Games\\JuanApp\\src\\Core\\JuanApp.Domain\\Common\\BaseEntity.cs",
+              "RelativeToolTip": "src\\Core\\JuanApp.Domain\\Common\\BaseEntity.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-11T17:15:19.793Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "JuanApp.Domain.csproj",
+              "DocumentMoniker": "C:\\Users\\Mahir\\Saved Games\\JuanApp\\src\\Core\\JuanApp.Domain\\JuanApp.Domain.csproj",
+              "RelativeDocumentMoniker": "src\\Core\\JuanApp.Domain\\JuanApp.Domain.csproj",
+              "ToolTip": "C:\\Users\\Mahir\\Saved Games\\JuanApp\\src\\Core\\JuanApp.Domain\\JuanApp.Domain.csproj",
+              "RelativeToolTip": "src\\Core\\JuanApp.Domain\\JuanApp.Domain.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2025-09-11T17:14:20.302Z"
             }
           ]
         }

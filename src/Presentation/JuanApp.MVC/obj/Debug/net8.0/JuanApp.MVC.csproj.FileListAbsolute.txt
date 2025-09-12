@@ -6,3 +6,13 @@ C:\Users\Mahir\Desktop\JuanApp\src\Presentation\JuanApp.MVC\obj\Debug\net8.0\Jua
 C:\Users\Mahir\Desktop\JuanApp\src\Presentation\JuanApp.MVC\obj\Debug\net8.0\JuanApp.MVC.MvcApplicationPartsAssemblyInfo.cache
 C:\Users\Mahir\Desktop\JuanApp\src\Presentation\JuanApp.MVC\obj\Debug\net8.0\JuanApp.MVC.RazorAssemblyInfo.cache
 C:\Users\Mahir\Desktop\JuanApp\src\Presentation\JuanApp.MVC\obj\Debug\net8.0\JuanApp.MVC.RazorAssemblyInfo.cs
+C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\obj\Debug\net8.0\JuanApp.MVC.csproj.AssemblyReference.cache
+C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\obj\Debug\net8.0\rpswa.dswa.cache.json
+C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\obj\Debug\net8.0\JuanApp.MVC.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\obj\Debug\net8.0\JuanApp.MVC.AssemblyInfoInputs.cache
+C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\obj\Debug\net8.0\JuanApp.MVC.AssemblyInfo.cs
+C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\obj\Debug\net8.0\JuanApp.MVC.csproj.CoreCompileInputs.cache
+C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\obj\Debug\net8.0\JuanApp.MVC.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\obj\Debug\net8.0\JuanApp.MVC.RazorAssemblyInfo.cache
+C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\obj\Debug\net8.0\JuanApp.MVC.RazorAssemblyInfo.cs
+C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\obj\Debug\net8.0\JuanApp.MVC.sourcelink.json

@@ -9,3 +9,21 @@ C:\Users\Mahir\Desktop\JuanApp\src\Infrastructure\JuanApp.Infrastructure\obj\Deb
 C:\Users\Mahir\Desktop\JuanApp\src\Infrastructure\JuanApp.Infrastructure\obj\Debug\net8.0\refint\JuanApp.Infrastructure.dll
 C:\Users\Mahir\Desktop\JuanApp\src\Infrastructure\JuanApp.Infrastructure\obj\Debug\net8.0\JuanApp.Infrastructure.pdb
 C:\Users\Mahir\Desktop\JuanApp\src\Infrastructure\JuanApp.Infrastructure\obj\Debug\net8.0\ref\JuanApp.Infrastructure.dll
+C:\Users\Mahir\Saved Games\JuanApp\src\Infrastructure\JuanApp.Infrastructure\obj\Debug\net8.0\JuanApp.Infrastructure.csproj.AssemblyReference.cache
+C:\Users\Mahir\Saved Games\JuanApp\src\Infrastructure\JuanApp.Infrastructure\obj\Debug\net8.0\JuanApp.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Mahir\Saved Games\JuanApp\src\Infrastructure\JuanApp.Infrastructure\obj\Debug\net8.0\JuanApp.Infrastructure.AssemblyInfoInputs.cache
+C:\Users\Mahir\Saved Games\JuanApp\src\Infrastructure\JuanApp.Infrastructure\obj\Debug\net8.0\JuanApp.Infrastructure.AssemblyInfo.cs
+C:\Users\Mahir\Saved Games\JuanApp\src\Infrastructure\JuanApp.Infrastructure\obj\Debug\net8.0\JuanApp.Infrastructure.csproj.CoreCompileInputs.cache
+C:\Users\Mahir\Saved Games\JuanApp\src\Infrastructure\JuanApp.Infrastructure\obj\Debug\net8.0\JuanApp.Infrastructure.sourcelink.json
+C:\Users\Mahir\Saved Games\JuanApp\src\Infrastructure\JuanApp.Infrastructure\bin\Debug\net8.0\JuanApp.Infrastructure.deps.json
+C:\Users\Mahir\Saved Games\JuanApp\src\Infrastructure\JuanApp.Infrastructure\bin\Debug\net8.0\JuanApp.Infrastructure.dll
+C:\Users\Mahir\Saved Games\JuanApp\src\Infrastructure\JuanApp.Infrastructure\bin\Debug\net8.0\JuanApp.Infrastructure.pdb
+C:\Users\Mahir\Saved Games\JuanApp\src\Infrastructure\JuanApp.Infrastructure\bin\Debug\net8.0\JuanApp.Application.dll
+C:\Users\Mahir\Saved Games\JuanApp\src\Infrastructure\JuanApp.Infrastructure\bin\Debug\net8.0\JuanApp.Domain.dll
+C:\Users\Mahir\Saved Games\JuanApp\src\Infrastructure\JuanApp.Infrastructure\bin\Debug\net8.0\JuanApp.Application.pdb
+C:\Users\Mahir\Saved Games\JuanApp\src\Infrastructure\JuanApp.Infrastructure\bin\Debug\net8.0\JuanApp.Domain.pdb
+C:\Users\Mahir\Saved Games\JuanApp\src\Infrastructure\JuanApp.Infrastructure\obj\Debug\net8.0\JuanApp..949BD26F.Up2Date
+C:\Users\Mahir\Saved Games\JuanApp\src\Infrastructure\JuanApp.Infrastructure\obj\Debug\net8.0\JuanApp.Infrastructure.dll
+C:\Users\Mahir\Saved Games\JuanApp\src\Infrastructure\JuanApp.Infrastructure\obj\Debug\net8.0\refint\JuanApp.Infrastructure.dll
+C:\Users\Mahir\Saved Games\JuanApp\src\Infrastructure\JuanApp.Infrastructure\obj\Debug\net8.0\JuanApp.Infrastructure.pdb
+C:\Users\Mahir\Saved Games\JuanApp\src\Infrastructure\JuanApp.Infrastructure\obj\Debug\net8.0\ref\JuanApp.Infrastructure.dll
