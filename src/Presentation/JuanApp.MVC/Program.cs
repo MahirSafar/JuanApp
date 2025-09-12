@@ -1,14 +1,28 @@
+using JuanApp.Application;
 using JuanApp.MVC;
 using JuanApp.Persistance;
-using JuanApp.Application;
+using JuanApp.Persistance.DAL.Context;
+using JuanApp.Persistance.DAL.Seed;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddApplicationServices();
-builder.Services.AddPersistenceServices(builder.Configuration);
-builder.Services.AddMVCServices();
+builder.Services.AddApplicationServices();       
+builder.Services.AddPersistenceServices(builder.Configuration); 
+builder.Services.AddMVCServices();                 
 
 var app = builder.Build();
+
+//using (var scope = app.Services.CreateScope())
+//{
+//    var services = scope.ServiceProvider;
+//    var dbContext = services.GetRequiredService<JuanAppContext>();
+
+//    await dbContext.Database.MigrateAsync();
+
+//    await IdentitySeeder.SeedRolesAndAdminAsync(services);
+//}
 
 if (!app.Environment.IsDevelopment())
 {
@@ -20,10 +34,11 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-app.Run();
+await app.RunAsync();

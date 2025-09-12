@@ -1,11 +1,12 @@
 ﻿using JuanApp.Domain.Common;
 using JuanApp.Domain.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace JuanApp.Persistance.DAL.Context
 {
-    public class JuanAppContext(DbContextOptions<JuanAppContext> options) : IdentityDbContext<AppUser>(options)
+    public class JuanAppContext(DbContextOptions<JuanAppContext> options) : IdentityDbContext<AppUser, IdentityRole, string>(options)
     {
         public override int SaveChanges()
         {
