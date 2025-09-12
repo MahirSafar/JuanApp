@@ -7,7 +7,7 @@ namespace JuanApp.Application.Repositories
         // Query Methods
         IQueryable<T> GetAll(bool tracking = true);
         IQueryable<T> GetWhere(Expression<Func<T, bool>> predicate, bool tracking = true);
-        Task<T?> GetByIdAsync(object id, bool tracking = true);
+        Task<T?> GetByIdAsync(object id, bool tracking = false);
         Task<T?> GetSingleAsync(Expression<Func<T, bool>> predicate, bool tracking = true);
         Task<bool> AnyAsync(Expression<Func<T, bool>> predicate);
 

@@ -1,0 +1,59 @@
+﻿using JuanApp.Application.Repositories;
+using JuanApp.Application.Services.Interfaces;
+using JuanApp.Domain.Models;
+
+namespace JuanApp.Infrastructure.Services
+{
+    public class SliderService : ISliderService
+    {
+        private readonly ISliderRepository _sliderRepository;
+
+        public SliderService(ISliderRepository sliderRepository)
+        {
+            _sliderRepository = sliderRepository;
+        }
+
+        public async Task<IEnumerable<Slider>> GetAllAsync()
+        {
+            return await _sliderRepository.GetAllAsync();
+        }
+
+        public async Task<Slider?> GetByIdAsync(int id)
+        {
+            return await _sliderRepository.GetByIdAsync(id);
+        }
+
+        public async Task<Slider> CreateAsync(Slider slider)
+        {
+            await _sliderRepository.AddAsync(slider);
+            await _sliderRepository.SaveChangesAsync();
+            return slider;
+        }
+
+        public async Task UpdateAsync(Slider slider)
+        {
+            _sliderRepository.Update(slider);
+            await _sliderRepository.SaveChangesAsync();
+        }
+
+        public async Task DeleteAsync(int id)
+        {
+            var slider = await _sliderRepository.GetByIdAsync(id);
+            if (slider != null)
+            {
+                _sliderRepository.Delete(slider);
+                await _sliderRepository.SaveChangesAsync();
+            }
+        }
+
+        public async Task<bool> ExistsAsync(int id)
+        {
+            return await _sliderRepository.ExistsAsync(id);
+        }
+
+        public async Task<int> GetMaxOrderAsync()
+        {
+            return await _sliderRepository.GetMaxOrderAsync();
+        }
+    }
+}

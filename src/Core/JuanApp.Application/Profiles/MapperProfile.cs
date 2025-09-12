@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using JuanApp.Application.Models;
+using JuanApp.Domain.Models;
 
 namespace JuanApp.Application.Profiles
 {
@@ -6,7 +8,8 @@ namespace JuanApp.Application.Profiles
     {
         public MapperProfile()
         {
-            // CreateMap<Source, Destination>();
+            CreateMap<Slider, SliderDto>().ReverseMap();
+            CreateMap<CreateSliderDto, Slider>().ReverseMap();
         }
     }
 }

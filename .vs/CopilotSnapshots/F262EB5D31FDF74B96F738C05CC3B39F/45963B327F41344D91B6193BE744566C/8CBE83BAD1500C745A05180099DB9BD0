@@ -1,0 +1,71 @@
+﻿using JuanApp.Application.Repositories;
+using JuanApp.Application.Services.Interfaces;
+using JuanApp.Domain.Models;
+using Microsoft.EntityFrameworkCore;
+
+namespace JuanApp.Infrastructure.Services
+{
+    public class SliderService : ISliderService
+    {
+        private readonly IGenericRepository _gen;
+
+        public SliderService(IGenericRepository igenericRepostiroey)
+        {
+            _unitOfWork = unitOfWork;
+        }
+
+        public async Task<IEnumerable<Slider>> GetAllAsync()
+        {
+            var repository = _unitOfWork.GetRepository<Slider>();
+            return await repository.GetAll()
+                                 .OrderBy(s => s.Order)
+                                 .ToListAsync();
+        }
+
+        public async Task<Slider?> GetByIdAsync(int id)
+        {
+            var repository = _unitOfWork.GetRepository<Slider>();
+            return await repository.GetByIdAsync(id);
+        }
+
+        public async Task<Slider> CreateAsync(Slider slider)
+        {
+            var repository = _unitOfWork.GetRepository<Slider>();
+            await repository.AddAsync(slider);
+            await _unitOfWork.SaveChangesAsync();
+            return slider;
+        }
+
+        public async Task UpdateAsync(Slider slider)
+        {
+            var repository = _unitOfWork.GetRepository<Slider>();
+            repository.Update(slider);
+            await _unitOfWork.SaveChangesAsync();
+        }
+
+        public async Task DeleteAsync(int id)
+        {
+            var repository = _unitOfWork.GetRepository<Slider>();
+            var slider = await repository.GetByIdAsync(id);
+            if (slider != null)
+            {
+                repository.Remove(slider);
+                await _unitOfWork.SaveChangesAsync();
+            }
+        }
+
+        public async Task<bool> ExistsAsync(int id)
+        {
+            var repository = _unitOfWork.GetRepository<Slider>();
+            return await repository.AnyAsync(s => s.Id == id);
+        }
+
+        public async Task<int> GetMaxOrderAsync()
+        {
+            var repository = _unitOfWork.GetRepository<Slider>();
+            var maxOrder = await repository.GetAll()
+                                         .MaxAsync(s => (int?)s.Order);
+            return maxOrder ?? 0;
+        }
+    }
+}

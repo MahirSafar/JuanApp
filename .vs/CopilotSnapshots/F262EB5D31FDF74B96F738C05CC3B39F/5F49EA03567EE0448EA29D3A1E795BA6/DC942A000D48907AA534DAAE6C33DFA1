@@ -1,0 +1,19 @@
+﻿using JuanApp.Application.Common;
+using JuanApp.Application.Services.Interfaces;
+using JuanApp.Infrastructure.Services;
+using JuanApp.Persistance.Common;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace JuanApp.Infrastructure
+{
+    public static class ServiceRegistration
+    {
+        public static IServiceCollection AddInfrastructureServices(this IServiceCollection services)
+        {
+            services.AddScoped<ISliderService, SliderService>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            
+            return services;
+        }
+    }
+}

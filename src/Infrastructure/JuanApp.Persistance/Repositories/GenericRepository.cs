@@ -23,8 +23,8 @@ namespace JuanApp.Persistance.Repositories
             if (!tracking)
                 query = query.AsNoTracking();
             
-            if (typeof(IBaseEntity).IsAssignableFrom(typeof(T)))
-                query = query.Cast<IBaseEntity>().Where(x => !x.IsDeleted).Cast<T>();
+            if (typeof(AuditEntity).IsAssignableFrom(typeof(T)))
+                query = query.Cast<AuditEntity>().Where(x => !x.IsDeleted).Cast<T>();
             
             return query;
         }
@@ -35,13 +35,13 @@ namespace JuanApp.Persistance.Repositories
             if (!tracking)
                 query = query.AsNoTracking();
             
-            if (typeof(IBaseEntity).IsAssignableFrom(typeof(T)))
-                query = query.Cast<IBaseEntity>().Where(x => !x.IsDeleted).Cast<T>();
+            if (typeof(AuditEntity).IsAssignableFrom(typeof(T)))
+                query = query.Cast<AuditEntity>().Where(x => !x.IsDeleted).Cast<T>();
             
             return query;
         }
 
-        public async Task<T?> GetByIdAsync(object id, bool tracking = true)
+        public async Task<T?> GetByIdAsync(object id, bool tracking = false)
         {
             var entity = await _dbSet.FindAsync(id);
             if (entity == null) return null;
@@ -49,7 +49,7 @@ namespace JuanApp.Persistance.Repositories
             if (!tracking)
                 _context.Entry(entity).State = EntityState.Detached;
 
-            if (entity is IBaseEntity baseEntity && baseEntity.IsDeleted)
+            if (entity is AuditEntity baseEntity && baseEntity.IsDeleted)
                 return null;
 
             return entity;
@@ -61,8 +61,8 @@ namespace JuanApp.Persistance.Repositories
             if (!tracking)
                 query = query.AsNoTracking();
 
-            if (typeof(IBaseEntity).IsAssignableFrom(typeof(T)))
-                query = query.Cast<IBaseEntity>().Where(x => !x.IsDeleted).Cast<T>();
+            if (typeof(AuditEntity).IsAssignableFrom(typeof(T)))
+                query = query.Cast<AuditEntity>().Where(x => !x.IsDeleted).Cast<T>();
 
             return await query.FirstOrDefaultAsync(predicate);
         }
@@ -71,8 +71,8 @@ namespace JuanApp.Persistance.Repositories
         {
             var query = _dbSet.AsQueryable();
             
-            if (typeof(IBaseEntity).IsAssignableFrom(typeof(T)))
-                query = query.Cast<IBaseEntity>().Where(x => !x.IsDeleted).Cast<T>();
+            if (typeof(AuditEntity).IsAssignableFrom(typeof(T)))
+                query = query.Cast<AuditEntity>().Where(x => !x.IsDeleted).Cast<T>();
 
             return await query.AnyAsync(predicate);
         }
@@ -100,7 +100,7 @@ namespace JuanApp.Persistance.Repositories
 
         public void Remove(T entity)
         {
-            if (entity is IBaseEntity baseEntity)
+            if (entity is AuditEntity baseEntity)
             {
                 baseEntity.IsDeleted = true;
                 _dbSet.Update(entity);

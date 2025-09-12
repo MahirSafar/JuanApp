@@ -1,0 +1,120 @@
+﻿@model SliderViewModel
+@{
+    ViewData["Title"] = "Slider Details";
+}
+
+<div class="zenith-card">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="zenith-card-title">Slider Details</h2>
+        <div>
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary me-2">
+                <i class="fas fa-edit me-2"></i>Edit
+            </a>
+            <a asp-action="Index" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Back to List
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="position-relative">
+                <img src="~/@Model.ImageUrl" class="img-fluid rounded shadow-sm" alt="@Model.Title" />
+                @if (Model.IsActive)
+                {
+                    <div class="position-absolute top-0 end-0 m-3">
+                        <span class="badge bg-success">
+                            <i class="fas fa-check-circle me-1"></i>Active
+                        </span>
+                    </div>
+                }
+                else
+                {
+                    <div class="position-absolute top-0 end-0 m-3">
+                        <span class="badge bg-danger">
+                            <i class="fas fa-times-circle me-1"></i>Inactive
+                        </span>
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="detail-section">
+                <h3 class="detail-title mb-4">@Model.Title</h3>
+                
+                <div class="detail-item mb-4">
+                    <label class="detail-label">Description</label>
+                    <p class="detail-value">@(Model.Description ?? "No description provided")</p>
+                </div>
+
+                @if (!string.IsNullOrEmpty(Model.RedirectUrl))
+                {
+                    <div class="detail-item mb-4">
+                        <label class="detail-label">Redirect URL</label>
+                        <p class="detail-value">
+                            <a href="@Model.RedirectUrl" target="_blank" class="text-info">
+                                <i class="fas fa-external-link-alt me-1"></i>@Model.RedirectUrl
+                            </a>
+                        </p>
+                    </div>
+                }
+
+                <div class="detail-item mb-4">
+                    <label class="detail-label">Display Order</label>
+                    <p class="detail-value">@Model.Order</p>
+                </div>
+
+                <div class="detail-item">
+                    <label class="detail-label">Status</label>
+                    <p class="detail-value">
+                        @if (Model.IsActive)
+                        {
+                            <span class="text-success">
+                                <i class="fas fa-check-circle me-1"></i>Active
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="text-danger">
+                                <i class="fas fa-times-circle me-1"></i>Inactive
+                            </span>
+                        }
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .detail-section {
+            padding: 1rem;
+        }
+        .detail-title {
+            color: var(--gold);
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+        .detail-item {
+            margin-bottom: 1.5rem;
+        }
+        .detail-label {
+            color: var(--cyan-teal);
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        .detail-value {
+            color: var(--text-main);
+            font-size: 1rem;
+            margin-bottom: 0;
+        }
+        .img-fluid {
+            border: 1px solid var(--border);
+            background-color: var(--card-bg);
+        }
+    </style>
+}

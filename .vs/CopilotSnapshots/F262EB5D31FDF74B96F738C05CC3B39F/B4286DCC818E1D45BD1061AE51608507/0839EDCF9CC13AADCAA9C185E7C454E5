@@ -1,0 +1,131 @@
+﻿@model SliderViewModel
+
+<div class="zenith-card">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="zenith-card-title mb-0">Edit Slider</h2>
+            <p class="text-muted">Modify slider information</p>
+        </div>
+        <a asp-action="Index" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Back to List
+        </a>
+    </div>
+
+    <form asp-action="Edit" enctype="multipart/form-data">
+        <input type="hidden" asp-for="Id" />
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+        <div class="row">
+            <div class="col-md-8">
+                <div class="form-group mb-4">
+                    <label asp-for="Title" class="form-label required"></label>
+                    <input asp-for="Title" class="form-control" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-4">
+                    <label asp-for="Description" class="form-label"></label>
+                    <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-4">
+                    <label asp-for="RedirectUrl" class="form-label"></label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-link"></i></span>
+                        <input asp-for="RedirectUrl" class="form-control" placeholder="https://" />
+                    </div>
+                    <span asp-validation-for="RedirectUrl" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="form-group mb-4">
+                    <label asp-for="ImageFile" class="form-label"></label>
+                    <input asp-for="ImageFile" class="form-control" accept="image/*" onchange="previewImage(this);" />
+                    <span asp-validation-for="ImageFile" class="text-danger"></span>
+                    <div class="mt-2">
+                        <img id="imagePreview" src="~/@Model.ImageUrl" alt="Preview" class="img-thumbnail" style="max-width: 100%;" />
+                    </div>
+                </div>
+
+                <div class="form-group mb-4">
+                    <label asp-for="Order" class="form-label required"></label>
+                    <input asp-for="Order" class="form-control" type="number" min="0" />
+                    <span asp-validation-for="Order" class="text-danger"></span>
+                </div>
+
+                <div class="form-check form-switch mb-4">
+                    <input asp-for="IsActive" class="form-check-input" role="switch" />
+                    <label asp-for="IsActive" class="form-check-label"></label>
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-save me-2"></i>Save Changes
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        function previewImage(input) {
+            var preview = document.getElementById('imagePreview');
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
+}
+
+@section Styles {
+    <style>
+        .form-label {
+            color: var(--gold);
+            font-weight: 500;
+        }
+        .form-label.required:after {
+            content: "*";
+            color: #ff5252;
+            margin-left: 4px;
+        }
+        .form-control {
+            background-color: var(--card-bg);
+            border-color: var(--border);
+            color: var(--text-main);
+        }
+        .form-control:focus {
+            background-color: var(--card-bg);
+            border-color: var(--cyan-teal);
+            color: var(--text-main);
+            box-shadow: 0 0 0 0.25rem rgba(29,233,182,0.25);
+        }
+        .input-group-text {
+            background-color: var(--card-bg);
+            border-color: var(--border);
+            color: var(--text-muted);
+        }
+        .form-check-input:checked {
+            background-color: var(--cyan-teal);
+            border-color: var(--cyan-teal);
+        }
+        .form-switch .form-check-input:focus {
+            border-color: var(--cyan-teal);
+            box-shadow: 0 0 0 0.25rem rgba(29,233,182,0.25);
+        }
+        .text-danger {
+            color: #ff5252 !important;
+        }
+        .img-thumbnail {
+            background-color: var(--card-bg);
+            border-color: var(--border);
+        }
+    </style>
+}}

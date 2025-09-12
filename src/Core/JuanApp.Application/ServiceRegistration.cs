@@ -11,5 +11,6 @@ public static class ServiceRegistration
     {
         services.AddAutoMapper(opt => { }, typeof(MapperProfile).Assembly);
         services.AddScoped<IAccountService, AccountService>();
+        services.AddScoped<ISliderService, SliderService>();
     }
 }

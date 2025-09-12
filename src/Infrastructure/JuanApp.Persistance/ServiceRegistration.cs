@@ -1,4 +1,6 @@
-﻿using JuanApp.Persistance.DAL.Context;
+﻿using JuanApp.Application.Repositories;
+using JuanApp.Persistance.DAL.Context;
+using JuanApp.Persistance.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,5 +13,7 @@ public static class ServiceRegistration
     {
         services.AddDbContext<JuanAppContext>(option =>
             option.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+
+        services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
     }
 }

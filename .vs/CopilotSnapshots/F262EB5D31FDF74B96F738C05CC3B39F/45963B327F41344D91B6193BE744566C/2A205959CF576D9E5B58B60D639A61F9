@@ -1,0 +1,25 @@
+﻿using JuanApp.Domain.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+
+namespace JuanApp.Persistance.DAL.Context
+{
+    public class JuanAppContext : IdentityDbContext<AppUser>
+    {
+        public JuanAppContext(DbContextOptions<JuanAppContext> options) : base(options)
+        {
+        }
+
+        public DbSet<Slider> Sliders { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            
+            // Add any specific configurations here
+            modelBuilder.Entity<Slider>()
+                .HasKey(s => s.Id);
+        }
+    }
+}

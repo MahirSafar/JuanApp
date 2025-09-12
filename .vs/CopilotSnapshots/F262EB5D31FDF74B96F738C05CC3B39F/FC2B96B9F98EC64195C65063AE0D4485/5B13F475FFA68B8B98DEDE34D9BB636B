@@ -1,0 +1,214 @@
+﻿@model SliderViewModel
+@{
+    ViewData["Title"] = "Slider Details";
+}
+
+<div class="zenith-card p-5 shadow-lg rounded-4 border-0 bg-dark text-light">
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <h2 class="zenith-card-title mb-1 fs-3 fw-bold text-gold">Slider Details</h2>
+        <div class="d-flex gap-3">
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-cyan px-4 py-2 rounded-pill">
+                <i class="fas fa-edit me-2"></i>Edit Slider
+            </a>
+            <a asp-action="Index" class="btn btn-outline-light px-4 py-2 rounded-pill">
+                <i class="fas fa-arrow-left me-2"></i>Back to List
+            </a>
+        </div>
+    </div>
+
+    <div class="row g-5">
+        <div class="col-lg-6">
+            <div class="slider-preview-container">
+                <div class="slider-status">
+                    @if (Model.IsActive)
+                    {
+                        <span class="status-badge active">
+                            <i class="fas fa-check-circle me-2"></i>Active
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="status-badge inactive">
+                            <i class="fas fa-times-circle me-2"></i>Inactive
+                        </span>
+                    }
+                </div>
+                <img src="~/@Model.ImageUrl" class="slider-preview-image" alt="@Model.Title" />
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="slider-info">
+                <div class="info-group mb-4">
+                    <label class="info-label">Title</label>
+                    <h3 class="info-value title">@Model.Title</h3>
+                </div>
+
+                <div class="info-group mb-4">
+                    <label class="info-label">Description</label>
+                    <p class="info-value">@(Model.Description ?? "No description provided")</p>
+                </div>
+
+                <div class="info-group mb-4">
+                    <label class="info-label">Display Order</label>
+                    <p class="info-value order">@Model.Order</p>
+                </div>
+
+                @if (!string.IsNullOrEmpty(Model.RedirectUrl))
+                {
+                    <div class="info-group mb-4">
+                        <label class="info-label">Redirect URL</label>
+                        <a href="@Model.RedirectUrl" target="_blank" class="info-value link">
+                            <i class="fas fa-external-link-alt me-2"></i>@Model.RedirectUrl
+                        </a>
+                    </div>
+                }
+
+                <div class="info-group">
+                    <label class="info-label">Image Path</label>
+                    <p class="info-value path">@Model.ImageUrl</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        /* Slider Preview */
+        .slider-preview-container {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 3px solid var(--cyan-teal);
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .slider-preview-image {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .slider-status {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            z-index: 1;
+        }
+
+        /* Status Badges */
+        .status-badge {
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .status-badge.active {
+            background: var(--cyan-teal);
+            color: #000;
+        }
+
+        .status-badge.inactive {
+            background: #ff5252;
+            color: #fff;
+        }
+
+        /* Info Sections */
+        .slider-info {
+            padding: 1rem;
+        }
+
+        .info-group {
+            margin-bottom: 2rem;
+        }
+
+        .info-label {
+            color: var(--cyan-teal);
+            font-size: 0.875rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .info-value {
+            color: var(--text-main);
+            font-size: 1.1rem;
+            margin-bottom: 0;
+        }
+
+        .info-value.title {
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--gold);
+            line-height: 1.3;
+        }
+
+        .info-value.order {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--cyan-teal);
+        }
+
+        .info-value.link {
+            color: var(--cyan-teal);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .info-value.link:hover {
+            color: var(--gold);
+        }
+
+        .info-value.path {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            padding: 0.75rem 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        /* Buttons */
+        .btn {
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-cyan {
+            background: var(--cyan-teal);
+            color: #000;
+            border: none;
+        }
+
+        .btn-cyan:hover {
+            background: #13bfa6;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(29, 233, 182, 0.25);
+        }
+
+        .btn-outline-light:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 255, 255, 0.15);
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 991.98px) {
+            .slider-preview-image {
+                height: 300px;
+            }
+
+            .info-value.title {
+                font-size: 1.75rem;
+            }
+        }
+    </style>
+}

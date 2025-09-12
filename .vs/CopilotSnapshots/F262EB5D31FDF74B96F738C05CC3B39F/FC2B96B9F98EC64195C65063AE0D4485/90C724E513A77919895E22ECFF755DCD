@@ -1,0 +1,169 @@
+﻿@model IEnumerable<SliderViewModel>
+@{
+    ViewData["Title"] = "Sliders";
+}
+
+<div class="zenith-card p-4 shadow-lg rounded-4 border-0 bg-dark text-light">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="zenith-card-title mb-1 fw-bold text-gold">Sliders</h2>
+            <p class="text-muted mb-0">Manage homepage sliders with images, links, and order.</p>
+        </div>
+        <a asp-action="Create" class="btn btn-cyan px-4 py-2 rounded-pill fw-semibold shadow-sm">
+            <i class="fas fa-plus-circle me-2"></i>New Slider
+        </a>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="table-responsive rounded-4 overflow-hidden">
+        <table class="table table-dark table-hover align-middle mb-0">
+            <thead class="table-gold text-uppercase small">
+                <tr>
+                    <th style="width: 120px">Image</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th style="width: 80px">Order</th>
+                    <th style="width: 100px">Status</th>
+                    <th style="width: 180px">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.OrderBy(x => x.Order))
+                {
+                    <tr>
+                        <td>
+                            <div class="slider-thumb rounded-3 overflow-hidden border border-cyan bg-black">
+                                <img src="~/@item.ImageUrl" alt="@item.Title" class="img-fluid" style="width: 100px; height: 60px; object-fit: cover;" />
+                            </div>
+                        </td>
+                        <td class="fw-semibold">@item.Title
+                            @if (!string.IsNullOrEmpty(item.RedirectUrl))
+                            {
+                                <br /><a href="@item.RedirectUrl" target="_blank" class="text-cyan small"><i class="fas fa-link me-1"></i>Link</a>
+                            }
+                        </td>
+                        <td class="text-muted small">
+                            <div class="text-truncate" style="max-width: 250px;">@(item.Description ?? "-")</div>
+                        </td>
+                        <td class="text-center fw-bold">@item.Order</td>
+                        <td>
+                            @if (item.IsActive)
+                            {
+                                <span class="badge bg-cyan text-dark px-3 py-2 rounded-pill"><i class="fas fa-check-circle me-1"></i>Active</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger px-3 py-2 rounded-pill"><i class="fas fa-times-circle me-1"></i>Inactive</span>
+                            }
+                        </td>
+                        <td>
+                            <div class="d-flex gap-2">
+                                <a asp-action="Detail" asp-route-id="@item.Id" class="btn btn-sm btn-outline-info rounded-pill px-3" title="View">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-cyan rounded-pill px-3" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <button type="button" class="btn btn-sm btn-outline-danger rounded-pill px-3" title="Delete" onclick="confirmDelete(@item.Id, '@item.Title')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                }
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="6" class="text-center py-4">
+                            <i class="fas fa-image fa-2x mb-2 text-muted"></i>
+                            <p class="text-muted mb-0">No sliders found. Create your first slider!</p>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content bg-dark text-light border-cyan rounded-4">
+            <div class="modal-header border-0">
+                <h5 class="modal-title text-danger"><i class="fas fa-exclamation-triangle me-2"></i>Confirm Delete</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete the slider <span class="fw-bold text-gold">"<span id="sliderTitle"></span>"</span>?
+            </div>
+            <div class="modal-footer border-0">
+                <form asp-action="Delete" method="post" id="deleteForm">
+                    <input type="hidden" name="id" id="sliderId" />
+                    @Html.AntiForgeryToken()
+                    <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger rounded-pill px-4">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .zenith-card {
+            background: var(--card-bg, #181c24);
+            border-radius: 1.5rem;
+            box-shadow: 0 4px 32px rgba(0,0,0,0.25);
+        }
+        .zenith-card-title { color: var(--gold, #ffd700); }
+        .btn-cyan, .btn-outline-cyan {
+            background: var(--cyan-teal, #1de9b6);
+            color: #181c24;
+            border: none;
+        }
+        .btn-outline-cyan {
+            background: transparent;
+            border: 2px solid var(--cyan-teal, #1de9b6);
+            color: var(--cyan-teal, #1de9b6);
+        }
+        .btn-outline-cyan:hover, .btn-cyan:hover {
+            background: #13bfa6;
+            color: #fff;
+        }
+        .table-gold th { color: var(--gold, #ffd700); background: #23272f; }
+        .slider-thumb { border: 2px solid var(--cyan-teal, #1de9b6); background: #23272f; }
+        .badge.bg-cyan { background: var(--cyan-teal, #1de9b6) !important; color: #181c24 !important; }
+        .border-cyan { border-color: var(--cyan-teal, #1de9b6) !important; }
+        .text-gold { color: var(--gold, #ffd700) !important; }
+        .text-cyan { color: var(--cyan-teal, #1de9b6) !important; }
+        .rounded-4 { border-radius: 1.5rem !important; }
+        .shadow-lg { box-shadow: 0 8px 32px rgba(0,0,0,0.35) !important; }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        function confirmDelete(id, title) {
+            document.getElementById('sliderId').value = id;
+            document.getElementById('sliderTitle').textContent = title;
+            new bootstrap.Modal(document.getElementById('deleteModal')).show();
+        }
+        setTimeout(function() {
+            $('.alert').fadeOut('slow');
+        }, 5000);
+    </script>
+}

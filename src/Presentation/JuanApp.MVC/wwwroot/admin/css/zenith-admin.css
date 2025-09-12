@@ -1,8 +1,4 @@
 /* Zenith Admin Panel - Deep Dark, Gold & Cyan-Teal Accents */
-* {
-    overflow: hidden;
-    box-sizing: border-box;
-}
 :root {
     --primary-bg: #111217;
     --sidebar-bg: #0a0b0e;
