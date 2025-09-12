@@ -1,0 +1,62 @@
+﻿using JuanApp.Application.Common;
+using JuanApp.Application.Repositories;
+using JuanApp.Application.Services.Interfaces;
+using JuanApp.Domain.Models;
+using JuanApp.Infrastructure.Services;
+using JuanApp.Persistance.Common;
+using JuanApp.Persistance.Repositories;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace JuanApp.Infrastructure
+{
+    public static class ServiceRegistration
+    {
+        public static void AddAppServices(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddHttpContextAccessor();
+            services.AddControllersWithViews();
+            services.AddAutoMapper(opt => { }, typeof(MapperProfile).Assembly);
+            services.AddDbContext<PustokDbContext>(option =>
+                option.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddIdentity<AppUser, IdentityRole>(opt =>
+            {
+                opt.Password.RequireNonAlphanumeric = true;
+                opt.Password.RequireUppercase = true;
+                opt.Password.RequireLowercase = true;
+                opt.Password.RequireDigit = true;
+                opt.User.RequireUniqueEmail = true;
+                opt.SignIn.RequireConfirmedEmail = true;
+                opt.Password.RequiredLength = 6;
+                opt.Lockout.MaxFailedAccessAttempts = 3;
+                opt.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
+                opt.Lockout.AllowedForNewUsers = true;
+            }).AddEntityFrameworkStores<PustokDbContext>().AddErrorDescriber<CustomErrorDescriber>().AddDefaultTokenProviders();
+
+            services.ConfigureApplicationCookie(opt =>
+            {
+                opt.Events.OnRedirectToLogin = opt.Events.OnRedirectToAccessDenied = context =>
+                {
+                    var uri = new Uri(context.RedirectUri);
+                    if (context.Request.Path.Value.ToLower().StartsWith("/manage"))
+                    {
+                        context.Response.Redirect("/manage/account/login" + uri.Query);
+                    }
+                    else
+                    {
+                        context.Response.Redirect("/account/login" + uri.Query);
+                    }
+                    return Task.CompletedTask;
+                };
+            });
+
+            // Register Generic Repository and Unit of Work
+            services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IAccountService, AccountService>();
+            // ... other service registrations
+        }
+    }
+}

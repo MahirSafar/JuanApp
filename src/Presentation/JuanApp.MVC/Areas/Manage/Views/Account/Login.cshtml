@@ -1,0 +1,66 @@
+﻿@{
+    Layout = null;
+}
+@model AdminLoginViewModel
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - Zenith Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Fira+Code:wght@500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/admin/css/zenith-admin.css" />
+    <link rel="stylesheet" href="~/admin/css/zenith-auth.css" />
+</head>
+<body class="zenith-theme auth-page">
+    <div class="auth-container">
+        <div class="auth-content">
+            <div class="auth-header">
+                <div class="auth-logo">
+                    <span class="auth-logo-icon">
+                        <i class="fas fa-gem"></i>
+                    </span>
+                    <span class="auth-logo-text">ZENITH</span>
+                </div>
+                <h1 class="auth-title">Welcome Back</h1>
+                <p class="auth-subtitle">Enter your credentials to access your account</p>
+            </div>
+
+            <form class="auth-form" method="post" asp-action="Login" asp-controller="Account" asp-area="Manage">
+                <div class="form-group">
+                    <label asp-for="Username" class="form-label" for="email">Username</label>
+                    <input asp-for="Username" class="form-control">
+                    <span class="validation-message" asp-validation-for="Username"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Password" class="form-label" for="password">Password</label>
+                    <input asp-for="Password" type="password" class="form-control" id="password" name="Password" required>
+                    <span class="validation-message" asp-validation-for="Password"></span>
+                </div>
+
+                <div asp-validation-summary="ModelOnly" class="validation-message"></div>
+
+                <button type="submit" class="auth-btn">
+                    Sign In
+                </button>
+
+                <div class="auth-divider">
+                    <span class="auth-divider-text">OR</span>
+                </div>
+
+                <div class="auth-links">
+                    <a href="/" class="auth-link">Back to Website</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.21.0/jquery.validate.min.js" integrity="sha512-KFHXdr2oObHKI9w4Hv1XPKc898mE4kgYx58oqsc/JqqdLMDI4YjOLzom+EMlW8HFUd0QfjfAvxSL6sEq/a42fQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/4.0.0/jquery.validate.unobtrusive.min.js" integrity="sha512-xq+Vm8jC94ynOikewaQXMEkJIOBp7iArs3IhFWSWdRT3Pq8wFz46p+ZDFAR7kHnSFf+zUv52B3prRYnbDRdgog==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+</html>
+
+
+

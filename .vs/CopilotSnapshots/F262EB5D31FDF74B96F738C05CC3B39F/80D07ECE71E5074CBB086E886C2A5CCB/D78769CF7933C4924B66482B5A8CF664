@@ -1,0 +1,15 @@
+﻿using JuanApp.Application.Services.Interfaces;
+using JuanApp.Infrastructure.Services;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace JuanApp.Infrastructure
+{
+    public static class ServiceRegistration
+    {
+        public static void AddInfrastructureServices(this IServiceCollection services)
+        {
+            services.AddScoped<IAccountService, AccountService>();
+            // ... other service registrations
+        }
+    }
+}

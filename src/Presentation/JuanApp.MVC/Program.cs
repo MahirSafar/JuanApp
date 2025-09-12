@@ -3,26 +3,32 @@ using JuanApp.MVC;
 using JuanApp.Persistance;
 using JuanApp.Persistance.DAL.Context;
 using JuanApp.Persistance.DAL.Seed;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddApplicationServices();       
 builder.Services.AddPersistenceServices(builder.Configuration); 
-builder.Services.AddMVCServices();                 
+builder.Services.AddMVCServices();                
 
 var app = builder.Build();
 
-//using (var scope = app.Services.CreateScope())
-//{
-//    var services = scope.ServiceProvider;
-//    var dbContext = services.GetRequiredService<JuanAppContext>();
-
-//    await dbContext.Database.MigrateAsync();
-
-//    await IdentitySeeder.SeedRolesAndAdminAsync(services);
-//}
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var dbContext = services.GetRequiredService<JuanAppContext>();
+        await dbContext.Database.MigrateAsync();
+        await IdentitySeeder.SeedRolesAndAdminAsync(services);
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred while initializing the database.");
+        throw;
+    }
+}
 
 if (!app.Environment.IsDevelopment())
 {
@@ -31,11 +37,15 @@ if (!app.Environment.IsDevelopment())
 app.UseStatusCodePagesWithReExecute("/Error/{0}");
 
 app.UseStaticFiles();
-
 app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapControllerRoute(
+    name: "areas",
+    pattern: "{area:exists}/{controller=Dashboard}/{action=Index}/{id?}"
+);
 
 app.MapControllerRoute(
     name: "default",

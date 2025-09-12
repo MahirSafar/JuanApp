@@ -1,0 +1,3 @@
+wwwroot\admin\css\zenith-admin.css
+wwwroot\admin\css\zenith-auth.css
+wwwroot\admin\js\zenith-admin.js

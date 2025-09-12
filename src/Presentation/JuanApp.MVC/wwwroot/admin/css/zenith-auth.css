@@ -1,0 +1,193 @@
+/* Zenith Auth Pages Styling */
+.auth-page {
+    background: linear-gradient(135deg, var(--primary-bg) 0%, var(--card-bg) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.auth-container {
+    width: 100%;
+    max-width: 420px;
+}
+
+.auth-content {
+    background: var(--sidebar-bg);
+    border-radius: 1.5rem;
+    padding: 1.3rem 2rem;
+    box-shadow: 0 0 40px rgba(0,0,0,0.3);
+    border: 1px solid var(--border);
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.auth-logo {
+    margin-bottom: 1.5rem;
+}
+
+.auth-logo-icon {
+    font-size: 2.5rem;
+    color: var(--gold);
+    filter: drop-shadow(0 0 8px var(--gold));
+}
+
+.auth-logo-text {
+    font-family: 'Fira Code', monospace;
+    font-size: 1.8rem;
+    font-weight: 700;
+    background: linear-gradient(90deg, var(--gold), var(--cyan-teal));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: 0.12em;
+    margin-top: 0.5rem;
+    display: block;
+}
+
+.auth-title {
+    color: var(--text-main);
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.auth-subtitle {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+}
+
+.auth-form {
+    margin-top: 1rem;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-label {
+    display: block;
+    color: var(--text-main);
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    background: var(--primary-bg);
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    color: var(--text-main);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--cyan-teal);
+    box-shadow: 0 0 0 2px rgba(29,233,182,0.1);
+}
+
+.form-check {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.form-check-input {
+    width: 1.2rem;
+    height: 1.2rem;
+    background: var(--primary-bg);
+    border: 1px solid var(--border);
+    border-radius: 0.3rem;
+    cursor: pointer;
+}
+
+.form-check-input:checked {
+    background: var(--cyan-teal);
+    border-color: var(--cyan-teal);
+}
+
+.form-check-label {
+    color: var(--text-muted);
+    cursor: pointer;
+}
+
+.auth-btn {
+    width: 100%;
+    padding: 1rem;
+    background: linear-gradient(90deg, var(--gold), var(--cyan-teal));
+    border: none;
+    border-radius: 0.5rem;
+    color: var(--primary-bg);
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.auth-btn:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(29,233,182,0.2);
+}
+
+.auth-links {
+    margin-top: 1rem;
+    text-align: center;
+}
+
+.auth-link {
+    color: var(--cyan-teal);
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: color 0.3s ease;
+}
+
+.auth-link:hover {
+    color: var(--gold);
+}
+
+.auth-divider {
+    margin: 1rem 0;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+}
+
+.auth-divider-text {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.validation-message {
+    color: #ff4d4d;
+    font-size: 0.85rem;
+    margin-top: 0.3rem;
+}
+
+@media (max-width: 480px) {
+    .auth-page {
+        padding: 1rem;
+    }
+    
+    .auth-content {
+        padding: 2rem;
+    }
+    
+    .auth-logo-text {
+        font-size: 1.5rem;
+    }
+}

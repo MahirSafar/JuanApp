@@ -1,0 +1,25 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - Zenith Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Fira+Code:wght@500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/admin/css/zenith-admin.css" />
+    <link rel="stylesheet" href="~/admin/css/zenith-auth.css" />
+</head>
+<body class="zenith-theme auth-page">
+    <div class="auth-container">
+        <div class="auth-content">
+            @RenderBody()
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="~/admin/js/zenith-admin.js"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>
