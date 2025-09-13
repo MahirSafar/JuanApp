@@ -1,17 +1,13 @@
 using JuanApp.Application;
-using JuanApp.Infrastructure;
 using JuanApp.MVC;
 using JuanApp.Persistance;
-using JuanApp.Persistance.DAL.Context;
-using JuanApp.Persistance.DAL.Seed;
-using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container
 builder.Services.AddApplicationServices();       
 builder.Services.AddPersistenceServices(builder.Configuration); 
-builder.Services.AddMVCServices();                
+builder.Services.AddMVCServices(builder.Configuration);                
 
 var app = builder.Build();
 

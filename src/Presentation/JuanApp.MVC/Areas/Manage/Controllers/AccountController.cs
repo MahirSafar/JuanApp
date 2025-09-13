@@ -25,7 +25,7 @@ namespace JuanApp.MVC.Areas.Manage.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            var (success, error) = await _accountService.LoginAsync(model.Username, model.Password, model.RememberMe);
+            var (success, error) = await _accountService.LoginAdminAsync(model.Username, model.Password, model.RememberMe);
             
             if (!success)
             {

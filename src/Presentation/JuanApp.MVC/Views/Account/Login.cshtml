@@ -1,0 +1,64 @@
+﻿@model UserLoginVm
+
+<div class="container">
+    <div class="member-area-from-wrap">
+        <div class="row justify-content-center my-5">
+            <div class="col-lg-6">
+                <div class="login-reg-form-wrap">
+                    <h2>Sign In</h2>
+
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success" role="alert">
+                            @TempData["SuccessMessage"]
+                        </div>
+                    }
+                    @if (TempData["ErrorMessage"] != null)
+                    {
+                        <div class="alert alert-danger" role="alert">
+                            @TempData["ErrorMessage"]
+                        </div>
+                    }
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                    <form asp-action="Login" asp-controller="Account" method="post">
+                        <div class="single-input-item">
+                            <input asp-for="UsernameOrEmail" type="text" placeholder="Email or Username" required />
+                            <span asp-validation-for="UsernameOrEmail" class="text-danger"></span>
+                        </div>
+                        <div class="single-input-item">
+                            <input asp-for="Password" type="password" placeholder="Enter your Password" required />
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+                        <div class="single-input-item">
+                            <div class="login-reg-form-meta d-flex align-items-center justify-content-between">
+                                <div class="remember-meta">
+                                    <div class="custom-control custom-checkbox">
+                                        <input asp-for="RememberMe" class="custom-control-input" id="rememberMe" type="checkbox" />
+                                        <label class="custom-control-label" for="rememberMe">Remember Me</label>
+                                    </div>
+                                </div>
+                                <a asp-action="ForgotPassword" asp-controller="Account" class="forget-pwd">Forget Password?</a>
+                            </div>
+                        </div>
+                        <div class="single-input-item">
+                            <button class="btn" type="submit">Login</button>
+                        </div>
+                    </form>
+
+                    <div class="or-divider"><span>OR</span></div>
+
+                    <div class="social-login-buttons">
+                        <a class="btn btn-google" asp-action="GoogleLogin" asp-controller="Account">
+                            <i class="fab fa-google"></i> Sign in with Google
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.21.0/jquery.validate.min.js" integrity="sha512-KFHXdr2oObHKI9w4Hv1XPKc898mE4kgYx58oqsc/JqqdLMDI4YjOLzom+EMlW8HFUd0QfjfAvxSL6sEq/a42fQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/4.0.0/jquery.validate.unobtrusive.min.js" integrity="sha512-xq+Vm8jC94ynOikewaQXMEkJIOBp7iArs3IhFWSWdRT3Pq8wFz46p+ZDFAR7kHnSFf+zUv52B3prRYnbDRdgog==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+}

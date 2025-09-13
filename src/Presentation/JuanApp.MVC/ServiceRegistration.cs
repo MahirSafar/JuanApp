@@ -1,15 +1,27 @@
 ﻿using JuanApp.Domain.Models;
 using JuanApp.Persistance.DAL.Context;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.Extensions.Configuration;
 
 namespace JuanApp.MVC
 {
     public static class ServiceRegistration
     {
-        public static void AddMVCServices(this IServiceCollection services)
+        public static void AddMVCServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddHttpContextAccessor();
             services.AddControllersWithViews();
+
+            // This is the correct way to register both Identity and Google
+            services.AddAuthentication()
+                .AddGoogle(options =>
+                {
+                    options.ClientId = configuration["Authentication:Google:ClientId"];
+                    options.ClientSecret = configuration["Authentication:Google:ClientSecret"];
+                });
+
+            // AddIdentity no longer needs to be chained, as authentication is already set up
             services.AddIdentity<AppUser, IdentityRole>(opt =>
             {
                 opt.Password.RequireNonAlphanumeric = true;
@@ -22,7 +34,9 @@ namespace JuanApp.MVC
                 opt.Lockout.MaxFailedAccessAttempts = 3;
                 opt.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
                 opt.Lockout.AllowedForNewUsers = true;
-            }).AddEntityFrameworkStores<JuanAppContext>().AddDefaultTokenProviders();
+            })
+            .AddEntityFrameworkStores<JuanAppContext>()
+            .AddDefaultTokenProviders();
 
             services.ConfigureApplicationCookie(opt =>
             {
@@ -40,7 +54,6 @@ namespace JuanApp.MVC
                     return Task.CompletedTask;
                 };
             });
-
         }
     }
 }

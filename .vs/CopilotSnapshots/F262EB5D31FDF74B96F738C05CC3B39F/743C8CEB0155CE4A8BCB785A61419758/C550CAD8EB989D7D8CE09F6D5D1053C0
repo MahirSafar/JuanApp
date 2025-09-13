@@ -1,0 +1,145 @@
+﻿using JuanApp.Application.Services.Interfaces;
+using JuanApp.Domain.Models;
+using JuanApp.MVC.ViewModels.Account;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+
+namespace JuanApp.MVC.Controllers
+{
+    public class AccountController : Controller
+    {
+        private readonly UserManager<AppUser> _userManager;
+        private readonly SignInManager<AppUser> _signInManager;
+        private readonly IAccountService _accountService;
+
+        public AccountController(
+            UserManager<AppUser> userManager,
+            SignInManager<AppUser> signInManager,
+            IAccountService accountService)
+        {
+            _userManager = userManager;
+            _signInManager = signInManager;
+            _accountService = accountService;
+        }
+
+        public IActionResult Login()
+        {
+            if (User.Identity?.IsAuthenticated == true)
+                return RedirectToAction("Index", "Home");
+
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Login(LoginViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var result = await _accountService.LoginAsync(model.Email, model.Password, model.RememberMe);
+
+            if (!result.Success)
+            {
+                ModelState.AddModelError("", result.Error ?? "Invalid login attempt.");
+                return View(model);
+            }
+
+            return RedirectToAction("Index", "Home");
+        }
+
+        public IActionResult Register()
+        {
+            if (User.Identity?.IsAuthenticated == true)
+                return RedirectToAction("Index", "Home");
+
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Register(RegisterViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var result = await _accountService.RegisterAsync(
+                model.FullName,
+                model.Email,
+                model.Password
+            );
+
+            if (!result.Success)
+            {
+                ModelState.AddModelError("", result.Error ?? "Registration failed.");
+                return View(model);
+            }
+
+            TempData["SuccessMessage"] = "Registration successful! Please login.";
+            return RedirectToAction(nameof(Login));
+        }
+
+        public async Task<IActionResult> Logout()
+        {
+            await _accountService.LogoutAsync();
+            return RedirectToAction("Index", "Home");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ConfirmEmail(string userId, string token)
+        {
+            if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(token))
+                return BadRequest();
+
+            var result = await _accountService.ConfirmEmailAsync(userId, token);
+
+            if (!result.Success)
+            {
+                TempData["ErrorMessage"] = result.Error ?? "Email confirmation failed.";
+                return RedirectToAction(nameof(Login));
+            }
+
+            TempData["SuccessMessage"] = "Email confirmed successfully! You can now login.";
+            return RedirectToAction(nameof(Login));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var result = await _accountService.ForgotPasswordAsync(model.Email);
+
+            // Always show success to prevent email enumeration
+            TempData["SuccessMessage"] = "If your email is registered, you will receive password reset instructions.";
+            return RedirectToAction(nameof(Login));
+        }
+
+        [HttpGet]
+        public IActionResult ResetPassword(string token, string email)
+        {
+            if (string.IsNullOrEmpty(token) || string.IsNullOrEmpty(email))
+                return BadRequest();
+
+            var model = new ResetPasswordViewModel { Token = token, Email = email };
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var result = await _accountService.ResetPasswordAsync(model.Email, model.Token, model.Password);
+
+            if (!result.Success)
+            {
+                ModelState.AddModelError("", result.Error ?? "Password reset failed.");
+                return View(model);
+            }
+
+            TempData["SuccessMessage"] = "Password reset successful! You can now login with your new password.";
+            return RedirectToAction(nameof(Login));
+        }
+    }
+}

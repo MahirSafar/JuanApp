@@ -1,4 +1,5 @@
 using AutoMapper;
+using JuanApp.Application.Helper;
 using JuanApp.Application.Models;
 using JuanApp.Application.Repositories;
 using JuanApp.Application.Services.Interfaces;
@@ -40,6 +41,7 @@ namespace JuanApp.Infrastructure.Services
         public async Task DeleteAsync(int id)
         {
             var slider = await repository.GetByIdAsync(id);
+
             if (slider != null)
             {
                 repository.Remove(slider);
