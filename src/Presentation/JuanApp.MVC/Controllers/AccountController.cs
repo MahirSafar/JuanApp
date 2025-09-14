@@ -1,12 +1,14 @@
 ﻿using JuanApp.Application.Services.Concretes;
 using JuanApp.Application.Services.Interfaces;
+using JuanApp.MVC.Extensions;
 using JuanApp.MVC.ViewModels;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
 
 namespace JuanApp.MVC.Controllers
 {
@@ -24,18 +26,38 @@ namespace JuanApp.MVC.Controllers
                 return View(userLoginVm);
 
             var result = await accountService.LoginUserAsync(userLoginVm.UsernameOrEmail, userLoginVm.Password, userLoginVm.RememberMe);
+
+            if (result.RequiresTwoFactor)
+            {
+                var emailResult = await accountService.GenerateTwoFactorCodeAsync(userLoginVm.UsernameOrEmail,returnUrl);
+
+                if (!emailResult.Success)
+                {
+                    ModelState.AddModelError("", emailResult.Error);
+                    return View(userLoginVm);
+                }
+                var email = emailResult.Email;
+                using StreamReader reader = new StreamReader("wwwroot/templates/twoFATemplate.html");
+                string html = await reader.ReadToEndAsync();
+                html = html.Replace("{{code}}", emailResult.Code);
+
+                await emailService.SendEmailAsync(email, "Two-factor Authentication", html);
+                return RedirectToAction("LoginWithTwoFactor", new { rememberMe = userLoginVm.RememberMe, returnUrl });
+            }
+
             if (!result.Success)
             {
                 ModelState.AddModelError("", result.Error);
                 return View(userLoginVm);
             }
+
             HttpContext.Response.Cookies.Delete("basket");
 
             if (returnUrl is null)
                 return RedirectToAction("Index", "Home");
+
             return Redirect(returnUrl);
         }
-
         public IActionResult Register()
         {
             return View();
@@ -202,6 +224,33 @@ namespace JuanApp.MVC.Controllers
             }
 
             return RedirectToAction("Login", new { error = "Google login failed." });
+        }
+        [HttpGet]
+        public async Task<IActionResult> LoginWithTwoFactor(bool rememberMe)
+        {
+            var model = new TwoFactorLoginViewModel { RememberMe = rememberMe };
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> LoginWithTwoFactor(TwoFactorLoginViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var (success, error) = await accountService.LoginWithTwoFactorCodeAsync(model.TwoFactorCode, model.RememberMe);
+
+            if (success)
+            {
+                HttpContext.Response.Cookies.Delete("basket");
+                return RedirectToAction("Index", "Home");
+            }
+
+            ModelState.AddModelError(string.Empty, error);
+            return View(model);
         }
     }
 }

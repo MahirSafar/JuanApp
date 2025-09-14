@@ -4,11 +4,18 @@ using Microsoft.AspNetCore.Identity;
 
 namespace JuanApp.Application.Services.Concretes;
 
-public class AccountService(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, RoleManager<IdentityRole> roleManager) : IAccountService
+public class AccountService : IAccountService
 {
-    private readonly UserManager<AppUser> _userManager = userManager;
-    private readonly SignInManager<AppUser> _signInManager = signInManager;
-    private readonly RoleManager<IdentityRole> _roleManager = roleManager;
+    private readonly UserManager<AppUser> _userManager;
+    private readonly SignInManager<AppUser> _signInManager;
+    private readonly RoleManager<IdentityRole> _roleManager;
+
+    public AccountService(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, RoleManager<IdentityRole> roleManager)
+    {
+        _userManager = userManager;
+        _signInManager = signInManager;
+        _roleManager = roleManager;
+    }
 
     public async Task<(bool Success, string? Error)> LoginAdminAsync(string username, string password, bool rememberMe)
     {
@@ -26,34 +33,36 @@ public class AccountService(UserManager<AppUser> userManager, SignInManager<AppU
         return (true, null);
     }
 
-    public async Task<(bool Success, string? Error)> LoginUserAsync(string usernameOfEmail, string password, bool rememberMe)
+    public async Task<(bool Success, string? Error, bool RequiresTwoFactor)> LoginUserAsync(string usernameOfEmail, string password, bool rememberMe)
     {
-        var user = await _userManager.FindByNameAsync(usernameOfEmail);
+        var user = await _userManager.FindByNameAsync(usernameOfEmail) ?? await _userManager.FindByEmailAsync(usernameOfEmail);
         if (user == null)
-        {
-            user = await _userManager.FindByEmailAsync(usernameOfEmail);
-            if (user == null)
-                return (false, "Invalid username or password");
-        }
+            return (false, "Invalid username or password", false);
 
         if (await _userManager.IsInRoleAsync(user, "Admin"))
-            return (false, "Access denied. Member rights required.");
+            return (false, "Access denied. Member rights required.", false);
 
-        var result = await _signInManager.PasswordSignInAsync(user, password, rememberMe, true);
+        var result = await _signInManager.PasswordSignInAsync(user, password, rememberMe, lockoutOnFailure: true);
 
         if (result.IsLockedOut)
-            return (false, "Your account is blocked.");
+            return (false, "Your account is blocked.", false);
 
         if (!user.EmailConfirmed)
         {
             await _signInManager.SignOutAsync();
-            return (false, "Please confirm your email address.");
+            return (false, "Please confirm your email address.", false);
+        }
+
+        // Check if 2FA is required based on the user's TwoFactorEnabled status
+        if (result.RequiresTwoFactor)
+        {
+            return (false, null, true);
         }
 
         if (!result.Succeeded)
-            return (false, "Invalid username or password");
+            return (false, "Invalid username or password", false);
 
-        return (true, null);
+        return (true, null, false);
     }
 
     public async Task<(bool Success, string? Error)> RegisterAsync(string username, string email, string fullname, string password)
@@ -196,5 +205,83 @@ public class AccountService(UserManager<AppUser> userManager, SignInManager<AppU
         await _signInManager.SignInAsync(user, isPersistent);
 
         return (true, null);
+    }
+    public async Task<(bool Success, string? Error, string? Code,string? Email)> GenerateTwoFactorCodeAsync(string usernamOrEmail, string? returnUrl)
+    {
+        var user = await _userManager.FindByNameAsync(usernamOrEmail) ?? await _userManager.FindByEmailAsync(usernamOrEmail);
+        var email = await _userManager.GetEmailAsync(user);
+        if (user == null)
+        {
+            return (false, "User not found.", null, email);
+        }
+        var code = await _userManager.GenerateTwoFactorTokenAsync(user, "Email");
+
+        return (true, null, code,email);
+    }
+    public async Task<(bool Success, string? Error)> LoginWithTwoFactorCodeAsync(string code, bool rememberMe)
+    {
+        var result = await _signInManager.TwoFactorSignInAsync("Email", code, rememberMe, rememberClient: false);
+
+        if (result.Succeeded)
+        {
+            return (true, null);
+        }
+        if (result.IsLockedOut)
+        {
+            return (false, "Your account is locked.");
+        }
+        return (false, "Invalid code.");
+    }
+    public async Task<bool> IsTwoFactorEnabledAsync(string userId)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user == null) return false;
+        return await _userManager.GetTwoFactorEnabledAsync(user);
+    }
+    public async Task<AppUser> GetUserByIdAsync(string userId)
+    {
+        return await _userManager.FindByIdAsync(userId);
+    }
+    public async Task<(bool Success, string? Error)> EnableTwoFactorAsync(string userId, string code)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user == null)
+            return (false, "User not found.");
+
+        var isValidToken = await _userManager.VerifyTwoFactorTokenAsync(
+            user,
+            TokenOptions.DefaultEmailProvider,
+            code);
+
+        if (!isValidToken)
+            return (false, "Invalid verification code.");
+
+        var result = await _userManager.SetTwoFactorEnabledAsync(user, true);
+        if (!result.Succeeded)
+        {
+            var errors = string.Join(" ", result.Errors.Select(e => e.Description));
+            return (false, errors);
+        }
+
+        // Update security stamp to force re-login with 2FA
+        await _userManager.UpdateSecurityStampAsync(user);
+        return (true, null);
+    }
+
+    public async Task<bool> DisableTwoFactorAsync(string userId)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user == null)
+            return false;
+
+        var result = await _userManager.SetTwoFactorEnabledAsync(user, false);
+        if (result.Succeeded)
+        {
+            // Update security stamp to force re-login without 2FA
+            await _userManager.UpdateSecurityStampAsync(user);
+            return true;
+        }
+
+        return false;
     }
 }

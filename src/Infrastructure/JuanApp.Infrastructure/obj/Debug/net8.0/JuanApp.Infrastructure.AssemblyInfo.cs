@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("JuanApp.Infrastructure")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+13ee5b20c97b788b8d1b2a3245aeb3782f35d5c2")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ddfadca7cbe657d3b3575b360f85e3fda56e47de")]
 [assembly: System.Reflection.AssemblyProductAttribute("JuanApp.Infrastructure")]
 [assembly: System.Reflection.AssemblyTitleAttribute("JuanApp.Infrastructure")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

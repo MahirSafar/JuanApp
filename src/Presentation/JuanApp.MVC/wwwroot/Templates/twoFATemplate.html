@@ -1,0 +1,644 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Your Security Code</title>
+    <style>
+        /* Reset styles for email clients */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8fafc;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            padding: 40px 30px;
+            text-align: center;
+            color: white;
+            position: relative;
+        }
+
+            .header::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Cpath d='M20 20c0-11.046-8.954-20-20-20v20h20z'/%3E%3C/g%3E%3C/svg%3E") repeat;
+            }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+            .logo::before {
+                content: '🔐';
+                font-size: 36px;
+            }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .content {
+            padding: 40px 30px;
+        }
+
+        .greeting {
+            font-size: 18px;
+            color: #1f2937;
+            margin-bottom: 24px;
+            font-weight: 600;
+        }
+
+        .message {
+            font-size: 16px;
+            color: #4b5563;
+            line-height: 1.7;
+            margin-bottom: 32px;
+        }
+
+        .urgent-notice {
+            background: linear-gradient(135deg, #fef2f2, #fee2e2);
+            border: 2px solid #ef4444;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 24px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .urgent-notice::before {
+                content: '';
+                position: absolute;
+                top: -2px;
+                left: -2px;
+                right: -2px;
+                bottom: -2px;
+                background: linear-gradient(45deg, #ef4444, #dc2626, #ef4444);
+                border-radius: 12px;
+                z-index: -1;
+                animation: urgentGlow 2s ease-in-out infinite;
+            }
+
+        @keyframes urgentGlow {
+            0%, 100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.8;
+            }
+        }
+
+        .urgent-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .urgent-icon {
+            font-size: 20px;
+            margin-right: 8px;
+        }
+
+        .urgent-title {
+            font-weight: 600;
+            color: #dc2626;
+            font-size: 15px;
+        }
+
+        .urgent-text {
+            font-size: 14px;
+            color: #991b1b;
+            line-height: 1.5;
+        }
+
+        .code-box {
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            border: 3px solid #3b82f6;
+            border-radius: 16px;
+            padding: 40px 30px;
+            text-align: center;
+            margin: 32px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .code-box::before {
+                content: '';
+                position: absolute;
+                top: -3px;
+                left: -3px;
+                right: -3px;
+                bottom: -3px;
+                background: linear-gradient(45deg, #3b82f6, #1d4ed8, #2563eb, #3b82f6);
+                border-radius: 16px;
+                z-index: -1;
+                animation: codeGlow 4s ease-in-out infinite;
+            }
+
+        @keyframes codeGlow {
+            0%, 100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.7;
+            }
+        }
+
+        .code-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+            display: block;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        .code-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 16px;
+        }
+
+        .code-subtitle {
+            font-size: 16px;
+            color: #6b7280;
+            margin-bottom: 24px;
+        }
+
+        .verification-code {
+            font-family: 'Courier New', monospace;
+            font-size: 36px;
+            font-weight: 700;
+            letter-spacing: 8px;
+            color: #1d4ed8;
+            background: white;
+            padding: 20px 30px;
+            border-radius: 12px;
+            border: 2px dashed #3b82f6;
+            margin: 20px 0;
+            display: inline-block;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+            .verification-code::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.1), transparent);
+                animation: codeShine 3s ease-in-out infinite;
+            }
+
+        @keyframes codeShine {
+            0% {
+                left: -100%;
+            }
+
+            100% {
+                left: 100%;
+            }
+        }
+
+        .code-instructions {
+            background: white;
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 20px;
+            text-align: left;
+            border: 1px solid #e5e7eb;
+        }
+
+        .instruction-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #374151;
+        }
+
+            .instruction-item:last-child {
+                margin-bottom: 0;
+            }
+
+        .instruction-number {
+            background: #3b82f6;
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+            margin-right: 12px;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .expiry-warning {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border-left: 4px solid #f59e0b;
+            padding: 20px;
+            margin: 24px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .expiry-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .expiry-icon {
+            font-size: 20px;
+            margin-right: 8px;
+            color: #d97706;
+        }
+
+        .expiry-title {
+            font-weight: 600;
+            color: #92400e;
+            font-size: 15px;
+        }
+
+        .expiry-text {
+            font-size: 14px;
+            color: #a16207;
+            line-height: 1.6;
+        }
+
+        .countdown-timer {
+            display: inline-flex;
+            align-items: center;
+            background: #dc2626;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 13px;
+            margin-top: 8px;
+        }
+
+            .countdown-timer .timer-icon {
+                margin-right: 6px;
+            }
+
+        .security-details {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 24px;
+            margin: 32px 0;
+        }
+
+        .security-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+        }
+
+            .security-title .icon {
+                margin-right: 8px;
+                font-size: 20px;
+            }
+
+        .security-info {
+            display: grid;
+            gap: 12px;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 14px;
+        }
+
+            .info-item:last-child {
+                border-bottom: none;
+            }
+
+        .info-label {
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        .info-value {
+            color: #1f2937;
+            font-weight: 600;
+            font-family: monospace;
+        }
+
+        .didnt-request {
+            background: #fef2f2;
+            border: 2px solid #ef4444;
+            border-radius: 12px;
+            padding: 24px;
+            margin: 32px 0;
+            text-align: center;
+        }
+
+            .didnt-request .title {
+                font-size: 18px;
+                font-weight: 700;
+                color: #dc2626;
+                margin-bottom: 12px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+                .didnt-request .title .icon {
+                    margin-right: 8px;
+                    font-size: 20px;
+                }
+
+            .didnt-request .text {
+                font-size: 14px;
+                color: #991b1b;
+                line-height: 1.6;
+                margin-bottom: 16px;
+            }
+
+        .contact-support {
+            display: inline-block;
+            background: #dc2626;
+            color: white;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+            .contact-support:hover {
+                background: #b91c1c;
+                text-decoration: none;
+                color: white;
+                transform: translateY(-1px);
+            }
+
+        .footer {
+            background: #f8fafc;
+            padding: 32px 30px;
+            text-align: center;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .footer-content {
+            margin-bottom: 20px;
+        }
+
+        .footer-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+
+        .footer-text {
+            font-size: 14px;
+            color: #6b7280;
+            margin-bottom: 16px;
+        }
+
+        .footer-divider {
+            height: 1px;
+            background: #e5e7eb;
+            margin: 24px 0;
+        }
+
+        .footer-legal {
+            font-size: 12px;
+            color: #9ca3af;
+            line-height: 1.6;
+        }
+
+            .footer-legal a {
+                color: #3b82f6;
+                text-decoration: none;
+            }
+
+                .footer-legal a:hover {
+                    text-decoration: underline;
+                }
+
+        /* Email client specific styles */
+        @media screen and (max-width: 600px) {
+            .email-container {
+                margin: 0;
+                border-radius: 0;
+            }
+
+            .header,
+            .content,
+            .footer {
+                padding-left: 20px;
+                padding-right: 20px;
+            }
+
+                .header h1 {
+                    font-size: 24px;
+                }
+
+            .logo {
+                width: 60px;
+                height: 60px;
+            }
+
+                .logo::before {
+                    font-size: 28px;
+                }
+
+            .verification-code {
+                font-size: 28px;
+                letter-spacing: 4px;
+                padding: 16px 20px;
+            }
+
+            .code-box {
+                padding: 30px 20px;
+            }
+
+            .security-details {
+                padding: 20px;
+            }
+
+            .info-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 4px;
+            }
+        }
+
+        /* Dark mode support */
+        @media (prefers-color-scheme: dark) {
+            .security-details {
+                background: #1f2937;
+            }
+
+            .code-instructions,
+            .verification-code {
+                background: #374151;
+                border-color: #60a5fa;
+            }
+
+            .verification-code {
+                color: #60a5fa;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="header">
+            <div class="logo"></div>
+            <h1>Security Code</h1>
+            <p>Your two-factor authentication code</p>
+        </div>
+
+        <div class="content">
+            <div class="greeting">Hello,</div>
+
+            <div class="message">
+                We detected a login attempt to your account. To ensure your security, please use the verification code below to complete your authentication.
+            </div>
+
+            <div class="urgent-notice">
+                <div class="urgent-header">
+                    <span class="urgent-icon">🚨</span>
+                    <span class="urgent-title">Time Sensitive</span>
+                </div>
+                <div class="urgent-text">
+                    This code expires in 10 minutes for your security. Enter it immediately to continue.
+                    <div class="countdown-timer">
+                        <span class="timer-icon">⏱️</span>
+                        <span>Expires in 10:00</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="code-box">
+                <span class="code-icon">🔑</span>
+                <div class="code-title">Your Verification Code</div>
+                <div class="code-subtitle">Enter this code to complete your login</div>
+
+                <div class="verification-code">{{code}}</div>
+            </div>
+
+           
+
+            <div class="expiry-warning">
+                <div class="expiry-header">
+                    <span class="expiry-icon">⏰</span>
+                    <span class="expiry-title">Important Security Notice</span>
+                </div>
+                <div class="expiry-text">
+                    This verification code will expire in <strong>10 minutes</strong> for your protection.
+                    If the code expires, you'll need to request a new one by attempting to log in again.
+                    <br><br>
+                    <strong>Never share this code with anyone.</strong> Our team will never ask you for this code via email, phone, or text message.
+                </div>
+            </div>
+
+            <div class="didnt-request">
+                <div class="title">
+                    <span class="icon">⚠️</span>
+                    Didn't Request This Code?
+                </div>
+                <div class="text">
+                    If you didn't attempt to log in to your account, someone may be trying to access it. Please contact our security team immediately and consider changing your password.
+                </div>
+                <a href="#" class="contact-support">🚨 Contact Security Team</a>
+            </div>
+
+            <div class="message">
+                Thank you for helping us keep your account secure. Two-factor authentication adds an extra layer of protection to prevent unauthorized access.
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="footer-content">
+                <div class="footer-title">Account Security</div>
+                <div class="footer-text">
+                    This email was sent because two-factor authentication is enabled on your account.
+                </div>
+            </div>
+
+            <div class="footer-divider"></div>
+
+            <div class="footer-legal">
+                © 2024 Your Company Name. All rights reserved.<br>
+                <a href="#">Privacy Policy</a> | <a href="#">Security Center</a> | <a href="#">Contact Support</a><br>
+                1234 Street Name, City, State 12345<br><br>
+                <strong>This is an automated security email. Please do not reply to this message.</strong>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
