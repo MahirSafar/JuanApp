@@ -1,7 +1,56 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\Users\\Mahir\\Saved Games\\JuanApp\\",
-  "Documents": [],
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{D86CBBEA-AB36-43A4-8ABB-9ADA00363185}|src\\Presentation\\JuanApp.MVC\\JuanApp.MVC.csproj|c:\\users\\mahir\\saved games\\juanapp\\src\\presentation\\juanapp.mvc\\areas\\manage\\views\\service\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{D86CBBEA-AB36-43A4-8ABB-9ADA00363185}|src\\Presentation\\JuanApp.MVC\\JuanApp.MVC.csproj|solutionrelative:src\\presentation\\juanapp.mvc\\areas\\manage\\views\\service\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D86CBBEA-AB36-43A4-8ABB-9ADA00363185}|src\\Presentation\\JuanApp.MVC\\JuanApp.MVC.csproj|c:\\users\\mahir\\saved games\\juanapp\\src\\presentation\\juanapp.mvc\\areas\\manage\\views\\service\\detail.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{D86CBBEA-AB36-43A4-8ABB-9ADA00363185}|src\\Presentation\\JuanApp.MVC\\JuanApp.MVC.csproj|solutionrelative:src\\presentation\\juanapp.mvc\\areas\\manage\\views\\service\\detail.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D86CBBEA-AB36-43A4-8ABB-9ADA00363185}|src\\Presentation\\JuanApp.MVC\\JuanApp.MVC.csproj|c:\\users\\mahir\\saved games\\juanapp\\src\\presentation\\juanapp.mvc\\areas\\manage\\views\\service\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{D86CBBEA-AB36-43A4-8ABB-9ADA00363185}|src\\Presentation\\JuanApp.MVC\\JuanApp.MVC.csproj|solutionrelative:src\\presentation\\juanapp.mvc\\areas\\manage\\views\\service\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D86CBBEA-AB36-43A4-8ABB-9ADA00363185}|src\\Presentation\\JuanApp.MVC\\JuanApp.MVC.csproj|c:\\users\\mahir\\saved games\\juanapp\\src\\presentation\\juanapp.mvc\\areas\\manage\\views\\service\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{D86CBBEA-AB36-43A4-8ABB-9ADA00363185}|src\\Presentation\\JuanApp.MVC\\JuanApp.MVC.csproj|solutionrelative:src\\presentation\\juanapp.mvc\\areas\\manage\\views\\service\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DD326830-A15C-4DCF-A910-BC5F982B9D60}|src\\Core\\JuanApp.Application\\JuanApp.Application.csproj|c:\\users\\mahir\\saved games\\juanapp\\src\\core\\juanapp.application\\services\\concretes\\subscriptionservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DD326830-A15C-4DCF-A910-BC5F982B9D60}|src\\Core\\JuanApp.Application\\JuanApp.Application.csproj|solutionrelative:src\\core\\juanapp.application\\services\\concretes\\subscriptionservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D86CBBEA-AB36-43A4-8ABB-9ADA00363185}|src\\Presentation\\JuanApp.MVC\\JuanApp.MVC.csproj|c:\\users\\mahir\\saved games\\juanapp\\src\\presentation\\juanapp.mvc\\areas\\manage\\viewmodels\\serviceviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D86CBBEA-AB36-43A4-8ABB-9ADA00363185}|src\\Presentation\\JuanApp.MVC\\JuanApp.MVC.csproj|solutionrelative:src\\presentation\\juanapp.mvc\\areas\\manage\\viewmodels\\serviceviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D86CBBEA-AB36-43A4-8ABB-9ADA00363185}|src\\Presentation\\JuanApp.MVC\\JuanApp.MVC.csproj|c:\\users\\mahir\\saved games\\juanapp\\src\\presentation\\juanapp.mvc\\areas\\manage\\viewmodels\\sliderviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D86CBBEA-AB36-43A4-8ABB-9ADA00363185}|src\\Presentation\\JuanApp.MVC\\JuanApp.MVC.csproj|solutionrelative:src\\presentation\\juanapp.mvc\\areas\\manage\\viewmodels\\sliderviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DD326830-A15C-4DCF-A910-BC5F982B9D60}|src\\Core\\JuanApp.Application\\JuanApp.Application.csproj|c:\\users\\mahir\\saved games\\juanapp\\src\\core\\juanapp.application\\serviceregistration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DD326830-A15C-4DCF-A910-BC5F982B9D60}|src\\Core\\JuanApp.Application\\JuanApp.Application.csproj|solutionrelative:src\\core\\juanapp.application\\serviceregistration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D86CBBEA-AB36-43A4-8ABB-9ADA00363185}|src\\Presentation\\JuanApp.MVC\\JuanApp.MVC.csproj|c:\\users\\mahir\\saved games\\juanapp\\src\\presentation\\juanapp.mvc\\areas\\manage\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{D86CBBEA-AB36-43A4-8ABB-9ADA00363185}|src\\Presentation\\JuanApp.MVC\\JuanApp.MVC.csproj|solutionrelative:src\\presentation\\juanapp.mvc\\areas\\manage\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DD326830-A15C-4DCF-A910-BC5F982B9D60}|src\\Core\\JuanApp.Application\\JuanApp.Application.csproj|c:\\users\\mahir\\saved games\\juanapp\\src\\core\\juanapp.application\\models\\servicedtos\\servicedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DD326830-A15C-4DCF-A910-BC5F982B9D60}|src\\Core\\JuanApp.Application\\JuanApp.Application.csproj|solutionrelative:src\\core\\juanapp.application\\models\\servicedtos\\servicedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D86CBBEA-AB36-43A4-8ABB-9ADA00363185}|src\\Presentation\\JuanApp.MVC\\JuanApp.MVC.csproj|c:\\users\\mahir\\saved games\\juanapp\\src\\presentation\\juanapp.mvc\\areas\\manage\\controllers\\servicecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D86CBBEA-AB36-43A4-8ABB-9ADA00363185}|src\\Presentation\\JuanApp.MVC\\JuanApp.MVC.csproj|solutionrelative:src\\presentation\\juanapp.mvc\\areas\\manage\\controllers\\servicecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D86CBBEA-AB36-43A4-8ABB-9ADA00363185}|src\\Presentation\\JuanApp.MVC\\JuanApp.MVC.csproj|c:\\users\\mahir\\saved games\\juanapp\\src\\presentation\\juanapp.mvc\\areas\\manage\\controllers\\slidercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D86CBBEA-AB36-43A4-8ABB-9ADA00363185}|src\\Presentation\\JuanApp.MVC\\JuanApp.MVC.csproj|solutionrelative:src\\presentation\\juanapp.mvc\\areas\\manage\\controllers\\slidercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -9,11 +58,167 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": -1,
+          "SelectedChildIndex": 4,
           "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "SubscriptionService.cs",
+              "DocumentMoniker": "C:\\Users\\Mahir\\Saved Games\\JuanApp\\src\\Core\\JuanApp.Application\\Services\\Concretes\\SubscriptionService.cs",
+              "RelativeDocumentMoniker": "src\\Core\\JuanApp.Application\\Services\\Concretes\\SubscriptionService.cs",
+              "ToolTip": "C:\\Users\\Mahir\\Saved Games\\JuanApp\\src\\Core\\JuanApp.Application\\Services\\Concretes\\SubscriptionService.cs",
+              "RelativeToolTip": "src\\Core\\JuanApp.Application\\Services\\Concretes\\SubscriptionService.cs",
+              "ViewState": "AgIAAGcAAAAAAAAAAAAswHoAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-14T11:40:32.519Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\Mahir\\Saved Games\\JuanApp\\src\\Presentation\\JuanApp.MVC\\Areas\\Manage\\Views\\Service\\Index.cshtml",
+              "RelativeDocumentMoniker": "src\\Presentation\\JuanApp.MVC\\Areas\\Manage\\Views\\Service\\Index.cshtml",
+              "ToolTip": "C:\\Users\\Mahir\\Saved Games\\JuanApp\\src\\Presentation\\JuanApp.MVC\\Areas\\Manage\\Views\\Service\\Index.cshtml",
+              "RelativeToolTip": "src\\Presentation\\JuanApp.MVC\\Areas\\Manage\\Views\\Service\\Index.cshtml",
+              "ViewState": "AgIAACAAAAAAAAAAAAAAwDEAAAAmAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-09-14T11:37:14.056Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Edit.cshtml",
+              "DocumentMoniker": "C:\\Users\\Mahir\\Saved Games\\JuanApp\\src\\Presentation\\JuanApp.MVC\\Areas\\Manage\\Views\\Service\\Edit.cshtml",
+              "RelativeDocumentMoniker": "src\\Presentation\\JuanApp.MVC\\Areas\\Manage\\Views\\Service\\Edit.cshtml",
+              "ToolTip": "C:\\Users\\Mahir\\Saved Games\\JuanApp\\src\\Presentation\\JuanApp.MVC\\Areas\\Manage\\Views\\Service\\Edit.cshtml",
+              "RelativeToolTip": "src\\Presentation\\JuanApp.MVC\\Areas\\Manage\\Views\\Service\\Edit.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABkAAAASAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-09-14T11:37:04.54Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Detail.cshtml",
+              "DocumentMoniker": "C:\\Users\\Mahir\\Saved Games\\JuanApp\\src\\Presentation\\JuanApp.MVC\\Areas\\Manage\\Views\\Service\\Detail.cshtml",
+              "RelativeDocumentMoniker": "src\\Presentation\\JuanApp.MVC\\Areas\\Manage\\Views\\Service\\Detail.cshtml",
+              "ToolTip": "C:\\Users\\Mahir\\Saved Games\\JuanApp\\src\\Presentation\\JuanApp.MVC\\Areas\\Manage\\Views\\Service\\Detail.cshtml",
+              "RelativeToolTip": "src\\Presentation\\JuanApp.MVC\\Areas\\Manage\\Views\\Service\\Detail.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAABJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-09-14T11:36:53.314Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Create.cshtml",
+              "DocumentMoniker": "C:\\Users\\Mahir\\Saved Games\\JuanApp\\src\\Presentation\\JuanApp.MVC\\Areas\\Manage\\Views\\Service\\Create.cshtml",
+              "RelativeDocumentMoniker": "src\\Presentation\\JuanApp.MVC\\Areas\\Manage\\Views\\Service\\Create.cshtml",
+              "ToolTip": "C:\\Users\\Mahir\\Saved Games\\JuanApp\\src\\Presentation\\JuanApp.MVC\\Areas\\Manage\\Views\\Service\\Create.cshtml",
+              "RelativeToolTip": "src\\Presentation\\JuanApp.MVC\\Areas\\Manage\\Views\\Service\\Create.cshtml",
+              "ViewState": "AgIAAA0AAAAAAAAAAAAAwBwAAABPAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-09-14T11:36:43.428Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "ServiceViewModel.cs",
+              "DocumentMoniker": "C:\\Users\\Mahir\\Saved Games\\JuanApp\\src\\Presentation\\JuanApp.MVC\\Areas\\Manage\\ViewModels\\ServiceViewModel.cs",
+              "RelativeDocumentMoniker": "src\\Presentation\\JuanApp.MVC\\Areas\\Manage\\ViewModels\\ServiceViewModel.cs",
+              "ToolTip": "C:\\Users\\Mahir\\Saved Games\\JuanApp\\src\\Presentation\\JuanApp.MVC\\Areas\\Manage\\ViewModels\\ServiceViewModel.cs",
+              "RelativeToolTip": "src\\Presentation\\JuanApp.MVC\\Areas\\Manage\\ViewModels\\ServiceViewModel.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAvAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-14T11:30:29.744Z",
+              "EditorCaption": ""
+            },
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "SliderViewModel.cs",
+              "DocumentMoniker": "C:\\Users\\Mahir\\Saved Games\\JuanApp\\src\\Presentation\\JuanApp.MVC\\Areas\\Manage\\ViewModels\\SliderViewModel.cs",
+              "RelativeDocumentMoniker": "src\\Presentation\\JuanApp.MVC\\Areas\\Manage\\ViewModels\\SliderViewModel.cs",
+              "ToolTip": "C:\\Users\\Mahir\\Saved Games\\JuanApp\\src\\Presentation\\JuanApp.MVC\\Areas\\Manage\\ViewModels\\SliderViewModel.cs",
+              "RelativeToolTip": "src\\Presentation\\JuanApp.MVC\\Areas\\Manage\\ViewModels\\SliderViewModel.cs",
+              "ViewState": "AgIAAAoAAAAAAAAAAAAQwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-14T11:36:25.35Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "ServiceRegistration.cs",
+              "DocumentMoniker": "C:\\Users\\Mahir\\Saved Games\\JuanApp\\src\\Core\\JuanApp.Application\\ServiceRegistration.cs",
+              "RelativeDocumentMoniker": "src\\Core\\JuanApp.Application\\ServiceRegistration.cs",
+              "ToolTip": "C:\\Users\\Mahir\\Saved Games\\JuanApp\\src\\Core\\JuanApp.Application\\ServiceRegistration.cs",
+              "RelativeToolTip": "src\\Core\\JuanApp.Application\\ServiceRegistration.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAA+AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-14T11:34:30.025Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "ServiceDto.cs",
+              "DocumentMoniker": "C:\\Users\\Mahir\\Saved Games\\JuanApp\\src\\Core\\JuanApp.Application\\Models\\ServiceDtos\\ServiceDto.cs",
+              "RelativeDocumentMoniker": "src\\Core\\JuanApp.Application\\Models\\ServiceDtos\\ServiceDto.cs",
+              "ToolTip": "C:\\Users\\Mahir\\Saved Games\\JuanApp\\src\\Core\\JuanApp.Application\\Models\\ServiceDtos\\ServiceDto.cs",
+              "RelativeToolTip": "src\\Core\\JuanApp.Application\\Models\\ServiceDtos\\ServiceDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAjAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-14T11:31:08.651Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "_Layout.cshtml",
+              "DocumentMoniker": "C:\\Users\\Mahir\\Saved Games\\JuanApp\\src\\Presentation\\JuanApp.MVC\\Areas\\Manage\\Views\\Shared\\_Layout.cshtml",
+              "RelativeDocumentMoniker": "src\\Presentation\\JuanApp.MVC\\Areas\\Manage\\Views\\Shared\\_Layout.cshtml",
+              "ToolTip": "C:\\Users\\Mahir\\Saved Games\\JuanApp\\src\\Presentation\\JuanApp.MVC\\Areas\\Manage\\Views\\Shared\\_Layout.cshtml",
+              "RelativeToolTip": "src\\Presentation\\JuanApp.MVC\\Areas\\Manage\\Views\\Shared\\_Layout.cshtml",
+              "ViewState": "AgIAABcAAAAAAAAAAAAAABwAAACUAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-09-14T11:30:07.338Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "SliderController.cs",
+              "DocumentMoniker": "C:\\Users\\Mahir\\Saved Games\\JuanApp\\src\\Presentation\\JuanApp.MVC\\Areas\\Manage\\Controllers\\SliderController.cs",
+              "RelativeDocumentMoniker": "src\\Presentation\\JuanApp.MVC\\Areas\\Manage\\Controllers\\SliderController.cs",
+              "ToolTip": "C:\\Users\\Mahir\\Saved Games\\JuanApp\\src\\Presentation\\JuanApp.MVC\\Areas\\Manage\\Controllers\\SliderController.cs",
+              "RelativeToolTip": "src\\Presentation\\JuanApp.MVC\\Areas\\Manage\\Controllers\\SliderController.cs",
+              "ViewState": "AgIAAI8AAAAAAAAAAAAswKIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-14T10:46:16.823Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "ServiceController.cs",
+              "DocumentMoniker": "C:\\Users\\Mahir\\Saved Games\\JuanApp\\src\\Presentation\\JuanApp.MVC\\Areas\\Manage\\Controllers\\ServiceController.cs",
+              "RelativeDocumentMoniker": "src\\Presentation\\JuanApp.MVC\\Areas\\Manage\\Controllers\\ServiceController.cs",
+              "ToolTip": "C:\\Users\\Mahir\\Saved Games\\JuanApp\\src\\Presentation\\JuanApp.MVC\\Areas\\Manage\\Controllers\\ServiceController.cs",
+              "RelativeToolTip": "src\\Presentation\\JuanApp.MVC\\Areas\\Manage\\Controllers\\ServiceController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAiAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-14T10:46:09.609Z",
+              "EditorCaption": ""
             }
           ]
         }

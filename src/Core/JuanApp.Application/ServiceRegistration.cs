@@ -14,5 +14,6 @@ public static class ServiceRegistration
         services.AddScoped<IEmailService, EmailService>();
         services.AddScoped<ISubscriptionService, SubscriptionService>();
         services.AddScoped<ISliderService, SliderService>();
+        services.AddScoped<IServiceService, ServiceService>();
     }
 }

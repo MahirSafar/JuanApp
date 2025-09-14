@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
 
 namespace JuanApp.MVC.Areas.Manage.ViewModels
@@ -29,8 +28,5 @@ namespace JuanApp.MVC.Areas.Manage.ViewModels
 
         [Display(Name = "Active")]
         public bool IsActive { get; set; }
-
-        public DateTime Created { get; set; }
-        public DateTime? LastModified { get; set; }
     }
 }

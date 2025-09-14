@@ -1,4 +1,4 @@
-using JuanApp.Application.Models;
+using JuanApp.Application.Models.SliderDtos;
 using JuanApp.Domain.Models;
 
 namespace JuanApp.Application.Services.Interfaces

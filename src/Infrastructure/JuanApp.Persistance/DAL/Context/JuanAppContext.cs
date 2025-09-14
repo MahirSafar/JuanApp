@@ -6,15 +6,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace JuanApp.Persistance.DAL.Context
 {
-    public class JuanAppContext : IdentityDbContext<AppUser, IdentityRole, string>
+    public class JuanAppContext(DbContextOptions<JuanAppContext> options) : IdentityDbContext<AppUser, IdentityRole, string>(options)
     {
-        public JuanAppContext(DbContextOptions<JuanAppContext> options) : base(options)
-        {
-        }
-
         public DbSet<Slider> Sliders { get; set; }
         public DbSet<Subscription> Subscriptions { get; set; }
-
+        public DbSet<Service> Services { get; set; }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(JuanAppContext).Assembly);
+            base.OnModelCreating(modelBuilder);
+        }
         private void UpdateAuditFields()
         {
             var entries = ChangeTracker.Entries<AuditEntity>();

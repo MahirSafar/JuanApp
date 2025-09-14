@@ -1,5 +1,5 @@
 using JuanApp.Application.Helper;
-using JuanApp.Application.Models;
+using JuanApp.Application.Models.SliderDtos;
 using JuanApp.Application.Services.Interfaces;
 using JuanApp.MVC.Areas.Manage.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -9,16 +9,9 @@ namespace JuanApp.MVC.Areas.Manage.Controllers
 {
     [Area("Manage")]
     [Authorize(Roles = "Admin")]
-    public class SliderController : Controller
+    public class SliderController(ISliderService sliderService) : Controller
     {
-        private readonly ISliderService _sliderService;
-        private readonly IWebHostEnvironment _webHostEnvironment;
-
-        public SliderController(ISliderService sliderService, IWebHostEnvironment webHostEnvironment)
-        {
-            _sliderService = sliderService;
-            _webHostEnvironment = webHostEnvironment;
-        }
+        private readonly ISliderService _sliderService = sliderService;
 
         public async Task<IActionResult> Index()
         {

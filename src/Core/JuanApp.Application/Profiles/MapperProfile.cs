@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
-using JuanApp.Application.Models;
+using JuanApp.Application.Models.ServiceDtos;
+using JuanApp.Application.Models.SliderDtos;
 using JuanApp.Domain.Models;
 
 namespace JuanApp.Application.Profiles
@@ -10,6 +11,9 @@ namespace JuanApp.Application.Profiles
         {
             CreateMap<Slider, SliderDto>().ReverseMap();
             CreateMap<CreateSliderDto, Slider>().ReverseMap();
+
+            CreateMap<Service, ServiceDto>().ReverseMap();
+            CreateMap<CreateServiceDto, Service>().ReverseMap();
         }
     }
 }

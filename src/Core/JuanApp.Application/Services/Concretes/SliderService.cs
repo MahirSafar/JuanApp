@@ -1,5 +1,5 @@
 using AutoMapper;
-using JuanApp.Application.Models;
+using JuanApp.Application.Models.SliderDtos;
 using JuanApp.Application.Repositories;
 using JuanApp.Application.Services.Interfaces;
 using JuanApp.Domain.Models;
