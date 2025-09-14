@@ -1,0 +1,64 @@
+@model string
+
+<div class="newsletter-subscription">
+    <h4>Subscribe to Our Newsletter</h4>
+    <p>Stay updated with our latest news and updates</p>
+    <form id="subscriptionForm" class="subscription-form">
+        <div class="input-group">
+            <input type="email" id="subscriptionEmail" class="form-control" placeholder="Enter your email" required>
+            <button type="submit" class="btn btn-primary">Subscribe</button>
+        </div>
+        <div id="subscriptionMessage" class="mt-2"></div>
+    </form>
+</div>
+
+<script>
+    document.getElementById('subscriptionForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const email = document.getElementById('subscriptionEmail').value;
+        const messageDiv = document.getElementById('subscriptionMessage');
+        
+        fetch('/Subscribe/Subscribe', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `email=${encodeURIComponent(email)}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            messageDiv.innerHTML = `<div class="alert alert-${data.success ? 'success' : 'danger'}">${data.message}</div>`;
+            if (data.success) {
+                document.getElementById('subscriptionEmail').value = '';
+            }
+        })
+        .catch(error => {
+            messageDiv.innerHTML = '<div class="alert alert-danger">An error occurred. Please try again later.</div>';
+        });
+    });
+</script>
+
+<style>
+    .newsletter-subscription {
+        padding: 2rem;
+        background: rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+    }
+
+    .subscription-form {
+        max-width: 500px;
+        margin: 0 auto;
+    }
+
+    .input-group {
+        margin-top: 1rem;
+    }
+
+    .alert {
+        padding: 0.5rem 1rem;
+        margin-top: 1rem;
+        border-radius: 4px;
+        font-size: 0.9rem;
+    }
+</style>

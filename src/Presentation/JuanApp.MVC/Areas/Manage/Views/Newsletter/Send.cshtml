@@ -1,0 +1,85 @@
+@model NewsletterViewModel
+
+<div class="zenith-card p-4 shadow-lg rounded-4 border-0 bg-dark text-light">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="zenith-card-title mb-1 fw-bold text-gold">Send Newsletter</h2>
+            <p class="text-muted mb-0">Send emails to all active subscribers</p>
+        </div>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <form asp-action="Send" method="post">
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger mb-4"></div>
+
+        <div class="form-group mb-4">
+            <label asp-for="Subject" class="form-label required">Newsletter Subject</label>
+            <input asp-for="Subject" class="form-control form-control-lg bg-darker" />
+            <span asp-validation-for="Subject" class="text-danger"></span>
+        </div>
+
+        <div class="form-group mb-4">
+            <label asp-for="Content" class="form-label required">Newsletter Content</label>
+            <textarea asp-for="Content" id="editor" class="form-control" rows="15"></textarea>
+            <span asp-validation-for="Content" class="text-danger"></span>
+        </div>
+
+        <div class="text-end">
+            <button type="submit" class="btn btn-cyan btn-lg px-5 rounded-pill">
+                <i class="fas fa-paper-plane me-2"></i>Send Newsletter
+            </button>
+        </div>
+    </form>
+</div>
+
+@section Styles {
+    <style>
+        .form-control {
+            background-color: var(--card-bg);
+            border-color: var(--border);
+            color: var(--text-main);
+        }
+
+        .form-control:focus {
+            background-color: var(--card-bg);
+            border-color: var(--cyan-teal);
+            color: var(--text-main);
+            box-shadow: 0 0 0 0.25rem rgba(29,233,182,0.15);
+        }
+
+        .form-label {
+            color: var(--gold);
+            font-weight: 500;
+        }
+
+        .form-label.required:after {
+            content: "*";
+            color: #ff5252;
+            margin-left: 4px;
+        }
+
+        .bg-darker {
+            background-color: rgba(0, 0, 0, 0.2) !important;
+        }
+
+        .btn-cyan {
+            background: var(--cyan-teal);
+            color: #000;
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-cyan:hover {
+            background: #13bfa6;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(29, 233, 182, 0.25);
+        }
+    </style>
+}

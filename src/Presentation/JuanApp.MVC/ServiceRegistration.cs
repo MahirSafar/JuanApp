@@ -1,8 +1,6 @@
 ﻿using JuanApp.Domain.Models;
 using JuanApp.Persistance.DAL.Context;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Authentication.Google;
-using Microsoft.Extensions.Configuration;
 
 namespace JuanApp.MVC
 {

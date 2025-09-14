@@ -1,0 +1,112 @@
+﻿using JuanApp.Application.Repositories;
+using JuanApp.Application.Services.Interfaces;
+using JuanApp.Domain.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+
+namespace JuanApp.Application.Services.Concretes;
+
+public class SubscriptionService(IGenericRepository<Subscription> genericRepository, UserManager<AppUser> userManager) : ISubscriptionService
+{
+    public async Task<(bool Success, string? Error)> SubscribeAsync(string email, string token)
+    {
+        var existingSubscription = await genericRepository.GetSingleAsync(s => s.Email == email);
+
+        if (existingSubscription != null)
+        {
+            if (existingSubscription.IsConfirmed)
+                return (false, "This email is already subscribed.");
+
+            if (!existingSubscription.IsConfirmed)
+                return (true, "Confirmation email has been resent.");
+        }
+
+        var subscription = new Subscription
+        {
+            Email = email,
+            SubscribedAt = DateTime.UtcNow,
+            IsActive = true,
+            IsConfirmed = false,
+            Token = token
+        };
+
+        await genericRepository.AddAsync(subscription);
+        await genericRepository.SaveAsync();
+
+        return (true, "Please check your email to confirm your subscription.");
+    }
+
+    public async Task<(bool Success, string? Error)> UnsubscribeAsync(string email, string token)
+    {
+        var subscription = await genericRepository.GetSingleAsync(s => s.Email == email && s.Token == token);
+
+        if (subscription == null)
+            return (false, "Invalid unsubscribe request.");
+
+        subscription.IsActive = false;
+        await genericRepository.SaveAsync();
+
+        return (true, "You have been successfully unsubscribed.");
+    }
+
+    public async Task<(bool Success, string? Error)> ConfirmSubscriptionAsync(string email, string token)
+    {
+        var subscription = await genericRepository.GetSingleAsync(s => s.Email == email && s.Token == token);
+
+        if (subscription == null)
+            return (false, "Invalid confirmation link.");
+
+        subscription.IsConfirmed = true;
+        await genericRepository.SaveAsync();
+
+        return (true, "Your subscription has been confirmed.");
+    }
+
+    public async Task<(bool Success, string? Error)> SendNewsletterAsync(string subject, string content)
+    {
+        var activeEmails = await GetAllActiveEmailsAsync();
+
+        if (!activeEmails.Any())
+            return (false, "No active subscribers found.");
+
+        try
+        {
+            // Note: This method still requires emailService to be injected if it's not moved elsewhere.
+            // This is a potential architectural issue if you want to keep all email logic in the controller.
+            await emailService.SendBulkEmailAsync(activeEmails.ToList(), subject, content);
+            return (true, null);
+        }
+        catch (Exception ex)
+        {
+            return (false, $"Failed to send newsletter: {ex.Message}");
+        }
+    }
+
+    public async Task<IEnumerable<string>> GetAllActiveEmailsAsync()
+    {
+        return await genericRepository.GetWhere(s => s.IsActive && s.IsConfirmed)
+            .Select(s => s.Email)
+            .ToListAsync();
+    }
+
+    public async Task<bool> IsSubscribedAsync(string email, string token)
+    {
+        return await genericRepository.AnyAsync(s => s.Email == email && s.IsActive && s.IsConfirmed);
+    }
+
+    public async Task<Subscription?> GetSubscriptionByEmailAsync(string email)
+    {
+        return await genericRepository.GetSingleAsync(s => s.Email == email);
+    }
+    public async Task<(bool Success, string? Error, string? EmailConfirmationToken)> GenerateSubscribeConfirmationTokenAsync(string email)
+    {
+        var user = await userManager.FindByEmailAsync(email);
+        if (user == null)
+        {
+            return (false, "User not found.", null);
+        }
+        var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
+        return (true, null, token);
+    }
+
+}

@@ -1,0 +1,79 @@
+﻿using JuanApp.Application.Services.Concretes;
+using JuanApp.Application.Services.Interfaces;
+using JuanApp.MVC.ViewModels;
+using Microsoft.AspNetCore.Mvc;
+
+namespace JuanApp.MVC.Controllers
+{
+    public class SubscribeController(ISubscriptionService subscriptionService, IEmailService emailService) : Controller
+    {
+        [HttpPost]
+        public async Task<IActionResult> Subscribe(string email)
+        {
+            if (string.IsNullOrEmpty(email))
+            {
+                TempData["ErrorMessage"] = "Email is required.";
+                return RedirectToAction("Index", "Home");
+            }
+            var tokenResult = await subscriptionService.GenerateSubscribeConfirmationTokenAsync(email);
+            if (tokenResult.Success)
+            {
+                var confirmationLink = Url.Action("Confirm", "Subscribe", new { email = email, token = tokenResult.EmailConfirmationToken }, Request.Scheme);
+
+                using StreamReader reader = new StreamReader("wwwroot/templates/confirmSubscribe.html");
+                string html = await reader.ReadToEndAsync();
+                html = html.Replace("{{confirmationLink}}", confirmationLink);
+                html = html.Replace("{{name}}", userRegisterVm.Username);
+
+                await emailService.SendEmailAsync(userRegisterVm.Email, "Email Confirmation", html);
+                TempData["SuccessMessage"] = result.Error ?? "Please check your email to confirm your subscription.";
+
+            }
+            else
+            {
+                TempData["ErrorMessage"] = result.Error;
+            }
+
+            return RedirectToAction("Index", "Home");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Confirm(string email, string token)
+        {
+            var result = await subscriptionService.ConfirmSubscriptionAsync(email, token);
+
+            if (result.Success)
+            {
+                // Send welcome email from the controller
+                await emailService.SendEmailAsync(
+                    email,
+                    "Welcome to Our Newsletter!",
+                    "Thank you for confirming your subscription to our newsletter.");
+            }
+
+            if (!result.Success)
+            {
+                TempData["ErrorMessage"] = result.Error;
+                return RedirectToAction("Index", "Home");
+            }
+
+            TempData["SuccessMessage"] = "Your subscription has been confirmed!";
+            return RedirectToAction("Index", "Home");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Unsubscribe(string email, string token)
+        {
+            var result = await subscriptionService.UnsubscribeAsync(email, token);
+
+            if (!result.Success)
+            {
+                TempData["ErrorMessage"] = result.Error;
+                return RedirectToAction("Index", "Home");
+            }
+
+            TempData["SuccessMessage"] = "You have been successfully unsubscribed.";
+            return RedirectToAction("Index", "Home");
+        }
+    }
+}

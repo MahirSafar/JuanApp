@@ -70,7 +70,7 @@ namespace JuanApp.MVC.Controllers
                 html = html.Replace("{{confirmationLink}}", confirmationLink);
                 html = html.Replace("{{name}}", userRegisterVm.Username);
 
-                emailService.SendEmail(userRegisterVm.Email, "Email Confirmation", html);
+                await emailService.SendEmailAsync(userRegisterVm.Email, "Email Confirmation", html);
             }
 
             TempData["SuccessMessage"] = "Registration successful! Please check your email to confirm your account.";
@@ -127,7 +127,7 @@ namespace JuanApp.MVC.Controllers
             html = html.Replace("{{confirmationLink}}", confirmationLink);
             // Since the user might not have a username, we will use a more generic greeting or the email.
             html = html.Replace("{{name}}", forgotPasswordVm.Email);
-            emailService.SendEmail(forgotPasswordVm.Email, "Reset Password", html);
+            await emailService.SendEmailAsync(forgotPasswordVm.Email, "Reset Password", html);
 
             TempData["SuccessMessage"] = "If an account with that email exists, a password reset link has been sent.";
             return RedirectToAction(nameof(ForgotPassword));

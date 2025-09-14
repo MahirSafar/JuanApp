@@ -1,0 +1,81 @@
+﻿using JuanApp.Application;
+using JuanApp.Domain.Models;
+using JuanApp.Infrastructure;
+using JuanApp.MVC;
+using JuanApp.Persistance;
+using JuanApp.Persistance.DAL.Context;
+using JuanApp.Persistance.DAL.Seed;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container in correct order
+builder.Services.AddPersistenceServices(builder.Configuration);
+builder.Services.AddApplicationServices();
+builder.Services.AddMVCServices();
+
+// Add Identity after persistence services but before MVC services
+builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
+{
+    // Password settings
+    options.Password.RequireDigit = true;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireUppercase = true;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequiredLength = 6;
+
+    // Lockout settings
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+    options.Lockout.MaxFailedAccessAttempts = 5;
+    options.Lockout.AllowedForNewUsers = true;
+
+    // User settings
+    options.User.RequireUniqueEmail = true;
+    options.SignIn.RequireConfirmedEmail = true;
+})
+.AddEntityFrameworkStores<JuanAppContext>()
+.AddDefaultTokenProviders();
+
+var app = builder.Build();
+
+// Initialize Database and Seed Data
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var dbContext = services.GetRequiredService<JuanAppContext>();
+        await dbContext.Database.MigrateAsync();
+        await IdentitySeeder.SeedRolesAndAdminAsync(services);
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred while initializing the database.");
+        throw;
+    }
+}
+
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Error/HttpStatusCodeHandler");
+}
+app.UseStatusCodePagesWithReExecute("/Error/{0}");
+
+app.UseStaticFiles();
+app.UseRouting();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapControllerRoute(
+    name: "areas",
+    pattern: "{area:exists}/{controller=Dashboard}/{action=Index}/{id?}"
+);
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
+
+await app.RunAsync();

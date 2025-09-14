@@ -1,0 +1,47 @@
+﻿using JuanApp.Domain.Models;
+using JuanApp.Persistance.DAL.Context;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.Google;
+
+namespace JuanApp.MVC
+{
+    public static class ServiceRegistration
+    {
+        public static IServiceCollection AddMVCServices(this IServiceCollection services)
+        {
+            services.AddHttpContextAccessor();
+            services.AddControllersWithViews();
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = "/Account/Login";
+                options.LogoutPath = "/Account/Logout";
+                options.AccessDeniedPath = "/Account/AccessDenied";
+                
+                // Special handling for admin area
+                options.Events = new Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationEvents
+                {
+                    OnRedirectToLogin = context =>
+                    {
+                        if (context.Request.Path.StartsWithSegments("/Manage"))
+                        {
+                            context.Response.Redirect("/Manage/Account/Login");
+                        }
+                        else
+                        {
+                            context.Response.Redirect(options.LoginPath);
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
+                
+                options.Cookie.Name = "JuanApp.Auth";
+                options.Cookie.HttpOnly = true;
+                options.ExpireTimeSpan = TimeSpan.FromDays(1);
+                options.SlidingExpiration = true;
+            });
+
+            return services;
+        }
+    }
+}

@@ -1,4 +1,4 @@
-using JuanApp.Domain.Models;
+    using JuanApp.Domain.Models;
 namespace JuanApp.Application.Services.Interfaces;
 
 public interface IAccountService

@@ -1,0 +1,90 @@
+﻿using JuanApp.Application;
+using JuanApp.Domain.Models;
+using JuanApp.Infrastructure;
+using JuanApp.MVC;
+using JuanApp.Persistance;
+using JuanApp.Persistance.DAL.Context;
+using JuanApp.Persistance.DAL.Seed;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container
+builder.Services.AddControllersWithViews();
+
+builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
+{
+    options.Password.RequireDigit = true;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireUppercase = true;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequiredLength = 6;
+
+    options.Lockout.MaxFailedAccessAttempts = 5;
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+
+    options.SignIn.RequireConfirmedEmail = true;
+})
+.AddEntityFrameworkStores<JuanAppContext>()
+.AddDefaultTokenProviders();
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Manage/Account/Login";
+    options.LogoutPath = "/Manage/Account/Logout";
+    options.AccessDeniedPath = "/Manage/Account/AccessDenied";
+    
+    options.Cookie.Name = "JuanApp.Admin";
+    options.Cookie.HttpOnly = true;
+    options.ExpireTimeSpan = TimeSpan.FromDays(1);
+    options.SlidingExpiration = true;
+});
+
+builder.Services.AddApplicationServices();       
+builder.Services.AddPersistenceServices(builder.Configuration); 
+builder.Services.AddInfrastructureServices();
+builder.Services.AddMVCServices();                
+
+var app = builder.Build();
+
+// Initialize Database and Seed Data
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var dbContext = services.GetRequiredService<JuanAppContext>();
+        await dbContext.Database.MigrateAsync();
+        await IdentitySeeder.SeedRolesAndAdminAsync(services);
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred while initializing the database.");
+        throw;
+    }
+}
+
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Error/HttpStatusCodeHandler");
+}
+app.UseStatusCodePagesWithReExecute("/Error/{0}");
+
+app.UseStaticFiles();
+app.UseRouting();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapControllerRoute(
+    name: "areas",
+    pattern: "{area:exists}/{controller=Dashboard}/{action=Index}/{id?}"
+);
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
+
+await app.RunAsync();

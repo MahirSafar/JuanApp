@@ -1,0 +1,696 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Confirm Your Subscription</title>
+    <style>
+        /* Reset styles for email clients */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8fafc;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            padding: 40px 30px;
+            text-align: center;
+            color: white;
+            position: relative;
+        }
+
+            .header::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Cpath d='M20 20c0-11.046-8.954-20-20-20v20h20z'/%3E%3C/g%3E%3C/svg%3E") repeat;
+            }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+            .logo::before {
+                content: '📧';
+                font-size: 36px;
+            }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .content {
+            padding: 40px 30px;
+        }
+
+        .greeting {
+            font-size: 18px;
+            color: #1f2937;
+            margin-bottom: 24px;
+            font-weight: 600;
+        }
+
+        .message {
+            font-size: 16px;
+            color: #4b5563;
+            line-height: 1.7;
+            margin-bottom: 32px;
+        }
+
+        .subscription-details {
+            background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+            border: 2px solid #10b981;
+            border-radius: 12px;
+            padding: 24px;
+            margin: 24px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .subscription-details::before {
+                content: '';
+                position: absolute;
+                top: -2px;
+                left: -2px;
+                right: -2px;
+                bottom: -2px;
+                background: linear-gradient(45deg, #10b981, #059669, #10b981);
+                border-radius: 12px;
+                z-index: -1;
+                animation: subscriptionGlow 3s ease-in-out infinite;
+            }
+
+        @keyframes subscriptionGlow {
+            0%, 100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.7;
+            }
+        }
+
+        .sub-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .sub-icon {
+            font-size: 24px;
+            margin-right: 12px;
+        }
+
+        .sub-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #065f46;
+        }
+
+        .sub-details {
+            display: grid;
+            gap: 12px;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            color: #047857;
+        }
+
+            .detail-item .icon {
+                margin-right: 8px;
+                font-size: 16px;
+            }
+
+        .confirm-box {
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            border: 2px solid #3b82f6;
+            border-radius: 12px;
+            padding: 32px;
+            text-align: center;
+            margin: 32px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .confirm-box::before {
+                content: '';
+                position: absolute;
+                top: -2px;
+                left: -2px;
+                right: -2px;
+                bottom: -2px;
+                background: linear-gradient(45deg, #3b82f6, #1d4ed8, #3b82f6);
+                border-radius: 12px;
+                z-index: -1;
+                animation: borderGlow 3s ease-in-out infinite;
+            }
+
+        @keyframes borderGlow {
+            0%, 100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.7;
+            }
+        }
+
+        .confirm-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        .confirm-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 12px;
+        }
+
+        .confirm-text {
+            font-size: 15px;
+            color: #6b7280;
+            margin-bottom: 28px;
+            line-height: 1.6;
+        }
+
+        .confirm-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            text-decoration: none;
+            padding: 18px 36px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 6px 16px rgba(59, 130, 246, 0.3);
+        }
+
+            .confirm-btn::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+                transition: left 0.6s;
+            }
+
+            .confirm-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 10px 24px rgba(59, 130, 246, 0.4);
+                text-decoration: none;
+                color: white;
+            }
+
+                .confirm-btn:hover::before {
+                    left: 100%;
+                }
+
+        .benefits-section {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 28px;
+            margin: 32px 0;
+        }
+
+        .benefits-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .benefits-list {
+            display: grid;
+            gap: 16px;
+        }
+
+        .benefit-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 12px 16px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+            .benefit-item:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            }
+
+        .benefit-icon {
+            font-size: 20px;
+            margin-right: 12px;
+            margin-top: 2px;
+        }
+
+        .benefit-content .title {
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 4px;
+            font-size: 15px;
+        }
+
+        .benefit-content .description {
+            font-size: 13px;
+            color: #6b7280;
+            line-height: 1.5;
+        }
+
+        .preferences-box {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border: 1px solid #f59e0b;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 24px 0;
+        }
+
+        .preferences-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .preferences-icon {
+            font-size: 20px;
+            margin-right: 8px;
+            color: #d97706;
+        }
+
+        .preferences-title {
+            font-weight: 600;
+            color: #92400e;
+            font-size: 15px;
+        }
+
+        .preferences-text {
+            font-size: 14px;
+            color: #a16207;
+            line-height: 1.5;
+        }
+
+        .preferences-link {
+            color: #d97706;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+            .preferences-link:hover {
+                text-decoration: underline;
+            }
+
+        .alternative-link {
+            margin-top: 32px;
+            padding: 20px;
+            background: #f9fafb;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+            .alternative-link .title {
+                font-weight: 600;
+                color: #1f2937;
+                margin-bottom: 8px;
+            }
+
+            .alternative-link .subtitle {
+                font-size: 14px;
+                color: #6b7280;
+                margin-bottom: 12px;
+            }
+
+        .link-text {
+            word-break: break-all;
+            color: #3b82f6;
+            font-family: monospace;
+            background: #f3f4f6;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-top: 8px;
+            display: block;
+            font-size: 13px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .expiry-info {
+            background: #f3f4f6;
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 20px;
+            text-align: left;
+        }
+
+            .expiry-info .icon {
+                font-size: 18px;
+                margin-right: 8px;
+                color: #6b7280;
+            }
+
+            .expiry-info .title {
+                font-weight: 600;
+                color: #374151;
+                font-size: 14px;
+                margin-bottom: 4px;
+            }
+
+            .expiry-info .text {
+                font-size: 13px;
+                color: #6b7280;
+                line-height: 1.5;
+            }
+
+        .footer {
+            background: #f8fafc;
+            padding: 32px 30px;
+            text-align: center;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .footer-content {
+            margin-bottom: 20px;
+        }
+
+        .footer-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+
+        .footer-text {
+            font-size: 14px;
+            color: #6b7280;
+            margin-bottom: 16px;
+        }
+
+        .social-links {
+            margin: 20px 0;
+        }
+
+            .social-links a {
+                display: inline-block;
+                margin: 0 8px;
+                padding: 10px;
+                background: #e5e7eb;
+                border-radius: 50%;
+                text-decoration: none;
+                font-size: 18px;
+                transition: all 0.3s ease;
+                width: 40px;
+                height: 40px;
+                line-height: 20px;
+            }
+
+                .social-links a:hover {
+                    background: #3b82f6;
+                    color: white;
+                    transform: translateY(-2px);
+                }
+
+        .footer-divider {
+            height: 1px;
+            background: #e5e7eb;
+            margin: 24px 0;
+        }
+
+        .footer-legal {
+            font-size: 12px;
+            color: #9ca3af;
+            line-height: 1.6;
+        }
+
+            .footer-legal a {
+                color: #3b82f6;
+                text-decoration: none;
+            }
+
+                .footer-legal a:hover {
+                    text-decoration: underline;
+                }
+
+        /* Email client specific styles */
+        @media screen and (max-width: 600px) {
+            .email-container {
+                margin: 0;
+                border-radius: 0;
+            }
+
+            .header,
+            .content,
+            .footer {
+                padding-left: 20px;
+                padding-right: 20px;
+            }
+
+                .header h1 {
+                    font-size: 24px;
+                }
+
+            .logo {
+                width: 60px;
+                height: 60px;
+            }
+
+                .logo::before {
+                    font-size: 28px;
+                }
+
+            .confirm-btn {
+                display: block;
+                width: 100%;
+                text-align: center;
+                padding: 16px 24px;
+            }
+
+            .confirm-box,
+            .benefits-section {
+                padding: 24px 20px;
+            }
+
+            .sub-details {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Dark mode support */
+        @media (prefers-color-scheme: dark) {
+            .alternative-link,
+            .benefits-section {
+                background: #1f2937;
+                color: #d1d5db;
+                border-color: #374151;
+            }
+
+            .link-text {
+                background: #374151;
+                color: #60a5fa;
+                border-color: #4b5563;
+            }
+
+            .benefit-item {
+                background: #374151;
+            }
+
+            .expiry-info {
+                background: #374151;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="header">
+            <div class="logo"></div>
+            <h1>Welcome Aboard!</h1>
+            <p>One last step to complete your subscription</p>
+        </div>
+
+        <div class="content">
+            <div class="greeting">Hello,</div>
+
+            <div class="message">
+                Thank you for subscribing to our newsletter! We're excited to have you join our community of engaged readers. To ensure you receive all our updates and to confirm your email address, please click the confirmation button below.
+            </div>
+
+            <div class="subscription-details">
+                <div class="sub-header">
+                    <span class="sub-icon">📋</span>
+                    <span class="sub-title">Subscription Details</span>
+                </div>
+                <div class="sub-details">
+                    <div class="detail-item">
+                        <span class="icon">📧</span>
+                        <span>Email: {{email}}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="icon">📅</span>
+                        <span>Subscribed: January 15, 2024</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="icon">🏷️</span>
+                        <span>Plan: Weekly Newsletter</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="icon">🌍</span>
+                        <span>Location: United States</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="confirm-box">
+                <span class="confirm-icon">🎯</span>
+                <div class="confirm-title">Confirm Your Subscription</div>
+                <div class="confirm-text">Click the button below to activate your subscription and start receiving our carefully crafted content straight to your inbox.</div>
+                <a href="{{confirmationLink}}" class="confirm-btn">Yes, Subscribe Me!</a>
+
+                <div class="expiry-info">
+                    <div class="title">
+                        <span class="icon">⏰</span>
+                        Confirmation Required
+                    </div>
+                    <div class="text">
+                        Please confirm within <strong>48 hours</strong> to activate your subscription. After this time, you'll need to subscribe again.
+                    </div>
+                </div>
+            </div>
+
+            <div class="benefits-section">
+                <div class="benefits-title">✨ What You'll Get</div>
+                <div class="benefits-list">
+                    <div class="benefit-item">
+                        <span class="benefit-icon">📰</span>
+                        <div class="benefit-content">
+                            <div class="title">Weekly Newsletter</div>
+                            <div class="description">Curated content delivered every Tuesday with industry insights and trends</div>
+                        </div>
+                    </div>
+                    <div class="benefit-item">
+                        <span class="benefit-icon">🎁</span>
+                        <div class="benefit-content">
+                            <div class="title">Exclusive Content</div>
+                            <div class="description">Access to subscriber-only articles, resources, and early previews</div>
+                        </div>
+                    </div>
+                    <div class="benefit-item">
+                        <span class="benefit-icon">💡</span>
+                        <div class="benefit-content">
+                            <div class="title">Expert Tips</div>
+                            <div class="description">Professional advice and actionable tips from industry experts</div>
+                        </div>
+                    </div>
+                    <div class="benefit-item">
+                        <span class="benefit-icon">🏆</span>
+                        <div class="benefit-content">
+                            <div class="title">Premium Resources</div>
+                            <div class="description">Free access to tools, templates, and guides worth $200+</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="preferences-box">
+                <div class="preferences-header">
+                    <span class="preferences-icon">⚙️</span>
+                    <span class="preferences-title">Manage Your Preferences</span>
+                </div>
+                <div class="preferences-text">
+                    You can customize your email frequency and content preferences at any time.
+                    <a href="#" class="preferences-link">Update preferences</a> or
+                    <a href="#" class="preferences-link">unsubscribe</a> anytime.
+                </div>
+            </div>
+
+            <div class="alternative-link">
+                <div class="title">Can't click the button?</div>
+                <div class="subtitle">Copy and paste this link into your browser:</div>
+                <span class="link-text">{{confirmationLink}}</span>
+            </div>
+
+            <div class="message">
+                We respect your inbox and promise to send only valuable, relevant content. Thank you for trusting us with your email address!
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="footer-content">
+                <div class="footer-title">Stay Connected</div>
+                <div class="footer-text">
+                    Follow us on social media for daily updates and behind-the-scenes content.
+                </div>
+
+                <div class="social-links">
+                    <a href="#">📧</a>
+                    <a href="#">🐦</a>
+                    <a href="#">📘</a>
+                    <a href="#">📸</a>
+                    <a href="#">💼</a>
+                </div>
+            </div>
+
+            <div class="footer-divider"></div>
+
+            <div class="footer-legal">
+                © 2024 Your Company Name. All rights reserved.<br>
+                <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a> | <a href="#">Unsubscribe</a><br>
+                1234 Street Name, City, State 12345<br><br>
+                <strong>You received this email because you subscribed to our newsletter.</strong>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

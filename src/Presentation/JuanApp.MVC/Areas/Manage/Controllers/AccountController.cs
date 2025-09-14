@@ -11,11 +11,14 @@ namespace JuanApp.MVC.Areas.Manage.Controllers
         private readonly IAccountService _accountService = accountService;
 
         [HttpGet]
-        public IActionResult Login()
+        public async Task<IActionResult> Login()
         {
             if (User.Identity?.IsAuthenticated == true)
-                return RedirectToAction("Index", "Dashboard");
-
+            {
+                var user = await _accountService.GetUserByUsernameAsync(User.Identity?.Name ?? string.Empty);
+                if (user != null && await _accountService.IsInRoleAsync(user, "Admin"))
+                    return RedirectToAction("Index", "Dashboard");
+            }
             return View();
         }
 

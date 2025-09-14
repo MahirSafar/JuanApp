@@ -1,0 +1,149 @@
+﻿using JuanApp.Application.Repositories;
+using JuanApp.Application.Services.Interfaces;
+using JuanApp.Domain.Models;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography;
+
+namespace JuanApp.Application.Services.Concretes
+{
+    public class SubscriptionService : ISubscriptionService
+    {
+        private readonly IGenericRepository<Subscription> _subscriptionRepository;
+        private readonly IEmailService _emailService;
+
+        public SubscriptionService(
+            IGenericRepository<Subscription> subscriptionRepository,
+            IEmailService emailService)
+        {
+            _subscriptionRepository = subscriptionRepository;
+            _emailService = emailService;
+        }
+
+        public async Task<(bool Success, string? Error)> SubscribeAsync(string email)
+        {
+            var existingSubscription = await _subscriptionRepository.GetSingleAsync(s => s.Email == email);
+
+            if (existingSubscription != null)
+            {
+                if (existingSubscription.IsConfirmed)
+                    return (false, "This email is already subscribed.");
+
+                if (!existingSubscription.IsConfirmed)
+                {
+                    // Resend confirmation email
+                    await SendConfirmationEmailAsync(existingSubscription);
+                    return (true, "Confirmation email has been resent.");
+                }
+            }
+
+            var subscription = new Subscription
+            {
+                Email = email,
+                SubscribedAt = DateTime.UtcNow,
+                IsActive = true,
+                IsConfirmed = false,
+                Token = GenerateToken()
+            };
+
+            await _subscriptionRepository.AddAsync(subscription);
+            await _subscriptionRepository.SaveAsync();
+
+            await SendConfirmationEmailAsync(subscription);
+
+            return (true, "Please check your email to confirm your subscription.");
+        }
+
+        public async Task<(bool Success, string? Error)> UnsubscribeAsync(string email, string token)
+        {
+            var subscription = await _subscriptionRepository.GetSingleAsync(s => s.Email == email && s.Token == token);
+
+            if (subscription == null)
+                return (false, "Invalid unsubscribe request.");
+
+            subscription.IsActive = false;
+            await _subscriptionRepository.SaveAsync();
+
+            return (true, "You have been successfully unsubscribed.");
+        }
+
+        public async Task<(bool Success, string? Error)> ConfirmSubscriptionAsync(string email, string token)
+        {
+            var subscription = await _subscriptionRepository.GetSingleAsync(s => s.Email == email && s.Token == token);
+
+            if (subscription == null)
+                return (false, "Invalid confirmation link.");
+
+            subscription.IsConfirmed = true;
+            await _subscriptionRepository.SaveAsync();
+
+            // Send welcome email
+            await _emailService.SendEmailAsync(
+                subscription.Email,
+                "Welcome to Our Newsletter!",
+                "Thank you for confirming your subscription to our newsletter.");
+
+            return (true, "Your subscription has been confirmed.");
+        }
+
+        public async Task<(bool Success, string? Error)> SendNewsletterAsync(string subject, string content)
+        {
+            var activeEmails = await GetAllActiveEmailsAsync();
+            
+            if (!activeEmails.Any())
+                return (false, "No active subscribers found.");
+
+            try
+            {
+                foreach (var email in activeEmails)
+                {
+                    await _emailService.SendEmailAsync(email, subject, content);
+                }
+                return (true, null);
+            }
+            catch (Exception ex)
+            {
+                return (false, $"Failed to send newsletter: {ex.Message}");
+            }
+        }
+
+        public async Task<IEnumerable<string>> GetAllActiveEmailsAsync()
+        {
+            return await _subscriptionRepository.GetWhere(s => s.IsActive && s.IsConfirmed)
+                .Select(s => s.Email)
+                .ToListAsync();
+        }
+
+        public async Task<bool> IsSubscribedAsync(string email)
+        {
+            return await _subscriptionRepository.AnyAsync(s => s.Email == email && s.IsActive && s.IsConfirmed);
+        }
+
+        private async Task SendConfirmationEmailAsync(Subscription subscription)
+        {
+            var confirmationLink = $"/subscribe/confirm?email={subscription.Email}&token={subscription.Token}";
+            
+            var emailBody = $@"
+                <h2>Confirm Your Subscription</h2>
+                <p>Thank you for subscribing to our newsletter!</p>
+                <p>Please click the link below to confirm your subscription:</p>
+                <p><a href='{confirmationLink}'>Confirm Subscription</a></p>
+                <p>If you didn't subscribe to our newsletter, you can ignore this email.</p>";
+
+            await _emailService.SendEmailAsync(
+                subscription.Email,
+                "Confirm Your Newsletter Subscription",
+                emailBody);
+        }
+
+        private static string GenerateToken()
+        {
+            var randomNumber = new byte[32];
+            using var rng = RandomNumberGenerator.Create();
+            rng.GetBytes(randomNumber);
+            return Convert.ToBase64String(randomNumber)
+                .Replace("/", "_")
+                .Replace("+", "-")
+                .Replace("=", "");
+        }
+    }
+}

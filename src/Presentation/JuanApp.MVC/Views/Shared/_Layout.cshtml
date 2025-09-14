@@ -695,6 +695,25 @@
                                         <i class="ion-ios-telephone-outline"></i>Phone:
                                         <a href="%2b0025425456554">+ 00 254 254565</a>
                                     </li>
+                                    <form asp-controller="subscribe" asp-action="subscribe" method="post" id="subscription-form">
+                                        <div class="form-group">
+                                            <input type="email" name="email" class="form-control" placeholder="Enter your email" required />
+                                        </div>
+                                        <button type="submit" class="btn btn-primary mt-2">Subscribe</button>
+                                    </form>
+                                    @if (TempData["SuccessMessage"] != null)
+                                    {
+                                        <div class="alert alert-success mt-4">
+                                            @TempData["SuccessMessage"]
+                                        </div>
+                                    }
+
+                                    @if (TempData["ErrorMessage"] != null)
+                                    {
+                                        <div class="alert alert-danger mt-4">
+                                            @TempData["ErrorMessage"]
+                                        </div>
+                                    }
                                 </ul>
                             </div>
                         </div>
@@ -894,6 +913,7 @@
     <script src="~/assets/js/plugins.js"></script>
     <!--=== Active Js ===-->
     <script src="~/assets/js/active.js"></script>
+    <script src="~/assets/custom/js/subscribe.js"></script>
     @RenderSection("Scripts", required: false);
 </body>
 

@@ -1,6 +1,9 @@
 using JuanApp.Application;
 using JuanApp.MVC;
 using JuanApp.Persistance;
+using JuanApp.Persistance.DAL.Context;
+using JuanApp.Persistance.DAL.Seed;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,22 +15,22 @@ builder.Services.AddMVCServices(builder.Configuration);
 var app = builder.Build();
 
 // Initialize Database and Seed Data
-//using (var scope = app.Services.CreateScope())
-//{
-//    var services = scope.ServiceProvider;
-//    try
-//    {
-//        var dbContext = services.GetRequiredService<JuanAppContext>();
-//        await dbContext.Database.MigrateAsync();
-//        await IdentitySeeder.SeedRolesAndAdminAsync(services);
-//    }
-//    catch (Exception ex)
-//    {
-//        var logger = services.GetRequiredService<ILogger<Program>>();
-//        logger.LogError(ex, "An error occurred while initializing the database.");
-//        throw;
-//    }
-//}
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var dbContext = services.GetRequiredService<JuanAppContext>();
+        await dbContext.Database.MigrateAsync();
+        await IdentitySeeder.SeedRolesAndAdminAsync(services);
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred while initializing the database.");
+        throw;
+    }
+}
 
 if (!app.Environment.IsDevelopment())
 {

@@ -1,0 +1,16 @@
+﻿using JuanApp.Domain.Models;
+
+namespace JuanApp.Application.Services.Interfaces
+{
+    public interface ISubscriptionService
+    {
+        Task<(bool Success, string? Error)> SubscribeAsync(string email);
+        Task<(bool Success, string? Error, string? Token)> GenerateSubscribeConfirmationTokenAsync(string email);
+        Task<(bool Success, string? Error)> UnsubscribeAsync(string email, string token);
+        Task<(bool Success, string? Error)> ConfirmSubscriptionAsync(string email, string token);
+        Task<(bool Success, string? Error)> SendNewsletterAsync(string subject, string content);
+        Task<IEnumerable<string>> GetAllActiveEmailsAsync();
+        Task<bool> IsSubscribedAsync(string email);
+        Task<Subscription?> GetSubscriptionByEmailAsync(string email);
+    }
+}

@@ -1,0 +1,17 @@
+﻿using JuanApp.Application.Services.Interfaces;
+using JuanApp.Infrastructure.Services;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace JuanApp.Infrastructure
+{
+    public static class ServiceRegistration
+    {
+        public static IServiceCollection AddInfrastructureServices(this IServiceCollection services)
+        {
+            services.AddScoped<ISubscriptionService, SubscriptionService>();
+            services.AddScoped<IEmailService, EmailService>();
+            
+            return services;
+        }
+    }
+}

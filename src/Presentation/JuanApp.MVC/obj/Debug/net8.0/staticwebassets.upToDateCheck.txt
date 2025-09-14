@@ -86,6 +86,7 @@ wwwroot\assets\js\active.js
 wwwroot\assets\js\modernizr-2.8.3.min.js
 wwwroot\assets\js\plugins.js
 wwwroot\assets\js\vendor.js
+wwwroot\Templates\confirmSubscribe.html
 wwwroot\Templates\emailConfirmTemplate.html
 wwwroot\Templates\forgotPasswordTemplate.html
 wwwroot\uploads\sliders\5c025cdc-725c-4ac9-a294-ab0ea9cee7f9_slider-2.jpg
