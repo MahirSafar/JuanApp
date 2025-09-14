@@ -80,6 +80,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcTWFuYWdlXFZpZXdzXF9WaWV3U3RhcnQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/Mahir/Saved Games/JuanApp/src/Presentation/JuanApp.MVC/Views/Account/CompleteGoogleProfile.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxDb21wbGV0ZUdvb2dsZVByb2ZpbGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/Mahir/Saved Games/JuanApp/src/Presentation/JuanApp.MVC/Views/Account/ForgotPassword.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxGb3Jnb3RQYXNzd29yZC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 

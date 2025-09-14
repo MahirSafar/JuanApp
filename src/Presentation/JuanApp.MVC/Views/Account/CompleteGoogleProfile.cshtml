@@ -1,0 +1,65 @@
+@model GoogleProfileCompleteVm
+@{
+    ViewData["Title"] = "Complete Your Profile";
+}
+
+<div class="d-flex justify-content-center align-items-center min-vh-100">
+    <div class="col-md-6 col-lg-4">
+        <div class="card shadow-lg border-0">
+            <div class="card-body p-5">
+                <div class="text-center mb-4">
+                    <h4 class="fw-bold">Complete Your Profile</h4>
+                    <p class="text-muted">Please provide additional information to complete your registration</p>
+                </div>
+
+                <form method="post" asp-action="CompleteGoogleProfile" asp-controller="Account">
+                    <input type="hidden" asp-for="Email" />
+                    <input type="hidden" asp-for="GoogleId" />
+
+                    <div class="form-floating mb-3">
+                        <input asp-for="Username" class="form-control" placeholder="Username">
+                        <label asp-for="Username">Choose a Username</label>
+                        <span asp-validation-for="Username" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <input asp-for="FullName" class="form-control" placeholder="Full Name">
+                        <label asp-for="FullName">Full Name</label>
+                        <span asp-validation-for="FullName" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <input asp-for="Password" class="form-control" placeholder="Password">
+                        <label asp-for="Password">Choose a Password</label>
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-floating mb-4">
+                        <input asp-for="ConfirmPassword" class="form-control" placeholder="Confirm Password">
+                        <label asp-for="ConfirmPassword">Confirm Password</label>
+                        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(ViewData["ErrorMessage"] as string))
+                    {
+                        <div class="alert alert-danger" role="alert">
+                            @ViewData["ErrorMessage"]
+                        </div>
+                    }
+
+                    <button type="submit" class="btn btn-primary w-100 py-2 mb-3">
+                        Complete Registration
+                    </button>
+
+                    <p class="text-center text-muted mb-0">
+                        <small>By completing registration, you agree to our Terms of Service and Privacy Policy</small>
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.21.0/jquery.validate.min.js" integrity="sha512-KFHXdr2oObHKI9w4Hv1XPKc898mE4kgYx58oqsc/JqqdLMDI4YjOLzom+EMlW8HFUd0QfjfAvxSL6sEq/a42fQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/4.0.0/jquery.validate.unobtrusive.min.js" integrity="sha512-xq+Vm8jC94ynOikewaQXMEkJIOBp7iArs3IhFWSWdRT3Pq8wFz46p+ZDFAR7kHnSFf+zUv52B3prRYnbDRdgog==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+}

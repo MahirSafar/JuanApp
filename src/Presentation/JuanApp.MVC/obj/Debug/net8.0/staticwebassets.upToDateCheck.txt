@@ -92,5 +92,4 @@ wwwroot\Templates\forgotPasswordTemplate.html
 wwwroot\Templates\twoFATemplate.html
 wwwroot\uploads\sliders\5c025cdc-725c-4ac9-a294-ab0ea9cee7f9_slider-2.jpg
 wwwroot\uploads\sliders\68879f9d-20d5-46fb-b6a6-49c134e101c7.jpg
-wwwroot\uploads\sliders\ef7c2f9c-7f13-499d-af83-24930d755dd0.jpg
 wwwroot\uploads\sliders\ffd8cde0-3b18-4aad-99f0-dafbfd080451.jpg

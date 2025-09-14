@@ -1,4 +1,5 @@
-﻿using JuanApp.Application.Models.ServiceDtos;
+﻿using JuanApp.Application.Helper;
+using JuanApp.Application.Models.ServiceDtos;
 using JuanApp.Application.Services.Interfaces;
 using JuanApp.MVC.Areas.Manage.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -8,23 +9,39 @@ namespace JuanApp.MVC.Areas.Manage.Controllers
 {
     [Area("Manage")]
     [Authorize(Roles = "Admin")]
-    public class ServiceController(IServiceService serviceService) : Controller
+    public class ServiceController : Controller
     {
-        public async Task<IActionResult> Index()
+        private readonly IServiceService _serviceService;
+        private const int PageSize = 4;
+
+        public ServiceController(IServiceService serviceService)
         {
-            var services = await serviceService.GetAllAsync();
+            _serviceService = serviceService;
+        }
+
+        public async Task<IActionResult> Index(int page = 1)
+        {
+            var services = await _serviceService.GetAllAsync();
             var viewModels = services.Select(s => new ServiceViewModel
             {
                 Id = s.Id,
                 Title = s.Title,
                 Description = s.Description,
                 Icon = s.Icon,
-            });
-            return View(viewModels);
+            }).ToList();
+
+            var paginatedList = new PaginatedList<ServiceViewModel>(
+                viewModels.Skip((page - 1) * PageSize).Take(PageSize).ToList(),
+                viewModels.Count,
+                page,
+                PageSize
+            );
+
+            return View(paginatedList);
         }
         public async Task<IActionResult> Detail(int id)
         {
-            var service = await serviceService.GetByIdAsync(id);
+            var service = await _serviceService.GetByIdAsync(id);
             if (service == null)
                 return NotFound();
             var viewModel = new ServiceViewModel
@@ -56,14 +73,14 @@ namespace JuanApp.MVC.Areas.Manage.Controllers
                 Icon = viewModel.Icon,
             };
 
-            await serviceService.CreateAsync(service);
+            await _serviceService.CreateAsync(service);
             TempData["SuccessMessage"] = "Service created successfully.";
             return RedirectToAction(nameof(Index));
         }
         public async Task<IActionResult> Edit(int id)
         {
             ViewData["Title"] = "Edit Serice";
-            var service = await serviceService.GetByIdAsync(id);
+            var service = await _serviceService.GetByIdAsync(id);
             if (service == null)
                 return NotFound();
 
@@ -85,7 +102,7 @@ namespace JuanApp.MVC.Areas.Manage.Controllers
                 return NotFound();
             if (!ModelState.IsValid)
                 return View(viewModel);
-            var service = await serviceService.GetByIdAsync(id);
+            var service = await _serviceService.GetByIdAsync(id);
             if (service == null)
                 return NotFound();
 
@@ -93,7 +110,7 @@ namespace JuanApp.MVC.Areas.Manage.Controllers
             service.Description = viewModel.Description;
             service.Icon = viewModel.Icon;
 
-            await serviceService.UpdateAsync(service)
+            await _serviceService.UpdateAsync(service)
                 ;
             TempData["SuccessMessage"] = "Service updated successfully.";
             return RedirectToAction(nameof(Index));
@@ -102,10 +119,10 @@ namespace JuanApp.MVC.Areas.Manage.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
-            var service = await serviceService.GetByIdAsync(id);
+            var service = await _serviceService.GetByIdAsync(id);
             if (service == null)
                 return NotFound();
-            await serviceService.DeleteAsync(id);
+            await _serviceService.DeleteAsync(id);
             TempData["SuccessMessage"] = "Service deleted successfully.";
             return RedirectToAction(nameof(Index));
         }

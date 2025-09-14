@@ -203,6 +203,44 @@ namespace JuanApp.Persistance.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Sliders");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Check out our new summer collection of stylish accessories and bags.",
+                            ImageUrl = "slider-1.jpg",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Order = 1,
+                            RedirectUrl = "/shop",
+                            Title = "Creative and Smart"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Explore the latest trends in fashion and find your unique style.",
+                            ImageUrl = "slider-2.jpg",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Order = 2,
+                            RedirectUrl = "/shop",
+                            Title = "Amazing Fashion"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Created = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Discover a curated collection of modern and exclusive products.",
+                            ImageUrl = "slider-3.jpg",
+                            IsActive = true,
+                            IsDeleted = false,
+                            Order = 3,
+                            RedirectUrl = "/shop",
+                            Title = "Unique and Modern"
+                        });
                 });
 
             modelBuilder.Entity("JuanApp.Domain.Models.Subscription", b =>

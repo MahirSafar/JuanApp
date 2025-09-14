@@ -9,25 +9,40 @@ namespace JuanApp.MVC.Areas.Manage.Controllers
 {
     [Area("Manage")]
     [Authorize(Roles = "Admin")]
-    public class SliderController(ISliderService sliderService) : Controller
+    public class SliderController : Controller
     {
-        private readonly ISliderService _sliderService = sliderService;
+        private readonly ISliderService _sliderService;
+        private const int PageSize = 4;
 
-        public async Task<IActionResult> Index()
+        public SliderController(ISliderService sliderService)
         {
-            var sliders = await _sliderService.GetAllAsync();
-            var viewModels = sliders.Select(s => new SliderViewModel
-            {
-                Id = s.Id,
-                Title = s.Title,
-                Description = s.Description,
-                ImageUrl = s.ImageUrl,
-                RedirectUrl = s.RedirectUrl,
-                Order = s.Order,
-                IsActive = s.IsActive
-            });
+            _sliderService = sliderService;
+        }
 
-            return View(viewModels);
+        public async Task<IActionResult> Index(int page = 1)
+        {
+            var sliders = (await _sliderService.GetAllAsync())
+                .OrderBy(x => x.Order)
+                .Select(s => new SliderViewModel
+                {
+                    Id = s.Id,
+                    Title = s.Title,
+                    Description = s.Description,
+                    ImageUrl = s.ImageUrl,
+                    RedirectUrl = s.RedirectUrl,
+                    Order = s.Order,
+                    IsActive = s.IsActive
+                })
+                .ToList();
+
+            var paginatedList = new PaginatedList<SliderViewModel>(
+                sliders.Skip((page - 1) * PageSize).Take(PageSize).ToList(),
+                sliders.Count,
+                page,
+                PageSize
+            );
+
+            return View(paginatedList);
         }
 
         public async Task<IActionResult> Detail(int id)
