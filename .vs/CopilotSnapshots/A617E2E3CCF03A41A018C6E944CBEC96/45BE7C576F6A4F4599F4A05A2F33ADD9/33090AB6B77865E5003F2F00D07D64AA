@@ -1,0 +1,528 @@
+﻿using JuanApp.Application.Services.Interfaces;
+using JuanApp.MVC.ViewModels;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+
+namespace JuanApp.MVC.Controllers
+{
+    public class AccountController : Controller
+    {
+        private readonly IAccountService _accountService;
+        private readonly IEmailService _emailService;
+
+        public AccountController(IAccountService accountService, IEmailService emailService)
+        {
+            _accountService = accountService;
+            _emailService = emailService;
+        }
+
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Login(UserLoginVm userLoginVm, string? returnUrl)
+        {
+            if (!ModelState.IsValid)
+                return View(userLoginVm);
+
+            var result = await _accountService.LoginUserAsync(userLoginVm.UsernameOrEmail, userLoginVm.Password, userLoginVm.RememberMe);
+
+            if (result.RequiresTwoFactor)
+            {
+                var emailResult = await _accountService.GenerateTwoFactorCodeAsync(userLoginVm.UsernameOrEmail,returnUrl);
+
+                if (!emailResult.Success)
+                {
+                    ModelState.AddModelError("", emailResult.Error);
+                    return View(userLoginVm);
+                }
+                var email = emailResult.Email;
+                using StreamReader reader = new StreamReader("wwwroot/templates/twoFATemplate.html");
+                string html = await reader.ReadToEndAsync();
+                html = html.Replace("{{code}}", emailResult.Code);
+
+                await _emailService.SendEmailAsync(email, "Two-factor Authentication", html);
+                return RedirectToAction("LoginWithTwoFactor", new { rememberMe = userLoginVm.RememberMe, returnUrl });
+            }
+
+            if (!result.Success)
+            {
+                ModelState.AddModelError("", result.Error);
+                return View(userLoginVm);
+            }
+
+            HttpContext.Response.Cookies.Delete("basket");
+
+            if (returnUrl is null)
+                return RedirectToAction("Index", "Home");
+
+            return Redirect(returnUrl);
+        }
+        public IActionResult Register()
+        {
+            return View();
+        }
+        public async Task<IActionResult> Logout()
+        {
+            await _accountService.LogoutAsync();
+            HttpContext.Response.Cookies.Delete("basket");
+            return RedirectToAction("Index", "Home");
+        }
+        [HttpPost]
+        public async Task<IActionResult> Register(UserRegisterVm userRegisterVm)
+        {
+            if (!ModelState.IsValid)
+                return View(userRegisterVm);
+
+            var registerResult = await _accountService.RegisterAsync(userRegisterVm.Username, userRegisterVm.Email, userRegisterVm.FullName, userRegisterVm.Password);
+
+            if (!registerResult.Success)
+            {
+                ModelState.AddModelError("", registerResult.Error);
+                return View(userRegisterVm);
+            }
+
+            var tokenResult = await _accountService.GenerateEmailConfirmationTokenAsync(userRegisterVm.Username);
+            if (tokenResult.Success)
+            {
+                var confirmationLink = Url.Action("ConfirmEmail", "Account", new { email = userRegisterVm.Email, token = tokenResult.EmailConfirmationToken }, Request.Scheme);
+
+                using StreamReader reader = new StreamReader("wwwroot/templates/emailConfirmTemplate.html");
+                string html = await reader.ReadToEndAsync();
+                html = html.Replace("{{confirmationLink}}", confirmationLink);
+                html = html.Replace("{{name}}", userRegisterVm.Username);
+
+                await _emailService.SendEmailAsync(userRegisterVm.Email, "Email Confirmation", html);
+            }
+
+            TempData["SuccessMessage"] = "Registration successful! Please check your email to confirm your account.";
+
+            return RedirectToAction(nameof(Login));
+        }
+
+        public async Task<IActionResult> ConfirmEmail(string email, string token)
+        {
+            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(token))
+            {
+                return BadRequest("Invalid email confirmation link.");
+            }
+
+            var result = await _accountService.ConfirmEmailAsync(email, token);
+
+            if (result.Success)
+            {
+                TempData["SuccessMessage"] = "Your email has been successfully confirmed. You can now log in.";
+                return RedirectToAction(nameof(Login));
+            }
+
+            TempData["ErrorMessage"] = result.Error;
+            return RedirectToAction(nameof(Login));
+        }
+
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordVm forgotPasswordVm)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(forgotPasswordVm);
+            }
+
+            var tokenResult = await _accountService.GeneratePasswordResetTokenAsync(forgotPasswordVm.Email);
+
+            if (!tokenResult.Success)
+            {
+                // To prevent email enumeration attacks, it's best not to reveal if the email exists.
+                // We'll return a success message regardless of whether the email was found.
+                TempData["SuccessMessage"] = "If an account with that email exists, a password reset link has been sent.";
+                return RedirectToAction(nameof(ForgotPassword));
+            }
+
+            var confirmationLink = Url.Action("ResetPassword", "Account", new { email = forgotPasswordVm.Email, token = tokenResult.PasswordResetToken }, Request.Scheme);
+
+            using StreamReader reader = new StreamReader("wwwroot/templates/forgotPasswordTemplate.html");
+            string html = await reader.ReadToEndAsync();
+            html = html.Replace("{{confirmationLink}}", confirmationLink);
+            // Since the user might not have a username, we will use a more generic greeting or the email.
+            html = html.Replace("{{name}}", forgotPasswordVm.Email);
+            await _emailService.SendEmailAsync(forgotPasswordVm.Email, "Reset Password", html);
+
+            TempData["SuccessMessage"] = "If an account with that email exists, a password reset link has been sent.";
+            return RedirectToAction(nameof(ForgotPassword));
+        }
+
+        public IActionResult ResetPassword(string email, string token)
+        {
+            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(token))
+            {
+                ModelState.AddModelError("", "Invalid password reset link.");
+                return View(new ResetPasswordVm());
+            }
+
+            var resetPasswordVm = new ResetPasswordVm
+            {
+                Email = email,
+                Token = token
+            };
+
+            return View(resetPasswordVm);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(ResetPasswordVm resetPasswordVm)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(resetPasswordVm);
+            }
+
+            var result = await _accountService.ResetPasswordAsync(resetPasswordVm.Email, resetPasswordVm.Token, resetPasswordVm.NewPassword);
+
+            if (!result.Success)
+            {
+                ModelState.AddModelError("", result.Error);
+                return View(resetPasswordVm);
+            }
+
+            TempData["SuccessMessage"] = "Your password has been reset successfully. Please log in with your new password.";
+            return RedirectToAction(nameof(Login));
+        }
+        public IActionResult GoogleLogin()
+        {
+            var properties = new AuthenticationProperties { RedirectUri = Url.Action("GoogleCallback") };
+            return Challenge(properties, GoogleDefaults.AuthenticationScheme);
+        }
+        [HttpGet]
+        public async Task<IActionResult> GoogleCallback()
+        {
+            var result = await HttpContext.AuthenticateAsync(IdentityConstants.ExternalScheme);
+
+            if (!result.Succeeded)
+                return RedirectToAction("Login", new { error = "Google login failed." });
+
+            var emailClaim = result.Principal.FindFirst(ClaimTypes.Email);
+            var nameClaim = result.Principal.FindFirst(ClaimTypes.Name);
+            var googleIdClaim = result.Principal.FindFirst(ClaimTypes.NameIdentifier);
+
+            if (emailClaim == null || nameClaim == null || googleIdClaim == null)
+                return RedirectToAction("Login", new { error = "Failed to get Google account information." });
+
+            // Check if user exists
+            var existingUser = await _accountService.GetUserByEmailAsync(emailClaim.Value);
+            
+            if (existingUser == null)
+            {
+                // New user - redirect to profile completion
+                var model = new GoogleProfileCompleteVm
+                {
+                    Email = emailClaim.Value,
+                    GoogleId = googleIdClaim.Value,
+                    FullName = nameClaim.Value // Pre-fill with Google name
+                };
+                
+                // Store the Google info in TempData
+                TempData["GoogleEmail"] = emailClaim.Value;
+                TempData["GoogleId"] = googleIdClaim.Value;
+                TempData["GoogleName"] = nameClaim.Value;
+                
+                return View("CompleteGoogleProfile", model);
+            }
+
+            // Existing user - proceed with normal Google login
+            var loginResult = await _accountService.HandleExternalLoginAsync(
+                email: emailClaim.Value,
+                fullName: nameClaim.Value,
+                externalId: googleIdClaim.Value);
+
+            if (!loginResult.Success)
+                return RedirectToAction("Login", new { error = loginResult.Error });
+
+            HttpContext.Response.Cookies.Delete("basket");
+            return RedirectToAction("Index", "Home");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CompleteGoogleProfile(GoogleProfileCompleteVm model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            // Verify the Google information matches what was stored
+            if (model.Email != TempData["GoogleEmail"]?.ToString() || 
+                model.GoogleId != TempData["GoogleId"]?.ToString())
+            {
+                ModelState.AddModelError("", "Invalid request. Please try logging in with Google again.");
+                return View(model);
+            }
+
+            // First check if username is available
+            var existingUser = await _accountService.GetUserByUsernameAsync(model.Username);
+            if (existingUser != null)
+            {
+                ModelState.AddModelError("Username", "This username is already taken.");
+                return View(model);
+            }
+
+            // Register the user with the provided information
+            var registerResult = await _accountService.RegisterAsync(
+                username: model.Username,
+                email: model.Email,
+                fullname: model.FullName,
+                password: model.Password);
+
+            if (!registerResult.Success)
+            {
+                ModelState.AddModelError("", registerResult.Error);
+                return View(model);
+            }
+
+            // Get the newly registered user
+            var user = await _accountService.GetUserByEmailAsync(model.Email);
+            if (user != null)
+            {
+                // Generate confirmation token
+                var tokenResult = await _accountService.GenerateEmailConfirmationTokenAsync(model.Username);
+                if (tokenResult.Success)
+                {
+                    // Immediately confirm the email since it's verified by Google
+                    var confirmResult = await _accountService.ConfirmEmailAsync(model.Email, tokenResult.EmailConfirmationToken);
+                    if (!confirmResult.Success)
+                    {
+                        TempData["ErrorMessage"] = "Failed to confirm email. Please contact support.";
+                        return View(model);
+                    }
+                }
+            }
+
+            // Now handle the Google login
+            var loginResult = await _accountService.HandleExternalLoginAsync(
+                email: model.Email,
+                fullName: model.FullName,
+                externalId: model.GoogleId,
+                isPersistent: true); // Set to true for better user experience
+
+            if (!loginResult.Success)
+            {
+                ModelState.AddModelError("", loginResult.Error);
+                return View(model);
+            }
+
+            HttpContext.Response.Cookies.Delete("basket");
+            TempData["SuccessMessage"] = "Your account has been successfully created and linked with Google!";
+            return RedirectToAction("Index", "Home");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> LoginWithTwoFactor(bool rememberMe)
+        {
+            var model = new TwoFactorLoginViewModel { RememberMe = rememberMe };
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> LoginWithTwoFactor(TwoFactorLoginViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var (success, error) = await _accountService.LoginWithTwoFactorCodeAsync(model.TwoFactorCode, model.RememberMe);
+
+            if (success)
+            {
+                HttpContext.Response.Cookies.Delete("basket");
+                return RedirectToAction("Index", "Home");
+            }
+
+            ModelState.AddModelError("", error);
+            return View(model);
+        }
+
+        [Authorize]
+        public async Task<IActionResult> Profile()
+        {
+            var user = await _accountService.GetUserByUsernameAsync(User.Identity.Name);
+            if (user == null)
+                return NotFound();
+
+            var viewModel = new UserProfileViewModel
+            {
+                Id = user.Id,
+                Username = user.UserName,
+                Email = user.Email,
+                FullName = user.FullName,
+                TwoFactorEnabled = await _accountService.IsTwoFactorEnabledAsync(user.Id),
+                EmailSubscribed = user.IsSubscribed,
+                HasGoogleAccount = !string.IsNullOrEmpty(user.GoogleId)
+            };
+
+            return View(viewModel);
+        }
+
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateProfile(UserProfileViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View("Profile", model);
+
+            var user = await _accountService.GetUserByIdAsync(model.Id);
+            if (user == null)
+                return NotFound();
+
+            // Check if username is taken by another user
+            if (user.UserName != model.Username)
+            {
+                var existingUser = await _accountService.GetUserByUsernameAsync(model.Username);
+                if (existingUser != null)
+                {
+                    ModelState.AddModelError("Username", "This username is already taken.");
+                    return View("Profile", model);
+                }
+            }
+
+            // Update basic info
+            bool needsEmailConfirmation = user.Email != model.Email;
+            user.UserName = model.Username;
+            user.Email = model.Email;
+            user.FullName = model.FullName;
+
+            // Handle password change if provided
+            if (!string.IsNullOrEmpty(model.CurrentPassword) && !string.IsNullOrEmpty(model.NewPassword))
+            {
+                var passwordResult = await _accountService.ChangePasswordAsync(user.Id, model.CurrentPassword, model.NewPassword);
+                if (!passwordResult.Success)
+                {
+                    ModelState.AddModelError("CurrentPassword", passwordResult.Error);
+                    return View("Profile", model);
+                }
+            }
+
+            var updateResult = await _accountService.UpdateUserAsync(user);
+            if (!updateResult.Success)
+            {
+                ModelState.AddModelError("", updateResult.Error);
+                return View("Profile", model);
+            }
+
+            // Handle email confirmation if email changed
+            if (needsEmailConfirmation)
+            {
+                var tokenResult = await _accountService.GenerateEmailConfirmationTokenAsync(model.Username);
+                if (tokenResult.Success)
+                {
+                    var confirmationLink = Url.Action("ConfirmEmail", "Account",
+                        new { email = model.Email, token = tokenResult.EmailConfirmationToken },
+                        Request.Scheme);
+
+                    using StreamReader reader = new StreamReader("wwwroot/templates/emailConfirmTemplate.html");
+                    string html = await reader.ReadToEndAsync();
+                    html = html.Replace("{{confirmationLink}}", confirmationLink);
+                    html = html.Replace("{{name}}", model.Username);
+
+                    await _emailService.SendEmailAsync(model.Email, "Email Confirmation", html);
+                    
+                    TempData["SuccessMessage"] = "Profile updated successfully. Please confirm your new email address.";
+                }
+            }
+            else
+            {
+                TempData["SuccessMessage"] = "Profile updated successfully.";
+            }
+
+            // If everything is successful, sign in again to refresh the claims
+            await _accountService.LogoutAsync();
+            var loginResult = await _accountService.LoginUserAsync(model.Username, model.CurrentPassword ?? "", false);
+
+            return RedirectToAction(nameof(Profile));
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> RequestTwoFactorSetup()
+        {
+            var user = await _accountService.GetUserByUsernameAsync(User.Identity.Name);
+            if (user == null)
+                return Json(new { success = false, error = "User not found." });
+
+            var result = await _accountService.GenerateTwoFactorCodeAsync(user.Email, null);
+            if (!result.Success)
+                return Json(new { success = false, error = result.Error });
+
+            if (result.Email == null || result.Code == null)
+                return Json(new { success = false, error = "Failed to generate 2FA code." });
+
+            // Send the code via email
+            using StreamReader reader = new StreamReader("wwwroot/templates/twoFATemplate.html");
+            string html = await reader.ReadToEndAsync();
+            html = html.Replace("{{code}}", result.Code);
+
+            await _emailService.SendEmailAsync(result.Email, "Two-factor Authentication Setup", html);
+
+            return Json(new { success = true });
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> EnableTwoFactor([FromBody] TwoFactorSetupViewModel model)
+        {
+            if (string.IsNullOrEmpty(model.Code))
+                return Json(new { success = false, error = "Verification code is required." });
+
+            var user = await _accountService.GetUserByUsernameAsync(User.Identity.Name);
+            if (user == null)
+                return Json(new { success = false, error = "User not found." });
+
+            var result = await _accountService.EnableTwoFactorAsync(user.Id, model.Code);
+            return Json(new { success = result.Success, error = result.Error });
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> DisableTwoFactor()
+        {
+            var user = await _accountService.GetUserByUsernameAsync(User.Identity.Name);
+            if (user == null)
+                return Json(new { success = false, error = "User not found." });
+
+            var result = await _accountService.DisableTwoFactorAsync(user.Id);
+            return Json(new { success = result });
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> ToggleSubscription([FromBody] SubscriptionToggleViewModel model)
+        {
+            var user = await _accountService.GetUserByUsernameAsync(User.Identity.Name);
+            if (user == null)
+                return Json(new { success = false, error = "User not found." });
+
+            var result = await _accountService.UpdateSubscriptionAsync(user.Id, model.Subscribed);
+            return Json(new { success = result });
+        }
+    }
+}
+
+public class TwoFactorSetupViewModel
+{
+    public string Code { get; set; }
+}
+
+public class SubscriptionToggleViewModel
+{
+    public bool Subscribed { get; set; }
+}

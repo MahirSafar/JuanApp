@@ -8,7 +8,6 @@ namespace JuanApp.MVC.Controllers
         private readonly ISubscriptionService _subscriptionService = subscriptionService;
         private readonly IEmailService _emailService = emailService;
 
-        [HttpPost]
         public async Task<IActionResult> Subscribe(string email)
         {
             if (string.IsNullOrEmpty(email))

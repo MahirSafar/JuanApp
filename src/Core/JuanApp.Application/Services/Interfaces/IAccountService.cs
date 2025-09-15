@@ -1,4 +1,5 @@
 using JuanApp.Domain.Models;
+using Microsoft.AspNetCore.Identity;
 namespace JuanApp.Application.Services.Interfaces;
 
 public interface IAccountService
@@ -21,4 +22,8 @@ public interface IAccountService
     Task<AppUser> GetUserByIdAsync(string userId);
     Task<(bool Success, string? Error)> EnableTwoFactorAsync(string userId, string code);
     Task<bool> DisableTwoFactorAsync(string userId);
+    Task<bool> CheckPasswordAsync(AppUser user, string password);
+    Task<IdentityResult> ChangePasswordAsync(AppUser user, string currentPassword, string newPassword);
+    Task<IdentityResult> UpdateProfileAsync(AppUser user);
+    Task SignInAsync(AppUser user, bool isPersistent = false);
 }

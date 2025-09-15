@@ -1,0 +1,191 @@
+﻿@model UserUpdateProfileVm
+
+<div class="profile-form-container p-4 bg-dark rounded-4 shadow-lg border-cyan">
+    <form method="post" class="needs-validation" novalidate>
+        <div class="row g-4">
+            <!-- Basic Information -->
+            <div class="col-12">
+                <h4 class="text-gold mb-4 border-bottom border-cyan pb-2" style="color:white">
+                    <i class="fas fa-user-circle me-2"></i>Basic Information
+                </h4>
+            </div>
+
+            <div class="col-lg-6 col-12">
+                <div class="form-floating">
+                    <input style="color:white" asp-for="FullName" class="form-control bg-dark text-light border-cyan" placeholder="Full Name">
+                    <label style="color:white" asp-for="FullName" class="text-gold">Full Name</label>
+                    <span asp-validation-for="FullName" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <div class="col-lg-6 col-12">
+                <div class="form-floating">
+                    <input style="color:white" asp-for="Username" class="form-control bg-dark text-light border-cyan" placeholder="Username">
+                    <label style="color:white" asp-for="Username" class="text-gold">Username</label>
+                    <span asp-validation-for="Username" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <div class="col-12">
+                <div class="form-floating">
+                    <input style="color:white" asp-for="Email" class="form-control bg-dark text-light border-cyan" placeholder="Email">
+                    <label style="color:white" asp-for="Email" class="text-gold">Email</label>
+                    <span asp-validation-for="Email" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <!-- Password Change Section -->
+            <div class="col-12 mt-4">
+                <h4 style="color:white" class="text-gold mb-4 border-bottom border-cyan pb-2">
+                    <i class="fas fa-key me-2"></i>Change Password
+                </h4>
+            </div>
+
+            <div class="col-12">
+                <div class="form-floating">
+                    <input style="color:white" asp-for="CurrentPassword" class="form-control bg-dark text-light border-cyan" type="password" placeholder="Current Password">
+                    <label style="color:white" asp-for="CurrentPassword" class="text-gold">Current Password</label>
+                    <span asp-validation-for="CurrentPassword" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <div class="col-lg-6 col-12">
+                <div class="form-floating">
+                    <input style="color:white" asp-for="NewPassword" class="form-control bg-dark text-light border-cyan" type="password" placeholder="New Password">
+                    <label style="color:white" asp-for="NewPassword" class="text-gold">New Password</label>
+                    <span asp-validation-for="NewPassword" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <div class="col-lg-6 col-12">
+                <div class="form-floating">
+                    <input style="color:white" asp-for="ConfirmNewPassword" class="form-control bg-dark text-light border-cyan" type="password" placeholder="Confirm Password">
+                    <label style="color:white" asp-for="ConfirmNewPassword" class="text-gold">Confirm Password</label>
+                    <span asp-validation-for="ConfirmNewPassword" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <div class="col-lg-6 col-12">
+                <div class="security-option p-3 rounded-3 border border-cyan">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <label style="color:white" asp-for="EmailSubscribed" class="form-label mb-0 text-gold">Email Notifications</label>
+                            <p style="color:white" class="text-muted small mb-0">Receive updates and newsletters</p>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input style="color:white" asp-for="EmailSubscribed" class="form-check-input" type="checkbox" role="switch">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 mt-4">
+                <button type="submit" class="btn btn-cyan px-4 py-2 rounded-pill">
+                    <i class="fas fa-save me-2"></i>Save Changes
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<style>
+    .profile-form-container {
+        border: 2px solid var(--cyan-teal, #1de9b6);
+    }
+
+    .form-floating > .form-control {
+        background: var(--card-bg, #181c24);
+        color: #fff;
+        border-radius: 0.75rem;
+        height: calc(3.5rem + 2px);
+        line-height: 1.25;
+    }
+
+    .form-floating > label {
+        padding: 1rem 0.75rem;
+    }
+
+    .form-control:focus {
+        background: var(--card-bg, #181c24);
+        border-color: var(--cyan-teal, #1de9b6);
+        box-shadow: 0 0 0 0.2rem rgba(29,233,182,0.15);
+        color: #fff;
+    }
+
+    .btn-cyan {
+        background: var(--cyan-teal, #1de9b6);
+        color: #181c24;
+        border: none;
+        transition: all 0.3s ease;
+    }
+
+    .btn-cyan:hover {
+        background: #13bfa6;
+        color: #fff;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(29, 233, 182, 0.25);
+    }
+
+    .form-check-input {
+        background-color: #23272f;
+        border-color: var(--cyan-teal, #1de9b6);
+        width: 3rem;
+        height: 1.5rem;
+        cursor: pointer;
+    }
+
+    .form-check-input:checked {
+        background-color: var(--cyan-teal, #1de9b6);
+        border-color: var(--cyan-teal, #1de9b6);
+    }
+
+    .form-switch .form-check-input:focus {
+        border-color: var(--cyan-teal, #1de9b6);
+        box-shadow: 0 0 0 0.2rem rgba(29,233,182,0.25);
+    }
+
+    .security-option {
+        transition: all 0.3s ease;
+        background: rgba(29, 233, 182, 0.05);
+    }
+
+    .security-option:hover {
+        background: rgba(29, 233, 182, 0.1);
+    }
+
+    /* Fix placeholder color */
+    .form-control::placeholder {
+        color: rgba(255, 255, 255, 0.5);
+    }
+
+    /* Validation styling */
+    .text-danger {
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+
+    /* Spacing utilities */
+    .g-4 {
+        --bs-gutter-y: 1.5rem;
+    }
+</style>
+
+@section Scripts {
+    <script>
+        // Initialize form validation
+        (function () {
+            'use strict'
+            var forms = document.querySelectorAll('.needs-validation')
+            Array.prototype.slice.call(forms)
+                .forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }
+                        form.classList.add('was-validated')
+                    }, false)
+                })
+        })()
+    </script>
+}

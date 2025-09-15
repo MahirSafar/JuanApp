@@ -6,5 +6,6 @@ namespace JuanApp.Domain.Models
     {
         public string FullName { get; set; }
         public string? GoogleId { get; set; }
+        public bool IsSubscribed { get; set; }
     }
 }

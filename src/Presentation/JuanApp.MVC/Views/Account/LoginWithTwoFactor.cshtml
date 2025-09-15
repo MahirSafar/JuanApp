@@ -160,7 +160,7 @@
             Enter the verification code to continue
         </div>
 
-        <form class="login-form" method="post" asp-action="LoginWithTwoFactor" asp-controller="account">
+        <form class="login-form" method="post" asp-action="LoginWithTwoFactor" asp-controller="account" asp-route-mode="@TempData["Mode"]">
             <div class="form-group">
                 <label asp-for="TwoFactorCode" for="code">Verification Code</label>
                 <input asp-for="TwoFactorCode" maxlength="6" pattern="[0-9]{6}" placeholder="000000" required>

@@ -19,6 +19,7 @@
     <link href="~/assets/css/style.css" rel="stylesheet" />
     <!-- Modernizer JS -->
     <script src="~/assets/js/modernizr-2.8.3.min.js"></script>
+    @RenderSection("Styles", required: false)
 
     <!--[if lt IE 9]>
       <script src="//oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
@@ -43,32 +44,24 @@
                         <div class="col-lg-6 text-right">
                             <div class="header-top-settings">
                                 <ul class="nav align-items-center justify-content-end">
-                                    <li class="curreny-wrap">
-                                        $ Dollar (US)
-                                        <i class="fa fa-angle-down"></i>
-                                        <ul class="dropdown-list curreny-list">
-                                            <li><a href="#">$ usd</a></li>
-                                            <li><a href="#"> € EURO</a></li>
-                                        </ul>
-                                    </li>
-                                    <li class="language">
-                                        <img src="~/assets/img/icon/en.png" alt="flag" /> English
-                                        <i class="fa fa-angle-down"></i>
-                                        <ul class="dropdown-list">
-                                            <li>
-                                                <a href="#">
-                                                    <img src="~/assets/img/icon/en.png" alt="flag" />
-                                                    english
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="#">
-                                                    <img src="~/assets/img/icon/fr.png" alt="flag" />
-                                                    french
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </li>
+                                    @if (User.Identity.IsAuthenticated)
+                                    {
+                                        <li>
+                                            <a asp-controller="account" asp-action="userprofile">@User.Identity.Name</a>
+                                        </li>
+                                        <li>
+                                            <a asp-controller="account" asp-action="logout">Logout</a>
+                                        </li>
+                                    }
+                                    else
+                                    {
+                                        <li>
+                                            <a asp-controller="account" asp-action="login">Login</a>
+                                        </li>
+                                        <li>
+                                            <a asp-controller="account" asp-action="register">Register</a>
+                                        </li>
+                                    }
                                 </ul>
                             </div>
                         </div>
@@ -695,7 +688,7 @@
                                         <i class="ion-ios-telephone-outline"></i>Phone:
                                         <a href="%2b0025425456554">+ 00 254 254565</a>
                                     </li>
-                                    <form asp-controller="subscribe" asp-action="subscribe" method="post" id="subscription-form">
+                                    <form asp-controller="subscribe" asp-action="subscribe" method="get" id="subscription-form">
                                         <div class="form-group">
                                             <input type="email" name="email" class="form-control" placeholder="Enter your email" required />
                                         </div>

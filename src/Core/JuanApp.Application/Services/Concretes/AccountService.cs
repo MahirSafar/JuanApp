@@ -284,4 +284,24 @@ public class AccountService : IAccountService
 
         return false;
     }
+
+    public async Task<bool> CheckPasswordAsync(AppUser user, string password)
+    {
+        return await _userManager.CheckPasswordAsync(user, password);
+    }
+
+    public async Task<IdentityResult> ChangePasswordAsync(AppUser user, string currentPassword, string newPassword)
+    {
+        return await _userManager.ChangePasswordAsync(user, currentPassword, newPassword);
+    }
+
+    public async Task<IdentityResult> UpdateProfileAsync(AppUser user)
+    {
+        return await _userManager.UpdateAsync(user);
+    }
+
+    public async Task SignInAsync(AppUser user, bool isPersistent = false)
+    {
+         await _signInManager.SignInAsync(user, isPersistent);
+    }
 }

@@ -1,0 +1,45 @@
+﻿@model UserUpdateProfileVm
+<form method="post">
+	<div class="row">
+		<div class="col-lg-6 col-12  mb--30">
+			<input asp-for="FullName" placeholder="Fullname" type="text">
+            <span asp-validation-for="FullName" class="text-danger"></span>
+		</div>
+		<div class="col-12  mb--30">
+			<input asp-for="Username" placeholder="Fullname" type="text">
+			<span asp-validation-for="Username" class="text-danger"></span>
+		</div>
+		<div class="col-12  mb--30">
+			<input asp-for="Email" placeholder="Fullname" type="text">
+			<span asp-validation-for="Email" class="text-danger"></span>
+		</div>
+		<div class="col-12  mb--30">
+			<h4>Password change</h4>
+		</div>
+		<div class="col-12  mb--30">
+			<input asp-for="CurrentPassword" placeholder="Current Password" type="text">
+			<span asp-validation-for="CurrentPassword" class="text-danger"></span>
+		</div>
+		<div class="col-lg-6 col-12  mb--30">
+			<input asp-for="NewPassword" placeholder="New Password" type="text">
+			<span asp-validation-for="NewPassword" class="text-danger"></span>
+		</div>
+		<div class="col-lg-6 col-12  mb--30">
+			<input asp-for="ConfirmNewPassword" placeholder="Confirm Password" type="text">
+			<span asp-validation-for="ConfirmNewPassword" class="text-danger"></span>
+		</div>
+		<div class="col-lg-6 col-12  mb--30">
+            <label asp-for="TwoFactorEnabled" class="form-label"></label>
+			<input asp-for="TwoFactorEnabled">
+			<span asp-validation-for="TwoFactorEnabled" class="text-danger"></span>
+		</div>
+		<div class="col-lg-6 col-12  mb--30">
+            <label asp-for="EmailSubscribed" class="form-label"></label>
+			<input asp-for="EmailSubscribed">
+			<span asp-validation-for="EmailSubscribed" class="text-danger"></span>
+		</div>
+		<div class="col-12">
+			<button type="submit" class="btn btn--primary">Save Changes</button>
+		</div>
+	</div>
+</form>

@@ -2,6 +2,7 @@
 using JuanApp.MVC.ViewModels;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -34,7 +35,7 @@ namespace JuanApp.MVC.Controllers
 
             if (result.RequiresTwoFactor)
             {
-                var emailResult = await _accountService.GenerateTwoFactorCodeAsync(userLoginVm.UsernameOrEmail,returnUrl);
+                var emailResult = await _accountService.GenerateTwoFactorCodeAsync(userLoginVm.UsernameOrEmail, returnUrl);
 
                 if (!emailResult.Success)
                 {
@@ -47,6 +48,7 @@ namespace JuanApp.MVC.Controllers
                 html = html.Replace("{{code}}", emailResult.Code);
 
                 await _emailService.SendEmailAsync(email, "Two-factor Authentication", html);
+                TempData["Mode"] = "login";
                 return RedirectToAction("LoginWithTwoFactor", new { rememberMe = userLoginVm.RememberMe, returnUrl });
             }
 
@@ -218,7 +220,7 @@ namespace JuanApp.MVC.Controllers
 
             // Check if user exists
             var existingUser = await _accountService.GetUserByEmailAsync(emailClaim.Value);
-            
+
             if (existingUser == null)
             {
                 // New user - redirect to profile completion
@@ -228,12 +230,12 @@ namespace JuanApp.MVC.Controllers
                     GoogleId = googleIdClaim.Value,
                     FullName = nameClaim.Value // Pre-fill with Google name
                 };
-                
+
                 // Store the Google info in TempData
                 TempData["GoogleEmail"] = emailClaim.Value;
                 TempData["GoogleId"] = googleIdClaim.Value;
                 TempData["GoogleName"] = nameClaim.Value;
-                
+
                 return View("CompleteGoogleProfile", model);
             }
 
@@ -258,7 +260,7 @@ namespace JuanApp.MVC.Controllers
                 return View(model);
 
             // Verify the Google information matches what was stored
-            if (model.Email != TempData["GoogleEmail"]?.ToString() || 
+            if (model.Email != TempData["GoogleEmail"]?.ToString() ||
                 model.GoogleId != TempData["GoogleId"]?.ToString())
             {
                 ModelState.AddModelError("", "Invalid request. Please try logging in with Google again.");
@@ -323,7 +325,7 @@ namespace JuanApp.MVC.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> LoginWithTwoFactor(bool rememberMe)
+        public IActionResult LoginWithTwoFactor(bool rememberMe)
         {
             var model = new TwoFactorLoginViewModel { RememberMe = rememberMe };
             return View(model);
@@ -331,23 +333,183 @@ namespace JuanApp.MVC.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> LoginWithTwoFactor(TwoFactorLoginViewModel model)
+        public async Task<IActionResult> LoginWithTwoFactor(TwoFactorLoginViewModel model, string mode)
         {
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
-
-            var (success, error) = await _accountService.LoginWithTwoFactorCodeAsync(model.TwoFactorCode, model.RememberMe);
-
-            if (success)
+            string? viewError = "";
+            if (mode == "login")
             {
-                HttpContext.Response.Cookies.Delete("basket");
-                return RedirectToAction("Index", "Home");
+                var result = await _accountService.LoginWithTwoFactorCodeAsync(model.TwoFactorCode, model.RememberMe);
+                if (result.Success)
+                {
+                    HttpContext.Response.Cookies.Delete("basket");
+                    return RedirectToAction("Index", "Home");
+                }
+            }
+            if (mode == "enable")
+            {
+                var user = await _accountService.GetUserByUsernameAsync(User.Identity.Name);
+                var (success, error) = await _accountService.EnableTwoFactorAsync(user.Id, model.TwoFactorCode);
+                return RedirectToAction("UserProfile", new { tab = "profile" });
+            }
+            ModelState.AddModelError("", "Login failed");
+            return View(model);
+        }
+
+        [Authorize(Roles = "Member")]
+        public async Task<IActionResult> UserProfile(string tab = "dashboard")
+        {
+            ViewBag.Tab = tab;
+            UserProfileVm userProfileVm = new UserProfileVm();
+            var user = await _accountService.GetUserByUsernameAsync(User.Identity.Name);
+            if (user == null)
+                return NotFound();
+
+            userProfileVm.userUpdateProfile = new UserUpdateProfileVm
+            {
+                Username = user.UserName,
+                Email = user.Email,
+                FullName = user.FullName,
+                EmailSubscribed = user.IsSubscribed
+            };
+
+            return View(userProfileVm);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Member")]
+        public async Task<IActionResult> UserProfile(UserUpdateProfileVm model, string? returnUrl)
+        {
+            ViewBag.Tab = "profile";
+            if (!ModelState.IsValid)
+                return View(new UserProfileVm { userUpdateProfile = model });
+
+            var user = await _accountService.GetUserByUsernameAsync(User.Identity.Name);
+            if (user is null)
+                return RedirectToAction("Login", "Account");
+
+            var isExistUserName = await _accountService.GetUserByUsernameAsync(model.Username);
+            if (isExistUserName is not null && isExistUserName.Id != user.Id)
+            {
+                ModelState.AddModelError("Username", "This username already taken");
+                return View(new UserProfileVm { userUpdateProfile = model });
+            }
+            var isExistEmail = await _accountService.GetUserByEmailAsync(model.Email);
+            if (isExistEmail is not null && isExistEmail.Id != user.Id)
+            {
+                ModelState.AddModelError("Email", "This email already taken");
+                return View(new UserProfileVm { userUpdateProfile = model });
+            }
+            user.FullName = model.FullName;
+            user.UserName = model.Username;
+            user.Email = model.Email;
+            if (!string.IsNullOrWhiteSpace(model.NewPassword))
+            {
+                if (string.IsNullOrWhiteSpace(model.CurrentPassword))
+                {
+                    ModelState.AddModelError("CurrentPassword", "Current password is required");
+                    return View(new UserProfileVm { userUpdateProfile = model });
+                }
+                var isCurrentPasswordValid = await _accountService.CheckPasswordAsync(user, model.CurrentPassword);
+                if (!isCurrentPasswordValid)
+                {
+                    ModelState.AddModelError("CurrentPassword", "Current password is incorrect");
+                    return View(new UserProfileVm { userUpdateProfile = model });
+                }
+                if (model.NewPassword != model.ConfirmNewPassword)
+                {
+                    ModelState.AddModelError("ConfirmPassword", "Password not match");
+                    return View(new UserProfileVm { userUpdateProfile = model });
+                }
+                var isSamePassword = await _accountService.CheckPasswordAsync(user, model.NewPassword);
+                if (isSamePassword)
+                {
+                    ModelState.AddModelError("NewPassword", "New password cannot be same as current password");
+                    return View(new UserProfileVm { userUpdateProfile = model });
+                }
+                var result = await _accountService.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
+                if (!result.Succeeded)
+                {
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError("", error.Description);
+                    }
+                    return View(new UserProfileVm { userUpdateProfile = model });
+                }
+
+            }
+            var identity = await _accountService.UpdateProfileAsync(user);
+            if (!identity.Succeeded)
+            {
+                foreach (var error in identity.Errors)
+                {
+                    ModelState.AddModelError("", error.Description);
+                }
+                return View(new UserProfileVm { userUpdateProfile = model });
             }
 
-            ModelState.AddModelError("", error);
-            return View(model);
+            if (user.IsSubscribed != model.EmailSubscribed)
+            {
+                user.IsSubscribed = model.EmailSubscribed;
+                await _accountService.UpdateProfileAsync(user);
+                if (model.EmailSubscribed)
+                    return RedirectToAction("Subscribe", "Subscribe");
+                else
+                    return RedirectToAction("Unsubscribe", "subscribe");
+            }
+
+
+            await _accountService.SignInAsync(user, true);
+            return RedirectToAction("UserProfile", "Account", new { tab = "profile" });
+        }
+        public async Task<IActionResult> TwoFA()
+        {
+            ViewBag.Tab = "twoFA";
+            var user = await _accountService.GetUserByUsernameAsync(User.Identity.Name);
+            if (user is null)
+                return RedirectToAction("Login", "Account");
+            TwoFAVm twoFAVm = new TwoFAVm
+            {
+                TwoFactorEnabled = user.TwoFactorEnabled
+            };
+            return View(twoFAVm);
+        }
+        [HttpPost]
+        [Authorize(Roles = "Member")]
+        public async Task<IActionResult> TwoFA(TwoFAVm twoFAVm, string? returnUrl)
+        {
+            ViewBag.Tab = "twoFA";
+            var user = await _accountService.GetUserByUsernameAsync(User.Identity.Name);
+            if (user is null)
+                return RedirectToAction("Login", "Account");
+
+            if (user.TwoFactorEnabled != twoFAVm.TwoFactorEnabled)
+            {
+                if (twoFAVm.TwoFactorEnabled)
+                {
+                    var emailResult = await _accountService.GenerateTwoFactorCodeAsync(user.UserName, returnUrl);
+
+                    if (!emailResult.Success)
+                    {
+                        ModelState.AddModelError("", emailResult.Error);
+                        return View(twoFAVm);
+                    }
+                    var email = emailResult.Email;
+                    using StreamReader reader = new StreamReader("wwwroot/templates/twoFATemplate.html");
+                    string html = await reader.ReadToEndAsync();
+                    html = html.Replace("{{code}}", emailResult.Code);
+
+                    await _emailService.SendEmailAsync(email, "Two-factor Authentication", html);
+                    TempData["Mode"] = "enable";
+                    return RedirectToAction("LoginWithTwoFactor", new { rememberMe = true, returnUrl });
+                }
+                user.TwoFactorEnabled = false;
+                await _accountService.UpdateProfileAsync(user);
+            }
+            return RedirectToAction("UserProfile", new { tab = "twoFA" });
         }
     }
 }
