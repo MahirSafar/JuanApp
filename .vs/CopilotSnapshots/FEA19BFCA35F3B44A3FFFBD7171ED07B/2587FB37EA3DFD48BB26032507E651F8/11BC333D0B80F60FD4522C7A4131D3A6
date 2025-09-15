@@ -1,0 +1,46 @@
+﻿using JuanApp.Domain.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+namespace JuanApp.Persistance.DAL.Configurations
+{
+    public class ProductTagConfig : IEntityTypeConfiguration<ProductTag>
+    {
+        public void Configure(EntityTypeBuilder<ProductTag> builder)
+        {
+            // Composite key
+            builder.HasKey(pt => new { pt.ProductId, pt.TagId });
+
+            // Relationships
+            builder.HasOne(pt => pt.Product)
+                .WithMany(p => p.ProductTags)
+                .HasForeignKey(pt => pt.ProductId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasOne(pt => pt.Tag)
+                .WithMany(t => t.ProductTags)
+                .HasForeignKey(pt => pt.TagId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Seed Data
+            builder.HasData(
+                // Running Shoes (Product 1) - Tags
+                new ProductTag { ProductId = 1, TagId = 1 },  // New Arrival
+                new ProductTag { ProductId = 1, TagId = 4 },  // Featured
+                new ProductTag { ProductId = 1, TagId = 10 }, // Unisex
+                
+                // T-Shirt (Product 2) - Tags
+                new ProductTag { ProductId = 2, TagId = 2 },  // Best Seller
+                new ProductTag { ProductId = 2, TagId = 3 },  // Sale
+                new ProductTag { ProductId = 2, TagId = 8 },  // Summer Collection
+                new ProductTag { ProductId = 2, TagId = 10 }, // Unisex
+                
+                // Handbag (Product 3) - Tags
+                new ProductTag { ProductId = 3, TagId = 1 },  // New Arrival
+                new ProductTag { ProductId = 3, TagId = 3 },  // Sale
+                new ProductTag { ProductId = 3, TagId = 5 }, // Premium
+                new ProductTag { ProductId = 3, TagId = 6 }  // Limited Edition
+            );
+        }
+    }
+}

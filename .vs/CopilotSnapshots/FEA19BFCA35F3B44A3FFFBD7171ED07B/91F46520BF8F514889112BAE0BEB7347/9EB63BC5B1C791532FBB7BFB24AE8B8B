@@ -1,0 +1,11 @@
+﻿using JuanApp.Domain.Common;
+using System.ComponentModel.DataAnnotations;
+
+namespace JuanApp.Domain.Models
+{
+    public class ProductImage : AuditEntity
+    {
+        [Required]
+        public string ImageUrl { get; set; }
+    }
+}

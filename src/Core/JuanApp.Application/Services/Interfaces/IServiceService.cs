@@ -10,6 +10,5 @@ namespace JuanApp.Application.Services.Interfaces
         Task<bool> CreateAsync(CreateServiceDto slider);
         Task UpdateAsync(ServiceDto slider);
         Task DeleteAsync(int id);
-        Task<bool> ExistsAsync(int id);
     }
 }

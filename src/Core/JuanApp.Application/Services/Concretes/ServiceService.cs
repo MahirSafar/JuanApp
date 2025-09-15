@@ -25,11 +25,6 @@ namespace JuanApp.Application.Services.Concretes
             }
         }
 
-        public async Task<bool> ExistsAsync(int id)
-        {
-            return await genericRepository.AnyAsync(s => s.Id == id);
-        }
-
         public async Task<IEnumerable<ServiceDto>> GetAllAsync()
         {
             var services = genericRepository.GetAll();

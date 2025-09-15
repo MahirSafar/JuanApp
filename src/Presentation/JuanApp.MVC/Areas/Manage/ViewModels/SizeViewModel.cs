@@ -1,0 +1,13 @@
+using System.ComponentModel.DataAnnotations;
+
+namespace JuanApp.MVC.Areas.Manage.ViewModels
+{
+    public class SizeViewModel
+    {
+        public int Id { get; set; }
+        
+        [Required(ErrorMessage = "Shoe size is required")]
+        [Range(0.0, 50.0, ErrorMessage = "Shoe size must be between 0 and 50")]
+        public decimal ShoeSize { get; set; }
+    }
+}

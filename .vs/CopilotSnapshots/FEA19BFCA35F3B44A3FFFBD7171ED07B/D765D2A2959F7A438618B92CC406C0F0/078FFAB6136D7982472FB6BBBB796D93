@@ -1,0 +1,172 @@
+﻿@model TagViewModel
+
+<div class="zenith-card p-4 shadow-lg rounded-4 border-0 bg-dark text-light">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="zenith-card-title mb-1 fw-bold text-gold">Edit Tag</h2>
+            <p class="text-muted mb-0">Update tag details.</p>
+        </div>
+        <a asp-action="Index" class="btn btn-outline-cyan rounded-pill px-4">
+            <i class="fas fa-arrow-left me-2"></i>Back to List
+        </a>
+    </div>
+
+    <form asp-action="Edit" class="row g-4">
+        <input type="hidden" asp-for="Id" />
+        
+        <div class="col-md-6">
+            <div class="form-floating mb-4">
+                <input asp-for="Name" class="form-control bg-dark text-light border-cyan" placeholder="Tag Name" id="tagName" />
+                <label asp-for="Name" class="text-gold">Tag Name *</label>
+                <span asp-validation-for="Name" class="text-danger small"></span>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="form-floating mb-4">
+                <input asp-for="Slug" class="form-control bg-dark text-light border-cyan" placeholder="Tag Slug" id="tagSlug" />
+                <label asp-for="Slug" class="text-gold">Slug *</label>
+                <span asp-validation-for="Slug" class="text-danger small"></span>
+                <div class="form-text text-muted">URL-friendly version (lowercase, hyphens only)</div>
+            </div>
+        </div>
+        
+        <div class="col-12">
+            <div class="d-flex gap-2">
+                <button type="button" class="btn btn-outline-cyan rounded-pill px-4" onclick="generateSlugFromName()">
+                    <i class="fas fa-magic me-2"></i>Auto-generate Slug
+                </button>
+                <button type="submit" class="btn btn-cyan px-4 rounded-pill fw-semibold shadow-sm">
+                    <i class="fas fa-save me-2"></i>Save Changes
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Styles {
+    <style>
+        .zenith-card {
+            background: var(--card-bg, #181c24);
+            border-radius: 1.5rem;
+            box-shadow: 0 4px 32px rgba(0,0,0,0.25);
+        }
+
+        .zenith-card-title {
+            color: var(--gold, #ffd700);
+        }
+
+        .btn-cyan, .btn-outline-cyan {
+            background: var(--cyan-teal, #1de9b6);
+            color: #181c24;
+            border: none;
+        }
+
+        .btn-outline-cyan {
+            background: transparent;
+            border: 2px solid var(--cyan-teal, #1de9b6);
+            color: var(--cyan-teal, #1de9b6);
+        }
+
+            .btn-outline-cyan:hover, .btn-cyan:hover {
+                background: #13bfa6;
+                color: #fff;
+            }
+
+        .border-cyan {
+            border-color: var(--cyan-teal, #1de9b6) !important;
+        }
+
+        .text-gold {
+            color: var(--gold, #ffd700) !important;
+        }
+
+        .text-cyan {
+            color: var(--cyan-teal, #1de9b6) !important;
+        }
+
+        .rounded-4 {
+            border-radius: 1.5rem !important;
+        }
+
+        .shadow-lg {
+            box-shadow: 0 8px 32px rgba(0,0,0,0.35) !important;
+        }
+
+        .form-floating > label {
+            color: var(--gold, #ffd700);
+        }
+
+        .form-control {
+            background: #23272f;
+            color: #fff;
+            border-radius: 0.75rem;
+        }
+
+            .form-control:focus {
+                border-color: var(--cyan-teal, #1de9b6);
+                box-shadow: 0 0 0 0.2rem rgba(29,233,182,0.15);
+            }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        // Track if user manually edited the slug
+        let slugManuallyEdited = false;
+
+        function generateSlug(name) {
+            return name.toLowerCase()
+                .replace(/[^a-z0-9\s-]/g, '') // Remove invalid characters
+                .trim()
+                .replace(/[\s_]+/g, '-') // Replace spaces and underscores with hyphens
+                .replace(/-+/g, '-') // Replace multiple hyphens with single hyphen
+                .replace(/^-+|-+$/g, ''); // Remove leading/trailing hyphens
+        }
+
+        function generateSlugFromName() {
+            const nameInput = document.getElementById('tagName');
+            const slugInput = document.getElementById('tagSlug');
+            
+            if (nameInput.value.trim()) {
+                slugInput.value = generateSlug(nameInput.value);
+                slugManuallyEdited = false; // Reset the flag when auto-generating
+            } else {
+                alert('Please enter a tag name first.');
+            }
+        }
+
+        // Wait for DOM to be fully loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            const nameInput = document.getElementById('tagName');
+            const slugInput = document.getElementById('tagSlug');
+
+            // Set initial state - if slug already exists, consider it manually edited
+            if (slugInput && slugInput.value.trim()) {
+                slugManuallyEdited = true;
+            }
+
+            // Auto-generate slug as user types in name field (only for new entries)
+            if (nameInput && slugInput) {
+                nameInput.addEventListener('input', function() {
+                    // Only auto-generate if user hasn't manually edited the slug
+                    if (!slugManuallyEdited && this.value.trim()) {
+                        slugInput.value = generateSlug(this.value);
+                    }
+                });
+
+                // Track when user manually edits the slug
+                slugInput.addEventListener('input', function() {
+                    slugManuallyEdited = true;
+                });
+
+                // Reset flag if slug is cleared
+                slugInput.addEventListener('blur', function() {
+                    if (!this.value.trim()) {
+                        slugManuallyEdited = false;
+                    }
+                });
+            }
+        });
+    </script>
+}

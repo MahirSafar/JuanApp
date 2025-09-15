@@ -1,0 +1,131 @@
+﻿@model SettingViewModel
+
+<div class="zenith-card p-4 shadow-lg rounded-4 border-0 bg-dark text-light">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="zenith-card-title mb-1 fw-bold text-gold">Edit Setting</h2>
+            <p class="text-muted mb-0">Update configuration setting details.</p>
+        </div>
+        <a asp-action="Index" class="btn btn-outline-cyan rounded-pill px-4">
+            <i class="fas fa-arrow-left me-2"></i>Back to List
+        </a>
+    </div>
+
+    <form asp-action="Edit" asp-route-key="@Model.Key" class="row g-4">
+        <input type="hidden" asp-for="Key" />
+        
+        <div class="col-md-6">
+            <div class="form-floating mb-4">
+                <input asp-for="Key" class="form-control bg-dark text-light border-cyan" placeholder="Setting Key" readonly />
+                <label asp-for="Key" class="text-gold">Setting Key *</label>
+                <div class="form-text text-muted small">
+                    <i class="fas fa-lock me-1"></i>
+                    Key cannot be modified after creation
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="form-floating mb-4">
+                <input asp-for="Value" class="form-control bg-dark text-light border-cyan" placeholder="Setting Value" />
+                <label asp-for="Value" class="text-gold">Setting Value *</label>
+                <span asp-validation-for="Value" class="text-danger small"></span>
+                <div class="form-text text-muted small">
+                    <i class="fas fa-info-circle me-1"></i>
+                    The configuration value for this setting
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-12">
+            <div class="alert alert-warning border-warning bg-dark text-light">
+                <h6 class="text-warning mb-2"><i class="fas fa-exclamation-triangle me-2"></i>Important Note:</h6>
+                <p class="small mb-0">
+                    Changing critical system settings may affect application functionality. 
+                    Please ensure you understand the impact before saving changes.
+                </p>
+            </div>
+        </div>
+        
+        <div class="col-12">
+            <button type="submit" class="btn btn-cyan px-4 rounded-pill fw-semibold shadow-sm">
+                <i class="fas fa-save me-2"></i>Save Changes
+            </button>
+        </div>
+    </form>
+</div>
+
+@section Styles {
+    <style>
+        .zenith-card {
+            background: var(--card-bg, #181c24);
+            border-radius: 1.5rem;
+            box-shadow: 0 4px 32px rgba(0,0,0,0.25);
+        }
+
+        .zenith-card-title {
+            color: var(--gold, #ffd700);
+        }
+
+        .btn-cyan, .btn-outline-cyan {
+            background: var(--cyan-teal, #1de9b6);
+            color: #181c24;
+            border: none;
+        }
+
+        .btn-outline-cyan {
+            background: transparent;
+            border: 2px solid var(--cyan-teal, #1de9b6);
+            color: var(--cyan-teal, #1de9b6);
+        }
+
+            .btn-outline-cyan:hover, .btn-cyan:hover {
+                background: #13bfa6;
+                color: #fff;
+            }
+
+        .border-cyan {
+            border-color: var(--cyan-teal, #1de9b6) !important;
+        }
+
+        .text-gold {
+            color: var(--gold, #ffd700) !important;
+        }
+
+        .text-cyan {
+            color: var(--cyan-teal, #1de9b6) !important;
+        }
+
+        .rounded-4 {
+            border-radius: 1.5rem !important;
+        }
+
+        .shadow-lg {
+            box-shadow: 0 8px 32px rgba(0,0,0,0.35) !important;
+        }
+
+        .form-floating > label {
+            color: var(--gold, #ffd700);
+        }
+
+        .form-control {
+            background: #23272f;
+            color: #fff;
+            border-radius: 0.75rem;
+        }
+
+            .form-control:focus {
+                border-color: var(--cyan-teal, #1de9b6);
+                box-shadow: 0 0 0 0.2rem rgba(29,233,182,0.15);
+            }
+
+            .form-control[readonly] {
+                background-color: #1a1e26;
+                opacity: 0.8;
+            }
+
+        .alert.border-warning {
+            background: #1a1e26 !important;
+        }
+    </style>
+}

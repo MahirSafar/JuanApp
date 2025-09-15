@@ -11,6 +11,18 @@ namespace JuanApp.Persistance.DAL.Context
         public DbSet<Slider> Sliders { get; set; }
         public DbSet<Subscription> Subscriptions { get; set; }
         public DbSet<Service> Services { get; set; }
+        public DbSet<Product> Products { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<ProductImage> ProductImages { get; set; }
+        public DbSet<Review> Reviews { get; set; }
+        public DbSet<Size> Sizes { get; set; }
+        public DbSet<Color> Colors { get; set; }
+        public DbSet<Tag> Tags { get; set; }
+        public DbSet<ProductSize> ProductSizes { get; set; }
+        public DbSet<ProductColor> ProductColors { get; set; }
+        public DbSet<ProductTag> ProductTags { get; set; }
+        public DbSet<Setting> Settings { get; set; }
+        public DbSet<Blog> Blogs { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(JuanAppContext).Assembly);

@@ -1,0 +1,225 @@
+﻿@model BlogViewModel
+
+<div class="zenith-card p-4 shadow-lg rounded-4 border-0 bg-dark text-light">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="zenith-card-title mb-1 fw-bold text-gold">Create Blog Post</h2>
+            <p class="text-muted mb-0">Write a new blog article with image upload.</p>
+        </div>
+        <a asp-action="Index" class="btn btn-outline-cyan rounded-pill px-4">
+            <i class="fas fa-arrow-left me-2"></i>Back to List
+        </a>
+    </div>
+
+    <form asp-action="Create" enctype="multipart/form-data" class="row g-4">
+        <div class="col-md-8">
+            <div class="form-floating mb-4">
+                <input asp-for="Title" class="form-control bg-dark text-light border-cyan" placeholder="Blog Title" />
+                <label asp-for="Title" class="text-gold">Blog Title *</label>
+                <span asp-validation-for="Title" class="text-danger small"></span>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="form-floating mb-4">
+                <input asp-for="Author" class="form-control bg-dark text-light border-cyan" placeholder="Author Name" />
+                <label asp-for="Author" class="text-gold">Author *</label>
+                <span asp-validation-for="Author" class="text-danger small"></span>
+            </div>
+        </div>
+        
+        <div class="col-12">
+            <div class="image-upload-section p-4 rounded-4 bg-dark border border-cyan mb-4">
+                <h5 class="text-gold mb-3">
+                    <i class="fas fa-image me-2"></i>Featured Image
+                </h5>
+                
+                <div class="custom-file-upload">
+                    <input asp-for="ImageFile" class="file-input" type="file" accept="image/*" id="imageFile" />
+                    <label for="imageFile" class="file-label btn btn-outline-cyan">
+                        <i class="fas fa-cloud-upload-alt me-2"></i>Choose Image
+                    </label>
+                    <span class="file-name text-muted small ms-3">No file chosen</span>
+                </div>
+                
+                <span asp-validation-for="ImageFile" class="text-danger small d-block mt-2"></span>
+                
+                <div class="form-text text-muted small mt-2">
+                    <i class="fas fa-info-circle me-1"></i>
+                    Optional. Maximum file size: 5MB. Supported formats: JPG, PNG, GIF, WebP
+                </div>
+                
+                <div class="image-preview mt-3" id="imagePreview" style="display: none;">
+                    <img id="previewImg" class="preview-image rounded-3" alt="Preview" />
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-12">
+            <label asp-for="Content" class="form-label text-gold fw-semibold">Blog Content *</label>
+            <textarea asp-for="Content" class="form-control bg-dark text-light border-cyan" rows="12" placeholder="Write your blog content here..."></textarea>
+            <span asp-validation-for="Content" class="text-danger small"></span>
+            <div class="form-text text-muted small">
+                <i class="fas fa-info-circle me-1"></i>
+                You can use HTML tags for formatting.
+            </div>
+        </div>
+        
+        <div class="col-12">
+            <div class="alert alert-info border-cyan bg-dark text-light">
+                <h6 class="text-cyan mb-2"><i class="fas fa-lightbulb me-2"></i>Writing Tips:</h6>
+                <div class="small">
+                    <ul class="mb-0">
+                        <li>Keep your title concise and engaging</li>
+                        <li>Use headings to structure your content</li>
+                        <li>Upload a compelling featured image</li>
+                        <li>Write for your target audience</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-12">
+            <button type="submit" class="btn btn-cyan px-4 rounded-pill fw-semibold shadow-sm">
+                <i class="fas fa-save me-2"></i>Publish Blog Post
+            </button>
+        </div>
+    </form>
+</div>
+
+@section Styles {
+    <style>
+        .zenith-card {
+            background: var(--card-bg, #181c24);
+            border-radius: 1.5rem;
+            box-shadow: 0 4px 32px rgba(0,0,0,0.25);
+        }
+
+        .zenith-card-title {
+            color: var(--gold, #ffd700);
+        }
+
+        .btn-cyan, .btn-outline-cyan {
+            background: var(--cyan-teal, #1de9b6);
+            color: #181c24;
+            border: none;
+        }
+
+        .btn-outline-cyan {
+            background: transparent;
+            border: 2px solid var(--cyan-teal, #1de9b6);
+            color: var(--cyan-teal, #1de9b6);
+        }
+
+            .btn-outline-cyan:hover, .btn-cyan:hover {
+                background: #13bfa6;
+                color: #fff;
+            }
+
+        .border-cyan {
+            border-color: var(--cyan-teal, #1de9b6) !important;
+        }
+
+        .text-gold {
+            color: var(--gold, #ffd700) !important;
+        }
+
+        .text-cyan {
+            color: var(--cyan-teal, #1de9b6) !important;
+        }
+
+        .rounded-4 {
+            border-radius: 1.5rem !important;
+        }
+
+        .shadow-lg {
+            box-shadow: 0 8px 32px rgba(0,0,0,0.35) !important;
+        }
+
+        .form-floating > label {
+            color: var(--gold, #ffd700);
+        }
+
+        .form-control {
+            background: #23272f;
+            color: #fff;
+            border-radius: 0.75rem;
+        }
+
+            .form-control:focus {
+                border-color: var(--cyan-teal, #1de9b6);
+                box-shadow: 0 0 0 0.2rem rgba(29,233,182,0.15);
+            }
+
+        textarea.form-control {
+            min-height: 300px;
+            resize: vertical;
+        }
+
+        .alert.border-cyan {
+            background: #1a1e26 !important;
+            border-color: var(--cyan-teal, #1de9b6) !important;
+        }
+
+        /* File Upload Styles */
+        .custom-file-upload {
+            display: flex;
+            align-items: center;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .file-label {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .file-label:hover {
+            background: var(--cyan-teal, #1de9b6);
+            color: #181c24;
+        }
+
+        .preview-image {
+            max-width: 300px;
+            max-height: 200px;
+            object-fit: cover;
+            border: 2px solid var(--cyan-teal, #1de9b6);
+        }
+
+        .image-upload-section {
+            background: #23272f;
+        }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        document.getElementById('imageFile').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            const fileName = document.querySelector('.file-name');
+            const preview = document.getElementById('imagePreview');
+            const previewImg = document.getElementById('previewImg');
+            
+            if (file) {
+                fileName.textContent = file.name;
+                fileName.classList.remove('text-muted');
+                fileName.classList.add('text-cyan');
+                
+                // Show preview
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImg.src = e.target.result;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                fileName.textContent = 'No file chosen';
+                fileName.classList.remove('text-cyan');
+                fileName.classList.add('text-muted');
+                preview.style.display = 'none';
+            }
+        });
+    </script>
+}

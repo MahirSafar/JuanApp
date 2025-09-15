@@ -1,0 +1,140 @@
+@model TagViewModel
+@{
+    ViewData["Title"] = "Tag Details";
+}
+
+<div class="zenith-card p-4 shadow-lg rounded-4 border-0 bg-dark text-light">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="zenith-card-title mb-1 fw-bold text-gold">Tag Details</h2>
+        <div>
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-cyan rounded-pill px-4 me-2">
+                <i class="fas fa-edit me-2"></i>Edit
+            </a>
+            <a asp-action="Index" class="btn btn-outline-secondary rounded-pill px-4">
+                <i class="fas fa-arrow-left me-2"></i>Back to List
+            </a>
+        </div>
+    </div>
+    
+    <div class="row g-4">
+        <div class="col-md-8">
+            <div class="detail-section p-4 rounded-4 bg-dark border border-cyan">
+                <h3 class="detail-title mb-4 text-gold fw-bold">
+                    <i class="fas fa-tag me-2"></i>@Model.Name
+                </h3>
+                
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <span class="detail-label">Tag Name</span>
+                        <p class="detail-value">@Model.Name</p>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <span class="detail-label">Slug</span>
+                        <p class="detail-value">
+                            <span class="badge bg-cyan">@Model.Slug</span>
+                        </p>
+                    </div>
+                    
+                    <div class="col-12">
+                        <span class="detail-label">URL Preview</span>
+                        <p class="detail-value text-muted">
+                            <code>/products/tag/@Model.Slug</code>
+                        </p>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+        
+       
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .zenith-card {
+            background: var(--card-bg, #181c24);
+            border-radius: 1.5rem;
+            box-shadow: 0 4px 32px rgba(0,0,0,0.25);
+        }
+
+        .zenith-card-title {
+            color: var(--gold, #ffd700);
+        }
+
+        .btn-cyan, .btn-outline-cyan {
+            background: var(--cyan-teal, #1de9b6);
+            color: #181c24;
+            border: none;
+        }
+
+        .btn-outline-cyan {
+            background: transparent;
+            border: 2px solid var(--cyan-teal, #1de9b6);
+            color: var(--cyan-teal, #1de9b6);
+        }
+
+            .btn-outline-cyan:hover, .btn-cyan:hover {
+                background: #13bfa6;
+                color: #fff;
+            }
+
+        .border-cyan {
+            border-color: var(--cyan-teal, #1de9b6) !important;
+        }
+
+        .text-gold {
+            color: var(--gold, #ffd700) !important;
+        }
+
+        .text-cyan {
+            color: var(--cyan-teal, #1de9b6) !important;
+        }
+
+        .rounded-4 {
+            border-radius: 1.5rem !important;
+        }
+
+        .shadow-lg {
+            box-shadow: 0 8px 32px rgba(0,0,0,0.35) !important;
+        }
+
+        .detail-title {
+            color: var(--gold, #ffd700);
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .detail-label {
+            color: var(--cyan-teal, #1de9b6);
+            font-size: 0.95rem;
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+            display: block;
+        }
+
+        .detail-value {
+            color: var(--text-main, #fff);
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+
+        .detail-section {
+            background: #23272f;
+        }
+
+        .badge.bg-cyan {
+            background: var(--cyan-teal, #1de9b6) !important;
+            color: #181c24 !important;
+        }
+
+        code {
+            background: #1a1e26;
+            color: var(--cyan-teal, #1de9b6);
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.9rem;
+        }
+    </style>
+}

@@ -1,0 +1,21 @@
+﻿using JuanApp.Domain.Common;
+using System.ComponentModel.DataAnnotations;
+
+namespace JuanApp.Domain.Models
+{
+    public class Category : AuditEntity
+    {
+        [StringLength(50)]
+        public string Name { get; set; }
+
+        public string Slug { get; set; }  // URL-friendly version
+        public string? Description { get; set; }
+        public string? ImageUrl { get; set; }
+        public int? ParentCategoryId { get; set; }  // For hierarchical categories
+
+        // Navigation Properties
+        public Category? ParentCategory { get; set; }
+        public ICollection<Category> SubCategories { get; set; } = new List<Category>();
+        public ICollection<Product> Products { get; set; } = new List<Product>();
+    }
+}

@@ -1,0 +1,14 @@
+using JuanApp.Application.Models.SettingDtos;
+
+namespace JuanApp.Application.Services.Interfaces
+{
+    public interface ISettingService
+    {
+        Task<IEnumerable<SettingDto>> GetAllAsync();
+        Task<SettingDto?> GetByKeyAsync(string key);
+        Task<bool> CreateAsync(CreateSettingDto setting);
+        Task UpdateAsync(SettingDto setting);
+        Task DeleteAsync(string key);
+        Task<bool> KeyExistsAsync(string key);
+    }
+}

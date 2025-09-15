@@ -1,0 +1,9 @@
+﻿using JuanApp.Domain.Common;
+
+namespace JuanApp.Domain.Models
+{
+    public class Color : AuditEntity
+    {
+        public string Name { get; set; }
+    }
+}

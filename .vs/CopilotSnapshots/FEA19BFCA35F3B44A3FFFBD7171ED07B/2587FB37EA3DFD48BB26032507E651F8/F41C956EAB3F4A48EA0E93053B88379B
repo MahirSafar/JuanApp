@@ -1,0 +1,16 @@
+﻿using JuanApp.Domain.Common;
+using System.ComponentModel.DataAnnotations;
+
+namespace JuanApp.Domain.Models
+{
+    public class Color : AuditEntity
+    {
+        [StringLength(50)]
+        public string Name { get; set; }
+
+        public string HexCode { get; set; }  // For displaying actual color
+
+        // Navigation Properties
+        public ICollection<ProductColor> ProductColors { get; set; } = new List<ProductColor>();
+    }
+}

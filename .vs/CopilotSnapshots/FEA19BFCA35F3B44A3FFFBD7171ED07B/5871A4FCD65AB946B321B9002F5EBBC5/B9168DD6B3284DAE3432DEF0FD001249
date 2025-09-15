@@ -1,0 +1,259 @@
+﻿@model PaginatedList<CategoryViewModel>
+@{
+    ViewData["Title"] = "Category";
+}
+
+<div class="zenith-card p-4 shadow-lg rounded-4 border-0 bg-dark text-light">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="zenith-card-title mb-1 fw-bold text-gold">Categories</h2>
+            <p class="text-muted mb-0">Manage product categories</p>
+        </div>
+        <a asp-action="Create" class="btn btn-cyan px-4 py-2 rounded-pill fw-semibold shadow-sm">
+            <i class="fas fa-plus-circle me-2"></i>New Category
+        </a>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="table-responsive rounded-4 overflow-hidden">
+        <table class="table table-dark table-hover align-middle mb-0">
+            <thead class="table-gold text-uppercase small">
+                <tr>
+                    <th>Name</th>
+                    <th style="width: 180px">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Items)
+                {
+                    <tr>
+                        <td class="small">
+                            <div class="text-truncate" style="max-width: 250px;">
+                                <i class="fas fa-layer-group me-2 text-cyan"></i>
+                                @(item.Name ?? "-")
+                            </div>
+                        </td>
+                        <td>
+                            <div class="d-flex gap-2">
+                                <a asp-action="Detail" asp-route-id="@item.Id" class="btn btn-sm btn-outline-info rounded-pill px-3" title="View">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-cyan rounded-pill px-3" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <button type="button" class="btn btn-sm btn-outline-danger rounded-pill px-3" title="Delete" onclick="confirmDelete(@item.Id, '@item.Name')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                }
+                @if (!Model.Items.Any())
+                {
+                    <tr>
+                        <td colspan="2" class="text-center py-4">
+                            <i class="fas fa-layer-group fa-2x mb-2 text-muted"></i>
+                            <p class="text-muted mb-0">No categories found. Create your first category!</p>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    @if (Model.TotalPages > 1)
+    {
+        <div class="d-flex justify-content-between align-items-center mt-4">
+            <div class="text-muted small">
+                Showing @((Model.PageIndex - 1) * 10 + 1) to @Math.Min(Model.PageIndex * 10, Model.TotalItems) of @Model.TotalItems items
+            </div>
+            <nav aria-label="Page navigation">
+                <ul class="pagination pagination-sm mb-0">
+                    <li class="page-item @(!Model.HasPreviousPage ? "disabled" : "")">
+                        <a class="page-link bg-dark text-light border-cyan" asp-action="Index" asp-route-page="@(Model.PageIndex - 1)" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+
+                    @{
+                        const int maxPagesToShow = 5;
+                        var startPage = Math.Max(1, Model.PageIndex - maxPagesToShow / 2);
+                        var endPage = Math.Min(Model.TotalPages, startPage + maxPagesToShow - 1);
+
+                        if (startPage > 1)
+                        {
+                            <li class="page-item">
+                                <a class="page-link bg-dark text-light border-cyan" asp-action="Index" asp-route-page="1">1</a>
+                            </li>
+                            if (startPage > 2)
+                            {
+                                <li class="page-item disabled">
+                                    <span class="page-link bg-dark text-light border-cyan">...</span>
+                                </li>
+                            }
+                        }
+
+                        for (var i = startPage; i <= endPage; i++)
+                        {
+                            <li class="page-item @(i == Model.PageIndex ? "active disabled" : "")">
+                                <a class="page-link bg-dark text-light border-cyan @(i == Model.PageIndex ? "bg-cyan text-dark" : "")"
+                                   asp-action="Index" asp-route-page="@i">@i</a>
+                            </li>
+                        }
+
+                        if (endPage < Model.TotalPages)
+                        {
+                            if (endPage < Model.TotalPages - 1)
+                            {
+                                <li class="page-item disabled">
+                                    <span class="page-link bg-dark text-light border-cyan">...</span>
+                                </li>
+                            }
+                            <li class="page-item">
+                                <a class="page-link bg-dark text-light border-cyan" asp-action="Index" asp-route-page="@Model.TotalPages">@Model.TotalPages</a>
+                            </li>
+                        }
+                    }
+
+                    <li class="page-item @(!Model.HasNextPage ? "disabled" : "")">
+                        <a class="page-link bg-dark text-light border-cyan" asp-action="Index" asp-route-page="@(Model.PageIndex + 1)" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    }
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content bg-dark text-light border-cyan rounded-4">
+            <div class="modal-header border-0">
+                <h5 class="modal-title text-danger"><i class="fas fa-exclamation-triangle me-2"></i>Confirm Delete</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete the category <span class="fw-bold text-gold">"<span id="CategoryTitle"></span>"</span>?
+            </div>
+            <div class="modal-footer border-0">
+                <form asp-action="Delete" method="post" id="deleteForm">
+                    <input type="hidden" name="id" id="CategoryId" />
+                    @Html.AntiForgeryToken()
+                    <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger rounded-pill px-4">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .zenith-card {
+            background: var(--card-bg, #181c24);
+            border-radius: 1.5rem;
+            box-shadow: 0 4px 32px rgba(0,0,0,0.25);
+        }
+
+        .zenith-card-title {
+            color: var(--gold, #ffd700);
+        }
+
+        .btn-cyan, .btn-outline-cyan {
+            background: var(--cyan-teal, #1de9b6);
+            color: #181c24;
+            border: none;
+        }
+
+        .btn-outline-cyan {
+            background: transparent;
+            border: 2px solid var(--cyan-teal, #1de9b6);
+            color: var(--cyan-teal, #1de9b6);
+        }
+
+            .btn-outline-cyan:hover, .btn-cyan:hover {
+                background: #13bfa6;
+                color: #fff;
+            }
+
+        .table-gold th {
+            color: var(--gold, #ffd700);
+            background: #23272f;
+        }
+
+        .border-cyan {
+            border-color: var(--cyan-teal, #1de9b6) !important;
+        }
+
+        .text-gold {
+            color: var(--gold, #ffd700) !important;
+        }
+
+        .text-cyan {
+            color: var(--cyan-teal, #1de9b6) !important;
+        }
+
+        .rounded-4 {
+            border-radius: 1.5rem !important;
+        }
+
+        .shadow-lg {
+            box-shadow: 0 8px 32px rgba(0,0,0,0.35) !important;
+        }
+
+        /* Pagination Styles */
+        .pagination .page-link {
+            padding: 0.5rem 0.75rem;
+            margin: 0 2px;
+            border-radius: 0.5rem;
+            transition: all 0.2s ease-in-out;
+        }
+
+            .pagination .page-link:hover {
+                background-color: var(--cyan-teal, #1de9b6);
+                color: #181c24;
+                border-color: var(--cyan-teal, #1de9b6);
+            }
+
+        .pagination .page-item.active .page-link {
+            background-color: var(--cyan-teal, #1de9b6);
+            border-color: var(--cyan-teal, #1de9b6);
+            color: #181c24;
+        }
+
+        .pagination .page-item.disabled .page-link {
+            background-color: rgba(29, 233, 182, 0.1);
+            border-color: rgba(29, 233, 182, 0.2);
+            color: rgba(29, 233, 182, 0.5);
+        }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        function confirmDelete(id, title) {
+            document.getElementById('CategoryId').value = id;
+            document.getElementById('CategoryTitle').textContent = title;
+            new bootstrap.Modal(document.getElementById('deleteModal')).show();
+        }
+        setTimeout(function() {
+            $('.alert').fadeOut('slow');
+        }, 5000);
+    </script>
+}

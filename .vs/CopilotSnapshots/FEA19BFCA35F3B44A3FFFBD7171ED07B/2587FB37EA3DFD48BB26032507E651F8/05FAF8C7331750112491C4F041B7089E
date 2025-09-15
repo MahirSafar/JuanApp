@@ -1,0 +1,43 @@
+﻿using JuanApp.Domain.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+namespace JuanApp.Persistance.DAL.Configurations
+{
+    public class ProductSizeConfiguration : IEntityTypeConfiguration<ProductSize>
+    {
+        public void Configure(EntityTypeBuilder<ProductSize> builder)
+        {
+            // Composite key
+            builder.HasKey(ps => new { ps.ProductId, ps.SizeId });
+
+            // Relationships
+            builder.HasOne(ps => ps.Product)
+                .WithMany(p => p.ProductSizes)
+                .HasForeignKey(ps => ps.ProductId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasOne(ps => ps.Size)
+                .WithMany(s => s.ProductSizes)
+                .HasForeignKey(ps => ps.SizeId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Seed Data
+            builder.HasData(
+                // Running Shoes (Product 1) - Shoe sizes
+                new ProductSize { Id = 1, ProductId = 1, SizeId = 7, Stock = 10, Created = DateTime.UtcNow },   // Size 7
+                new ProductSize { Id = 2, ProductId = 1, SizeId = 9, Stock = 15, Created = DateTime.UtcNow },   // Size 8
+                new ProductSize { Id = 3, ProductId = 1, SizeId = 11, Stock = 12, Created = DateTime.UtcNow },  // Size 9
+                new ProductSize { Id = 4, ProductId = 1, SizeId = 13, Stock = 8, Created = DateTime.UtcNow },   // Size 10
+                new ProductSize { Id = 5, ProductId = 1, SizeId = 15, Stock = 5, Created = DateTime.UtcNow },   // Size 11
+                
+                // T-Shirt (Product 2) - Clothing sizes
+                new ProductSize { Id = 6, ProductId = 2, SizeId = 2, Stock = 20, Created = DateTime.UtcNow },   // S
+                new ProductSize { Id = 7, ProductId = 2, SizeId = 3, Stock = 25, Created = DateTime.UtcNow },   // M
+                new ProductSize { Id = 8, ProductId = 2, SizeId = 4, Stock = 30, Created = DateTime.UtcNow },   // L
+                new ProductSize { Id = 9, ProductId = 2, SizeId = 5, Stock = 15, Created = DateTime.UtcNow },   // XL
+                new ProductSize { Id = 10, ProductId = 2, SizeId = 6, Stock = 10, Created = DateTime.UtcNow }   // XXL
+            );
+        }
+    }
+}

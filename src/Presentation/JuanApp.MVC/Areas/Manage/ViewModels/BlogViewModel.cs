@@ -1,0 +1,35 @@
+using Microsoft.AspNetCore.Http;
+using System.ComponentModel.DataAnnotations;
+
+namespace JuanApp.MVC.Areas.Manage.ViewModels
+{
+    public class BlogViewModel
+    {
+        public int Id { get; set; }
+        
+        [Required(ErrorMessage = "Title is required")]
+        [StringLength(200, ErrorMessage = "Title cannot be longer than 200 characters")]
+        public string Title { get; set; }
+        
+        [Required(ErrorMessage = "Content is required")]
+        [StringLength(10000, ErrorMessage = "Content cannot be longer than 10000 characters")]
+        public string Content { get; set; }
+        
+        [Required(ErrorMessage = "Author is required")]
+        [StringLength(100, ErrorMessage = "Author name cannot be longer than 100 characters")]
+        public string Author { get; set; }
+        
+        public string? ImageUrl { get; set; }
+        
+        [Display(Name = "Featured Image")]
+        public IFormFile? ImageFile { get; set; }
+        
+        public DateTime Created { get; set; }
+        public DateTime? LastModified { get; set; }
+        
+        public bool RemoveImage { get; set; }
+        
+        // Helper property to determine if this is a create operation
+        public bool IsCreate => Id == 0;
+    }
+}

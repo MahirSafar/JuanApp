@@ -90,6 +90,12 @@ wwwroot\Templates\confirmSubscribe.html
 wwwroot\Templates\emailConfirmTemplate.html
 wwwroot\Templates\forgotPasswordTemplate.html
 wwwroot\Templates\twoFATemplate.html
+wwwroot\uploads\blogs\.gitkeep
+wwwroot\uploads\blogs\c4342354-32f0-4634-90c0-cde6db1b11ff.jpg
+wwwroot\uploads\products\.gitkeep
+wwwroot\uploads\products\02bcad58-1ecf-477a-95e1-99d642e30297.jpg
+wwwroot\uploads\products\391330e6-8a6b-4e5f-a9ed-9cc86ad301ed.jpg
+wwwroot\uploads\products\e7cbf08e-4f0a-41a4-902a-fe0be66b303d.jpg
 wwwroot\uploads\sliders\5c025cdc-725c-4ac9-a294-ab0ea9cee7f9_slider-2.jpg
 wwwroot\uploads\sliders\68879f9d-20d5-46fb-b6a6-49c134e101c7.jpg
 wwwroot\uploads\sliders\ffd8cde0-3b18-4aad-99f0-dafbfd080451.jpg

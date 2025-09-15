@@ -1,0 +1,27 @@
+﻿using AutoMapper;
+using JuanApp.Application.Models.ColorDtos;
+using JuanApp.Application.Models.ServiceDtos;
+using JuanApp.Application.Models.SizeDtos;
+using JuanApp.Application.Models.SliderDtos;
+using JuanApp.Domain.Models;
+
+namespace JuanApp.Application.Profiles
+{
+    public class MapperProfile : Profile
+    {
+        public MapperProfile()
+        {
+            CreateMap<Slider, SliderDto>().ReverseMap();
+            CreateMap<CreateSliderDto, Slider>().ReverseMap();
+
+            CreateMap<Service, ServiceDto>().ReverseMap();
+            CreateMap<CreateServiceDto, Service>().ReverseMap();
+
+            CreateMap<Color, ColorDto>().ReverseMap();
+            CreateMap<CreateColorDto, Color>().ReverseMap();
+
+            CreateMap<Size, SizeDto>().ReverseMap();
+            CreateMap<CreateSizeDto, Size>().ReverseMap();
+        }
+    }
+}

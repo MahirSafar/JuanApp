@@ -1,0 +1,14 @@
+﻿using JuanApp.Domain.Common;
+
+namespace JuanApp.Domain.Models
+{
+    public class Size : AuditEntity
+    {
+        public string Name { get; set; }  // e.g., "S", "M", "L", "XL" for clothes or "7", "8", "9" for shoes
+        public decimal? ShoeSize { get; set; }  // Made nullable for non-shoe products
+        public string Type { get; set; }  // e.g., "Clothing", "Shoe"
+        
+        // Navigation Properties
+        public ICollection<ProductSize> ProductSizes { get; set; } = new List<ProductSize>();
+    }
+}

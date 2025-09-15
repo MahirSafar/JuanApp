@@ -110,8 +110,7 @@ namespace JuanApp.MVC.Areas.Manage.Controllers
             service.Description = viewModel.Description;
             service.Icon = viewModel.Icon;
 
-            await _serviceService.UpdateAsync(service)
-                ;
+            await _serviceService.UpdateAsync(service);
             TempData["SuccessMessage"] = "Service updated successfully.";
             return RedirectToAction(nameof(Index));
         }

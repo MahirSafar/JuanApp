@@ -1,0 +1,472 @@
+﻿using JuanApp.Application.Helper;
+using JuanApp.Application.Models.ProductDtos;
+using JuanApp.Application.Services.Interfaces;
+using JuanApp.MVC.Areas.Manage.ViewModels;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+
+namespace JuanApp.MVC.Areas.Manage.Controllers
+{
+    [Area("Manage")]
+    [Authorize(Roles = "Admin")]
+    public class ProductController(
+        IProductService productService,
+        ICategoryService categoryService,
+        IColorService colorService,
+        ISizeService sizeService,
+        ITagService tagService) : Controller
+    {
+        private const int PageSize = 8;
+        private const string ProductImageFolder = "products";
+        
+        public async Task<IActionResult> Index(int page = 1, int? categoryId = null, string? gender = null)
+        {
+            IEnumerable<ProductDto> products;
+            
+            if (categoryId.HasValue)
+            {
+                products = await productService.GetByCategoryAsync(categoryId.Value);
+            }
+            else if (!string.IsNullOrEmpty(gender))
+            {
+                products = await productService.GetByGenderAsync(gender);
+            }
+            else
+            {
+                products = await productService.GetAllAsync();
+            }
+            
+            var viewModels = products.Select(p => new ProductViewModel
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Price = p.Price,
+                Discount = p.Discount,
+                Description = p.Description,
+                Stock = p.Stock,
+                Gender = p.Gender,
+                MainImageUrl = p.MainImageUrl,
+                CategoryId = p.CategoryId,
+                CategoryName = p.CategoryName,
+                Created = p.Created,
+                LastModified = p.LastModified,
+                ProductImages = p.ProductImages.Select(pi => new ProductImageViewModel
+                {
+                    Id = pi.Id,
+                    ImageUrl = pi.ImageUrl,
+                    ProductId = pi.ProductId
+                }).ToList()
+            }).ToList();
+
+            var paginatedList = new PaginatedList<ProductViewModel>(
+                viewModels.Skip((page - 1) * PageSize).Take(PageSize).ToList(),
+                viewModels.Count,
+                page,
+                PageSize
+            );
+
+            await LoadFiltersAsync();
+            return View(paginatedList);
+        }
+        
+        public async Task<IActionResult> Detail(int id)
+        {
+            var product = await productService.GetByIdAsync(id);
+            if (product == null)
+                return NotFound();
+                
+            var viewModel = new ProductViewModel
+            {
+                Id = product.Id,
+                Name = product.Name,
+                Price = product.Price,
+                Discount = product.Discount,
+                Description = product.Description,
+                Stock = product.Stock,
+                Gender = product.Gender,
+                MainImageUrl = product.MainImageUrl,
+                CategoryId = product.CategoryId,
+                CategoryName = product.CategoryName,
+                Created = product.Created,
+                LastModified = product.LastModified,
+                ProductImages = product.ProductImages.Select(pi => new ProductImageViewModel
+                {
+                    Id = pi.Id,
+                    ImageUrl = pi.ImageUrl,
+                    ProductId = pi.ProductId
+                }).ToList(),
+                SelectedColorIds = product.SelectedColorIds,
+                SelectedSizeIds = product.SelectedSizeIds,
+                SelectedTagIds = product.SelectedTagIds
+            };
+            
+            return View(viewModel);
+        }
+        
+        public async Task<IActionResult> Create()
+        {
+            ViewData["Title"] = "Create Product";
+            await LoadSelectListsAsync();
+            return View(new ProductViewModel());
+        }
+        
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(ProductViewModel viewModel)
+        {
+            ViewData["Title"] = "Create Product";
+            
+            // Require main image for new products
+            if (viewModel.MainImageFile == null)
+            {
+                ModelState.AddModelError("MainImageFile", "Main product image is required for new products.");
+            }
+            
+            // Validate main image file if provided
+            if (viewModel.MainImageFile != null)
+            {
+                if (!viewModel.MainImageFile.CheckFileType("image"))
+                {
+                    ModelState.AddModelError("MainImageFile", "Please select a valid image file for main image.");
+                }
+                
+                if (!viewModel.MainImageFile.CheckFileSize(5))
+                {
+                    ModelState.AddModelError("MainImageFile", "Main image size must be less than 5MB.");
+                }
+            }
+            
+            // Validate additional images
+            if (viewModel.AdditionalImageFiles?.Any() == true)
+            {
+                foreach (var file in viewModel.AdditionalImageFiles)
+                {
+                    if (!file.CheckFileType("image"))
+                    {
+                        ModelState.AddModelError("AdditionalImageFiles", "All additional images must be valid image files.");
+                        break;
+                    }
+                    
+                    if (!file.CheckFileSize(5))
+                    {
+                        ModelState.AddModelError("AdditionalImageFiles", "Each additional image size must be less than 5MB.");
+                        break;
+                    }
+                }
+            }
+            
+            if (!ModelState.IsValid)
+            {
+                await LoadSelectListsAsync();
+                return View(viewModel);
+            }
+
+            string mainImageFileName;
+            List<string> additionalImageFileNames = new();
+            
+            try
+            {
+                // Ensure directory exists
+                string uploadPath = Path.Combine("wwwroot/uploads", ProductImageFolder);
+                Directory.CreateDirectory(uploadPath);
+                
+                // Handle main image upload (required)
+                mainImageFileName = viewModel.MainImageFile!.SaveFile(ProductImageFolder);
+                
+                // Handle additional images upload
+                if (viewModel.AdditionalImageFiles?.Any() == true)
+                {
+                    foreach (var file in viewModel.AdditionalImageFiles)
+                    {
+                        if (file.Length > 0)
+                        {
+                            var fileName = file.SaveFile(ProductImageFolder);
+                            additionalImageFileNames.Add(fileName);
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                ModelState.AddModelError("MainImageFile", "Failed to upload images. Please try again.");
+                await LoadSelectListsAsync();
+                return View(viewModel);
+            }
+
+            var product = new CreateProductDto
+            {
+                Name = viewModel.Name,
+                Price = viewModel.Price,
+                Discount = viewModel.Discount,
+                Description = viewModel.Description,
+                Stock = viewModel.Stock,
+                Gender = viewModel.Gender,
+                MainImageUrl = mainImageFileName,
+                CategoryId = viewModel.CategoryId,
+                AdditionalImageUrls = additionalImageFileNames,
+                SelectedColorIds = viewModel.SelectedColorIds,
+                SelectedSizeIds = viewModel.SelectedSizeIds,
+                SelectedTagIds = viewModel.SelectedTagIds
+            };
+            
+            await productService.CreateAsync(product);
+            TempData["SuccessMessage"] = "Product created successfully.";
+            return RedirectToAction(nameof(Index));
+        }
+        
+        public async Task<IActionResult> Edit(int id)
+        {
+            ViewData["Title"] = "Edit Product";
+            var product = await productService.GetByIdAsync(id);
+            if (product == null)
+                return NotFound();
+
+            var viewModel = new ProductViewModel
+            {
+                Id = product.Id,
+                Name = product.Name,
+                Price = product.Price,
+                Discount = product.Discount,
+                Description = product.Description,
+                Stock = product.Stock,
+                Gender = product.Gender,
+                MainImageUrl = product.MainImageUrl,
+                CategoryId = product.CategoryId,
+                CategoryName = product.CategoryName,
+                Created = product.Created,
+                LastModified = product.LastModified,
+                ProductImages = product.ProductImages.Select(pi => new ProductImageViewModel
+                {
+                    Id = pi.Id,
+                    ImageUrl = pi.ImageUrl,
+                    ProductId = pi.ProductId
+                }).ToList(),
+                SelectedColorIds = product.SelectedColorIds,
+                SelectedSizeIds = product.SelectedSizeIds,
+                SelectedTagIds = product.SelectedTagIds
+            };
+            
+            await LoadSelectListsAsync();
+            return View(viewModel);
+        }
+        
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, ProductViewModel viewModel)
+        {
+            ViewData["Title"] = "Edit Product";
+            if (id != viewModel.Id)
+                return NotFound();
+                
+            var existingProduct = await productService.GetByIdAsync(id);
+            if (existingProduct == null)
+                return NotFound();
+
+            // Check if removing main image would result in no main image
+            bool willHaveNoMainImage = viewModel.RemoveMainImage && viewModel.MainImageFile == null;
+            if (willHaveNoMainImage && string.IsNullOrEmpty(existingProduct.MainImageUrl))
+            {
+                ModelState.AddModelError("MainImageFile", "Product must have a main image. Please upload an image or don't remove the current one.");
+            }
+            
+            // Validate main image file if provided
+            if (viewModel.MainImageFile != null)
+            {
+                if (!viewModel.MainImageFile.CheckFileType("image"))
+                {
+                    ModelState.AddModelError("MainImageFile", "Please select a valid image file for main image.");
+                }
+                
+                if (!viewModel.MainImageFile.CheckFileSize(5))
+                {
+                    ModelState.AddModelError("MainImageFile", "Main image size must be less than 5MB.");
+                }
+            }
+            
+            // Validate additional images
+            if (viewModel.AdditionalImageFiles?.Any() == true)
+            {
+                foreach (var file in viewModel.AdditionalImageFiles)
+                {
+                    if (!file.CheckFileType("image"))
+                    {
+                        ModelState.AddModelError("AdditionalImageFiles", "All additional images must be valid image files.");
+                        break;
+                    }
+                    
+                    if (!file.CheckFileSize(5))
+                    {
+                        ModelState.AddModelError("AdditionalImageFiles", "Each additional image size must be less than 5MB.");
+                        break;
+                    }
+                }
+            }
+                
+            if (!ModelState.IsValid)
+            {
+                await LoadSelectListsAsync();
+                return View(viewModel);
+            }
+
+            string? mainImageFileName = existingProduct.MainImageUrl;
+            
+            // Handle main image removal/replacement
+            if (viewModel.RemoveMainImage && viewModel.MainImageFile != null && !string.IsNullOrEmpty(mainImageFileName))
+            {
+                FileManager.DeleteFile(ProductImageFolder, mainImageFileName);
+                mainImageFileName = null;
+            }
+            
+            // Handle new main image upload
+            if (viewModel.MainImageFile != null)
+            {
+                try
+                {
+                    // Delete old main image if exists and not already deleted
+                    if (!viewModel.RemoveMainImage && !string.IsNullOrEmpty(mainImageFileName))
+                    {
+                        FileManager.DeleteFile(ProductImageFolder, mainImageFileName);
+                    }
+                    
+                    // Ensure directory exists
+                    string uploadPath = Path.Combine("wwwroot/uploads", ProductImageFolder);
+                    Directory.CreateDirectory(uploadPath);
+                    
+                    mainImageFileName = viewModel.MainImageFile.SaveFile(ProductImageFolder);
+                }
+                catch (Exception)
+                {
+                    ModelState.AddModelError("MainImageFile", "Failed to upload main image. Please try again.");
+                    await LoadSelectListsAsync();
+                    return View(viewModel);
+                }
+            }
+            else if (viewModel.RemoveMainImage)
+            {
+                ModelState.AddModelError("MainImageFile", "Cannot remove main image without providing a replacement. Please upload a new image.");
+                await LoadSelectListsAsync();
+                return View(viewModel);
+            }
+            
+            // Handle removing selected additional images
+            if (viewModel.RemoveImageIds?.Any() == true)
+            {
+                foreach (var imageId in viewModel.RemoveImageIds)
+                {
+                    var productImage = existingProduct.ProductImages.FirstOrDefault(pi => pi.Id == imageId);
+                    if (productImage != null)
+                    {
+                        FileManager.DeleteFile(ProductImageFolder, productImage.ImageUrl);
+                        await productService.RemoveProductImageAsync(imageId);
+                    }
+                }
+            }
+            
+            // Handle additional images upload
+            if (viewModel.AdditionalImageFiles?.Any() == true)
+            {
+                try
+                {
+                    string uploadPath = Path.Combine("wwwroot/uploads", ProductImageFolder);
+                    Directory.CreateDirectory(uploadPath);
+                    
+                    foreach (var file in viewModel.AdditionalImageFiles)
+                    {
+                        if (file.Length > 0)
+                        {
+                            var fileName = file.SaveFile(ProductImageFolder);
+                            await productService.AddProductImageAsync(id, fileName);
+                        }
+                    }
+                }
+                catch (Exception)
+                {
+                    ModelState.AddModelError("AdditionalImageFiles", "Failed to upload additional images. Please try again.");
+                    await LoadSelectListsAsync();
+                    return View(viewModel);
+                }
+            }
+
+            var product = new ProductDto
+            {
+                Id = viewModel.Id,
+                Name = viewModel.Name,
+                Price = viewModel.Price,
+                Discount = viewModel.Discount,
+                Description = viewModel.Description,
+                Stock = viewModel.Stock,
+                Gender = viewModel.Gender,
+                MainImageUrl = mainImageFileName,
+                CategoryId = viewModel.CategoryId,
+                Created = existingProduct.Created,
+                LastModified = DateTime.UtcNow,
+                SelectedColorIds = viewModel.SelectedColorIds,
+                SelectedSizeIds = viewModel.SelectedSizeIds,
+                SelectedTagIds = viewModel.SelectedTagIds
+            };
+            
+            await productService.UpdateAsync(product);
+            TempData["SuccessMessage"] = "Product updated successfully.";
+            return RedirectToAction(nameof(Index));
+        }
+        
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var product = await productService.GetByIdAsync(id);
+            if (product == null)
+                return NotFound();
+            
+            // Delete associated image files
+            if (!string.IsNullOrEmpty(product.MainImageUrl))
+            {
+                FileManager.DeleteFile(ProductImageFolder, product.MainImageUrl);
+            }
+            
+            foreach (var productImage in product.ProductImages)
+            {
+                FileManager.DeleteFile(ProductImageFolder, productImage.ImageUrl);
+            }
+                
+            await productService.DeleteAsync(id);
+            TempData["SuccessMessage"] = "Product deleted successfully.";
+            return RedirectToAction(nameof(Index));
+        }
+        
+        private async Task LoadSelectListsAsync()
+        {
+            var categories = await categoryService.GetAllAsync();
+            var colors = await colorService.GetAllAsync();
+            var sizes = await sizeService.GetAllAsync();
+            var tags = await tagService.GetAllAsync();
+            
+            ViewBag.Categories = new SelectList(categories, "Id", "Name");
+            ViewBag.Colors = colors.Select(c => new { Id = c.Id, Name = c.Name }).ToList();
+            ViewBag.Sizes = sizes.Select(s => new { Id = s.Id, Name = s.ShoeSize.ToString() }).ToList();
+            ViewBag.Tags = tags.Select(t => new { Id = t.Id, Name = t.Name }).ToList();
+            ViewBag.Genders = new SelectList(new[]
+            {
+                new { Value = "Men", Text = "Men" },
+                new { Value = "Women", Text = "Women" },
+                new { Value = "Kids", Text = "Kids" },
+                new { Value = "Unisex", Text = "Unisex" }
+            }, "Value", "Text");
+        }
+        
+        private async Task LoadFiltersAsync()
+        {
+            var categories = await categoryService.GetAllAsync();
+            ViewBag.FilterCategories = new SelectList(categories, "Id", "Name");
+            ViewBag.FilterGenders = new SelectList(new[]
+            {
+                new { Value = "", Text = "All Genders" },
+                new { Value = "Men", Text = "Men" },
+                new { Value = "Women", Text = "Women" },
+                new { Value = "Kids", Text = "Kids" },
+                new { Value = "Unisex", Text = "Unisex" }
+            }, "Value", "Text");
+        }
+    }
+}

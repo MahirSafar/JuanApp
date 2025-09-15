@@ -1,0 +1,122 @@
+﻿using JuanApp.Application.Helper;
+using JuanApp.Application.Models.SizeDtos;
+using JuanApp.Application.Services.Interfaces;
+using JuanApp.MVC.Areas.Manage.ViewModels;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace JuanApp.MVC.Areas.Manage.Controllers
+{
+    [Area("Manage")]
+    [Authorize(Roles = "Admin")]
+    public class SizeController(ISizeService sizeService) : Controller
+    {
+        private const int PageSize = 4;
+        
+        public async Task<IActionResult> Index(int page = 1)
+        {
+            var sizes = await sizeService.GetAllAsync();
+            var viewModels = sizes.Select(s => new SizeViewModel
+            {
+                Id = s.Id,
+                ShoeSize = s.ShoeSize
+            }).ToList();
+
+            var paginatedList = new PaginatedList<SizeViewModel>(
+                viewModels.Skip((page - 1) * PageSize).Take(PageSize).ToList(),
+                viewModels.Count,
+                page,
+                PageSize
+            );
+
+            return View(paginatedList);
+        }
+        
+        public async Task<IActionResult> Detail(int id)
+        {
+            var size = await sizeService.GetByIdAsync(id);
+            if (size == null)
+                return NotFound();
+                
+            var viewModel = new SizeViewModel
+            {
+                Id = size.Id,
+                ShoeSize = size.ShoeSize
+            };
+            return View(viewModel);
+        }
+        
+        public IActionResult Create()
+        {
+            ViewData["Title"] = "Create Size";
+            return View(new SizeViewModel());
+        }
+        
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(SizeViewModel viewModel)
+        {
+            ViewData["Title"] = "Create Size";
+            if (!ModelState.IsValid)
+                return View(viewModel);
+
+            var size = new CreateSizeDto
+            {
+                ShoeSize = viewModel.ShoeSize
+            };
+            await sizeService.CreateAsync(size);
+            TempData["SuccessMessage"] = "Size created successfully.";
+            return RedirectToAction(nameof(Index));
+        }
+        
+        public async Task<IActionResult> Edit(int id)
+        {
+            ViewData["Title"] = "Edit Size";
+            var size = await sizeService.GetByIdAsync(id);
+            if (size == null)
+                return NotFound();
+
+            var viewModel = new SizeViewModel
+            {
+                Id = size.Id,
+                ShoeSize = size.ShoeSize
+            };
+            return View(viewModel);
+        }
+        
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, SizeViewModel viewModel)
+        {
+            ViewData["Title"] = "Edit Size";
+            if (id != viewModel.Id)
+                return NotFound();
+                
+            if (!ModelState.IsValid)
+                return View(viewModel);
+                
+            var service = await sizeService.GetByIdAsync(id);
+            if (service == null)
+                return NotFound();
+
+            service.ShoeSize = viewModel.ShoeSize;
+            
+            await sizeService.UpdateAsync(service);
+            TempData["SuccessMessage"] = "Size updated successfully.";
+            return RedirectToAction(nameof(Index));
+        }
+        
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var size = await sizeService.GetByIdAsync(id);
+            if (size == null)
+                return NotFound();
+                
+            await sizeService.DeleteAsync(id);
+            TempData["SuccessMessage"] = "Size deleted successfully.";
+            return RedirectToAction(nameof(Index));
+        }
+    }
+}

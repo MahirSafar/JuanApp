@@ -1,0 +1,72 @@
+using Microsoft.AspNetCore.Http;
+using System.ComponentModel.DataAnnotations;
+
+namespace JuanApp.MVC.Areas.Manage.ViewModels
+{
+    public class ProductViewModel
+    {
+        public int Id { get; set; }
+        
+        [Required(ErrorMessage = "Product name is required")]
+        [StringLength(100, ErrorMessage = "Name cannot be longer than 100 characters")]
+        public string Name { get; set; }
+        
+        [Required(ErrorMessage = "Price is required")]
+        [Range(0.01, double.MaxValue, ErrorMessage = "Price must be greater than 0")]
+        public decimal Price { get; set; }
+        
+        [Range(0, 100, ErrorMessage = "Discount must be between 0 and 100")]
+        public decimal Discount { get; set; }
+        
+        [Required(ErrorMessage = "Description is required")]
+        [StringLength(500, ErrorMessage = "Description cannot be longer than 500 characters")]
+        public string Description { get; set; }
+        
+        [Required(ErrorMessage = "Stock is required")]
+        [Range(0, int.MaxValue, ErrorMessage = "Stock must be 0 or greater")]
+        public int Stock { get; set; }
+        
+        [Required(ErrorMessage = "Gender is required")]
+        public string Gender { get; set; }
+        
+        public string? MainImageUrl { get; set; }
+        
+        [Display(Name = "Main Product Image")]
+        public IFormFile? MainImageFile { get; set; }
+        
+        [Display(Name = "Additional Images")]
+        public List<IFormFile>? AdditionalImageFiles { get; set; } = new();
+        
+        [Required(ErrorMessage = "Category is required")]
+        public int CategoryId { get; set; }
+        
+        public DateTime Created { get; set; }
+        public DateTime? LastModified { get; set; }
+        
+        // Related Collections for Display
+        public List<ProductImageViewModel> ProductImages { get; set; } = new();
+        
+        [MinLength(1, ErrorMessage = "At least one color must be selected")]
+        public List<int> SelectedColorIds { get; set; } = new();
+        
+        [MinLength(1, ErrorMessage = "At least one size must be selected")]
+        public List<int> SelectedSizeIds { get; set; } = new();
+        
+        public List<int> SelectedTagIds { get; set; } = new();
+        
+        // For removing existing images
+        public List<int> RemoveImageIds { get; set; } = new();
+        public bool RemoveMainImage { get; set; }
+        
+        // Helper property
+        public bool IsCreate => Id == 0;
+        public string CategoryName { get; set; } = "";
+    }
+    
+    public class ProductImageViewModel
+    {
+        public int Id { get; set; }
+        public string ImageUrl { get; set; }
+        public int ProductId { get; set; }
+    }
+}

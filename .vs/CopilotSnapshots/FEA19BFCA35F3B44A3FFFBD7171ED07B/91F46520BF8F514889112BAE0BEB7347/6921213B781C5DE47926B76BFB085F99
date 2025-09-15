@@ -1,0 +1,26 @@
+﻿using JuanApp.Domain.Common;
+
+namespace JuanApp.Domain.Models
+{
+    public class Product : AuditEntity
+    {
+        public string Name { get; set; }
+        public decimal Price { get; set; }
+        public decimal Discount { get; set; }
+        public string Description { get; set; }
+        public int Stock { get; set; }
+        public string Gender { get; set; }
+        public string MainImageUrl { get; set; }
+        
+        // Foreign Keys
+        public int CategoryId { get; set; }
+        
+        // Navigation Properties
+        public Category Category { get; set; }
+        public ICollection<ProductImage> ProductImages { get; set; } = new List<ProductImage>();
+        public ICollection<Review> Reviews { get; set; } = new List<Review>();
+        public ICollection<ProductSize> ProductSizes { get; set; } = new List<ProductSize>();
+        public ICollection<ProductColor> ProductColors { get; set; } = new List<ProductColor>();
+        public ICollection<ProductTag> ProductTags { get; set; } = new List<ProductTag>();
+    }
+}

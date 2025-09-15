@@ -1,0 +1,61 @@
+﻿using AutoMapper;
+using JuanApp.Application.Models.SettingDtos;
+using JuanApp.Application.Repositories;
+using JuanApp.Application.Services.Interfaces;
+using JuanApp.Domain.Models;
+using Microsoft.EntityFrameworkCore;
+
+namespace JuanApp.Application.Services.Concretes
+{
+    public class SettingService(IGenericRepository<Setting> genericRepository, IMapper mapper) : ISettingService
+    {
+        public async Task<bool> CreateAsync(CreateSettingDto setting)
+        {
+            var settingEntity = mapper.Map<Setting>(setting);
+            await genericRepository.AddAsync(settingEntity);
+            return await genericRepository.SaveAsync() > 0;
+        }
+
+        public async Task DeleteAsync(string key)
+        {
+            var setting = await genericRepository.GetAll()
+                .FirstOrDefaultAsync(s => s.Key == key);
+            if (setting != null)
+            {
+                genericRepository.Remove(setting);
+                await genericRepository.SaveAsync();
+            }
+        }
+
+        public async Task<IEnumerable<SettingDto>> GetAllAsync()
+        {
+            var settings = genericRepository.GetAll();
+            return mapper.Map<IEnumerable<SettingDto>>(settings);
+        }
+
+        public async Task<SettingDto?> GetByKeyAsync(string key)
+        {
+            var setting = await genericRepository.GetAll()
+                .FirstOrDefaultAsync(s => s.Key == key);
+            return mapper.Map<SettingDto?>(setting);
+        }
+
+        public async Task<bool> KeyExistsAsync(string key)
+        {
+            return await genericRepository.GetAll()
+                .AnyAsync(s => s.Key == key);
+        }
+
+        public async Task UpdateAsync(SettingDto setting)
+        {
+            var settingEntity = await genericRepository.GetAll()
+                .FirstOrDefaultAsync(s => s.Key == setting.Key);
+            if (settingEntity != null)
+            {
+                settingEntity.Value = setting.Value;
+                genericRepository.Update(settingEntity);
+                await genericRepository.SaveAsync();
+            }
+        }
+    }
+}

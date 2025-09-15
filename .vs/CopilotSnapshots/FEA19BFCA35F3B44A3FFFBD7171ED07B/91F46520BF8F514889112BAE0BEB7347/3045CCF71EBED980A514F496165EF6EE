@@ -1,0 +1,13 @@
+﻿using JuanApp.Domain.Common;
+
+namespace JuanApp.Domain.Models
+{
+    public class Tag : AuditEntity
+    {
+        public string Name { get; set; }
+        public string Slug { get; set; }  // URL-friendly version
+        
+        // Navigation Properties
+        public ICollection<ProductTag> ProductTags { get; set; } = new List<ProductTag>();
+    }
+}

@@ -1,0 +1,55 @@
+﻿using AutoMapper;
+using JuanApp.Application.Models.SettingDtos;
+using JuanApp.Application.Repositories;
+using JuanApp.Application.Services.Interfaces;
+using JuanApp.Domain.Models;
+using Microsoft.EntityFrameworkCore;
+
+namespace JuanApp.Application.Services.Concretes
+{
+    public class SettingService(IGenericRepository<Setting> genericRepository, IMapper mapper) : ISettingService
+    {
+        public async Task<bool> CreateAsync(CreateSettingDto setting)
+        {
+            var settingEntity = mapper.Map<Setting>(setting);
+            await genericRepository.AddAsync(settingEntity);
+            return await genericRepository.SaveAsync() > 0;
+        }
+
+        public async Task DeleteAsync(int id)
+        {
+            var setting = await genericRepository.GetByIdAsync(id);
+            if (setting != null)
+            {
+                genericRepository.Remove(setting);
+                await genericRepository.SaveAsync();
+            }
+        }
+
+        public async Task<IEnumerable<SettingDto>> GetAllAsync()
+        {
+            var settings = genericRepository.GetAll();
+            return mapper.Map<IEnumerable<SettingDto>>(settings);
+        }
+
+        public async Task<SettingDto?> GetByIdAsync(int id)
+        {
+            var setting = await genericRepository.GetByIdAsync(id);   
+            return mapper.Map<SettingDto?>(setting);
+        }
+
+        public async Task<SettingDto?> GetByKeyAsync(string key)
+        {
+            var setting = await genericRepository.GetAll()
+                .FirstOrDefaultAsync(s => s.Key == key);
+            return mapper.Map<SettingDto?>(setting);
+        }
+
+        public async Task UpdateAsync(SettingDto setting)
+        {
+            var settingEntity = mapper.Map<Setting>(setting);
+            genericRepository.Update(settingEntity);
+            await genericRepository.SaveAsync();
+        }
+    }
+}

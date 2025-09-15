@@ -1,0 +1,16 @@
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace JuanApp.MVC.Areas.Manage.ViewModels
+{
+    public class SettingViewModel
+    {
+        [Required(ErrorMessage = "Key is required")]
+        [StringLength(100, ErrorMessage = "Key cannot be longer than 100 characters")]
+        [RegularExpression(@"^[a-zA-Z][a-zA-Z0-9._-]*$", ErrorMessage = "Key must start with a letter and contain only letters, numbers, dots, underscores, and hyphens")]
+        public string Key { get; set; }
+        
+        [Required(ErrorMessage = "Value is required")]
+        [StringLength(1000, ErrorMessage = "Value cannot be longer than 1000 characters")]
+        public string Value { get; set; }
+    }
+}

@@ -1,0 +1,9 @@
+﻿using JuanApp.Domain.Common;
+
+namespace JuanApp.Domain.Models
+{
+    public class Size : AuditEntity
+    {
+        public decimal ShoeSize { get; set; }
+    }
+}

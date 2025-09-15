@@ -1,0 +1,266 @@
+﻿@model BlogViewModel
+@{
+    ViewData["Title"] = "Blog Details";
+}
+
+<div class="zenith-card p-4 shadow-lg rounded-4 border-0 bg-dark text-light">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="zenith-card-title mb-1 fw-bold text-gold">Blog Post Details</h2>
+        <div>
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-cyan rounded-pill px-4 me-2">
+                <i class="fas fa-edit me-2"></i>Edit
+            </a>
+            <a asp-action="Index" class="btn btn-outline-secondary rounded-pill px-4">
+                <i class="fas fa-arrow-left me-2"></i>Back to List
+            </a>
+        </div>
+    </div>
+    
+    <div class="row g-4">
+        <div class="col-lg-8">
+            @if (!string.IsNullOrEmpty(Model.ImageUrl))
+            {
+                <div class="blog-featured-image mb-4">
+                    <img src="~/uploads/blogs/@Model.ImageUrl" alt="@Model.Title" class="img-fluid rounded-4 w-100" style="max-height: 400px; object-fit: cover;" />
+                </div>
+            }
+            
+            <div class="blog-detail-content">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="badge bg-cyan fs-6 px-3 py-2">
+                        <i class="fas fa-user me-2"></i>@Model.Author
+                    </span>
+                    <div class="text-muted">
+                        <small>
+                            <i class="fas fa-calendar me-1"></i>
+                            Published @Model.Created.ToString("MMMM dd, yyyy")
+                            @if (Model.LastModified.HasValue)
+                            {
+                                <br />
+                                <i class="fas fa-edit me-1"></i>
+                                <text>Modified @Model.LastModified.Value.ToString("MMMM dd, yyyy")</text>
+                            }
+                        </small>
+                    </div>
+                </div>
+                
+                <h1 class="blog-title text-gold fw-bold mb-4">@Model.Title</h1>
+                
+                <div class="blog-content text-light">
+                    @Html.Raw(Model.Content)
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="detail-section p-4 rounded-4 bg-dark border border-cyan mb-4">
+                <h4 class="text-gold mb-3">
+                    <i class="fas fa-info-circle me-2"></i>Blog Information
+                </h4>
+                <div class="text-muted small">
+                    <div class="d-flex justify-content-between mb-2">
+                        <strong>ID:</strong>
+                        <span>#@Model.Id</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <strong>Author:</strong>
+                        <span>@Model.Author</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <strong>Created:</strong>
+                        <span>@Model.Created.ToString("MMM dd, yyyy")</span>
+                    </div>
+                    @if (Model.LastModified.HasValue)
+                    {
+                        <div class="d-flex justify-content-between mb-2">
+                            <strong>Modified:</strong>
+                            <span>@Model.LastModified.Value.ToString("MMM dd, yyyy")</span>
+                        </div>
+                    }
+                    <div class="d-flex justify-content-between mb-2">
+                        <strong>Word Count:</strong>
+                        <span>@(Model.Content?.Split(' ', StringSplitOptions.RemoveEmptyEntries).Length ?? 0) words</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <strong>Reading Time:</strong>
+                        <span>@Math.Ceiling((Model.Content?.Split(' ', StringSplitOptions.RemoveEmptyEntries).Length ?? 0) / 200.0) min</span>
+                    </div>
+                    @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                    {
+                        <div class="d-flex justify-content-between">
+                            <strong>Featured Image:</strong>
+                            <span class="text-success">
+                                <i class="fas fa-check me-1"></i>Yes
+                            </span>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="d-flex justify-content-between">
+                            <strong>Featured Image:</strong>
+                            <span class="text-muted">
+                                <i class="fas fa-times me-1"></i>No
+                            </span>
+                        </div>
+                    }
+                </div>
+            </div>
+            
+            <div class="detail-section p-4 rounded-4 bg-dark border border-warning">
+                <h5 class="text-warning mb-3">
+                    <i class="fas fa-cogs me-2"></i>Quick Actions
+                </h5>
+                <div class="d-grid gap-2">
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-cyan">
+                        <i class="fas fa-edit me-2"></i>Edit Post
+                    </a>
+                    <button type="button" class="btn btn-outline-danger" 
+                            data-blog-id="@Model.Id" data-blog-title="@Html.Raw(Html.Encode(Model.Title))" onclick="confirmDelete(this)">
+                        <i class="fas fa-trash me-2"></i>Delete Post
+                    </button>
+                    <a asp-action="Create" class="btn btn-outline-success">
+                        <i class="fas fa-plus me-2"></i>New Post
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content bg-dark text-light border-cyan rounded-4">
+            <div class="modal-header border-0">
+                <h5 class="modal-title text-danger"><i class="fas fa-exclamation-triangle me-2"></i>Confirm Delete</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete the blog post <span class="fw-bold text-gold">"<span id="BlogTitle"></span>"</span>?
+                <div class="alert alert-warning mt-3 small">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <strong>Warning:</strong> This action cannot be undone and will also delete the associated image.
+                </div>
+            </div>
+            <div class="modal-footer border-0">
+                <form asp-action="Delete" method="post" id="deleteForm">
+                    <input type="hidden" name="id" id="BlogId" />
+                    @Html.AntiForgeryToken()
+                    <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger rounded-pill px-4">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .zenith-card {
+            background: var(--card-bg, #181c24);
+            border-radius: 1.5rem;
+            box-shadow: 0 4px 32px rgba(0,0,0,0.25);
+        }
+
+        .zenith-card-title {
+            color: var(--gold, #ffd700);
+        }
+
+        .btn-cyan, .btn-outline-cyan {
+            background: var(--cyan-teal, #1de9b6);
+            color: #181c24;
+            border: none;
+        }
+
+        .btn-outline-cyan {
+            background: transparent;
+            border: 2px solid var(--cyan-teal, #1de9b6);
+            color: var(--cyan-teal, #1de9b6);
+        }
+
+            .btn-outline-cyan:hover, .btn-cyan:hover {
+                background: #13bfa6;
+                color: #fff;
+            }
+
+        .border-cyan {
+            border-color: var(--cyan-teal, #1de9b6) !important;
+        }
+
+        .text-gold {
+            color: var(--gold, #ffd700) !important;
+        }
+
+        .text-cyan {
+            color: var(--cyan-teal, #1de9b6) !important;
+        }
+
+        .rounded-4 {
+            border-radius: 1.5rem !important;
+        }
+
+        .shadow-lg {
+            box-shadow: 0 8px 32px rgba(0,0,0,0.35) !important;
+        }
+
+        .blog-title {
+            color: var(--gold, #ffd700);
+            font-size: 2.5rem;
+            line-height: 1.2;
+        }
+
+        .blog-content {
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+            .blog-content h1, .blog-content h2, .blog-content h3,
+            .blog-content h4, .blog-content h5, .blog-content h6 {
+                color: var(--gold, #ffd700);
+                margin-top: 2rem;
+                margin-bottom: 1rem;
+            }
+
+            .blog-content p {
+                margin-bottom: 1.5rem;
+            }
+
+            .blog-content img {
+                max-width: 100%;
+                height: auto;
+                border-radius: 0.5rem;
+                margin: 1rem 0;
+            }
+
+        .detail-section {
+            background: #23272f;
+        }
+
+        .badge.bg-cyan {
+            background: var(--cyan-teal, #1de9b6) !important;
+            color: #181c24 !important;
+        }
+
+        .border-warning {
+            border-color: #ffc107 !important;
+        }
+
+        @*media (max-width: 768px)*@
+        @@media (max-width: 768px) {
+            .blog-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        function confirmDelete(button) {
+            const blogId = button.getAttribute('data-blog-id');
+            const blogTitle = button.getAttribute('data-blog-title');
+            
+            document.getElementById('BlogId').value = blogId;
+            document.getElementById('BlogTitle').textContent = blogTitle;
+            new bootstrap.Modal(document.getElementById('deleteModal')).show();
+        }
+    ```}

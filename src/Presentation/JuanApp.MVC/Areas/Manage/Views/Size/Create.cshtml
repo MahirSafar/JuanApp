@@ -1,0 +1,105 @@
+@model SizeViewModel
+
+<div class="zenith-card p-4 shadow-lg rounded-4 border-0 bg-dark text-light">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="zenith-card-title mb-1 fw-bold text-gold">Create Size</h2>
+            <p class="text-muted mb-0">Add a new size for products.</p>
+        </div>
+        <a asp-action="Index" class="btn btn-outline-cyan rounded-pill px-4">
+            <i class="fas fa-arrow-left me-2"></i>Back to List
+        </a>
+    </div>
+
+    <form asp-action="Create" class="row g-4">
+       
+        
+       
+        
+        <div class="col-md-12">
+            <div class="form-floating mb-4">
+                <input asp-for="ShoeSize" type="number" step="0.5" min="0" max="50" class="form-control bg-dark text-light border-cyan" placeholder="Shoe Size" />
+                <label asp-for="ShoeSize" class="text-gold">Shoe Size</label>
+                <span asp-validation-for="ShoeSize" class="text-danger small"></span>
+                <div class="form-text text-muted">Only applicable for shoe sizes</div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 d-flex align-items-end">
+            <button type="submit" class="btn btn-cyan w-100 py-2 rounded-pill fw-semibold shadow-sm">
+                <i class="fas fa-save me-2"></i>Create Size
+            </button>
+        </div>
+    </form>
+</div>
+
+@section Styles {
+    <style>
+        .zenith-card {
+            background: var(--card-bg, #181c24);
+            border-radius: 1.5rem;
+            box-shadow: 0 4px 32px rgba(0,0,0,0.25);
+        }
+
+        .zenith-card-title {
+            color: var(--gold, #ffd700);
+        }
+
+        .btn-cyan, .btn-outline-cyan {
+            background: var(--cyan-teal, #1de9b6);
+            color: #181c24;
+            border: none;
+        }
+
+        .btn-outline-cyan {
+            background: transparent;
+            border: 2px solid var(--cyan-teal, #1de9b6);
+            color: var(--cyan-teal, #1de9b6);
+        }
+
+            .btn-outline-cyan:hover, .btn-cyan:hover {
+                background: #13bfa6;
+                color: #fff;
+            }
+
+        .border-cyan {
+            border-color: var(--cyan-teal, #1de9b6) !important;
+        }
+
+        .text-gold {
+            color: var(--gold, #ffd700) !important;
+        }
+
+        .text-cyan {
+            color: var(--cyan-teal, #1de9b6) !important;
+        }
+
+        .rounded-4 {
+            border-radius: 1.5rem !important;
+        }
+
+        .shadow-lg {
+            box-shadow: 0 8px 32px rgba(0,0,0,0.35) !important;
+        }
+
+        .form-floating > label {
+            color: var(--gold, #ffd700);
+        }
+
+        .form-control, .form-select {
+            background: #23272f;
+            color: #fff;
+            border-radius: 0.75rem;
+        }
+
+            .form-control:focus, .form-select:focus {
+                border-color: var(--cyan-teal, #1de9b6);
+                box-shadow: 0 0 0 0.2rem rgba(29,233,182,0.15);
+            }
+
+        .form-select option {
+            background: #23272f;
+            color: #fff;
+        }
+    </style>
+}

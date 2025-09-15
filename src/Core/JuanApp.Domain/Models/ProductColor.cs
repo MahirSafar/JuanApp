@@ -1,0 +1,17 @@
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace JuanApp.Domain.Models
+{
+    public class ProductColor
+    {
+        public int ProductId { get; set; }
+        public int ColorId { get; set; }
+
+        // Navigation Properties
+        [ForeignKey("ProductId")]
+        public Product Product { get; set; }
+
+        [ForeignKey("ColorId")]
+        public Color Color { get; set; }
+    }
+}

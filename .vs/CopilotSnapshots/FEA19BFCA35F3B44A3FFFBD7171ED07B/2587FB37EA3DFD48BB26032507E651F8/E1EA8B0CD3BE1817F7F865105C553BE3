@@ -1,0 +1,47 @@
+﻿using JuanApp.Domain.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+namespace JuanApp.Persistance.DAL.Configurations
+{
+    public class ProductColorConfig : IEntityTypeConfiguration<ProductColor>
+    {
+        public void Configure(EntityTypeBuilder<ProductColor> builder)
+        {
+            // Composite key
+            builder.HasKey(pc => new { pc.ProductId, pc.ColorId });
+
+            // Relationships
+            builder.HasOne(pc => pc.Product)
+                .WithMany(p => p.ProductColors)
+                .HasForeignKey(pc => pc.ProductId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasOne(pc => pc.Color)
+                .WithMany(c => c.ProductColors)
+                .HasForeignKey(pc => pc.ColorId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Seed Data
+            builder.HasData(
+                // Running Shoes (Product 1) - Available colors
+                new ProductColor { Id = 1, ProductId = 1, ColorId = 4, Stock = 20, Created = DateTime.UtcNow },  // Black
+                new ProductColor { Id = 2, ProductId = 1, ColorId = 5, Stock = 15, Created = DateTime.UtcNow },  // White
+                new ProductColor { Id = 3, ProductId = 1, ColorId = 2, Stock = 10, Created = DateTime.UtcNow },  // Blue
+                new ProductColor { Id = 4, ProductId = 1, ColorId = 6, Stock = 5, Created = DateTime.UtcNow },   // Gray
+                
+                // T-Shirt (Product 2) - Available colors
+                new ProductColor { Id = 5, ProductId = 2, ColorId = 1, Stock = 25, Created = DateTime.UtcNow },  // Red
+                new ProductColor { Id = 6, ProductId = 2, ColorId = 2, Stock = 30, Created = DateTime.UtcNow },  // Blue
+                new ProductColor { Id = 7, ProductId = 2, ColorId = 3, Stock = 20, Created = DateTime.UtcNow },  // Green
+                new ProductColor { Id = 8, ProductId = 2, ColorId = 4, Stock = 25, Created = DateTime.UtcNow },  // Black
+                new ProductColor { Id = 9, ProductId = 2, ColorId = 5, Stock = 20, Created = DateTime.UtcNow },  // White
+                
+                // Handbag (Product 3) - Available colors
+                new ProductColor { Id = 10, ProductId = 3, ColorId = 4, Stock = 8, Created = DateTime.UtcNow },  // Black
+                new ProductColor { Id = 11, ProductId = 3, ColorId = 8, Stock = 10, Created = DateTime.UtcNow }, // Brown
+                new ProductColor { Id = 12, ProductId = 3, ColorId = 7, Stock = 7, Created = DateTime.UtcNow }   // Navy
+            );
+        }
+    }
+}

@@ -1,0 +1,43 @@
+﻿using JuanApp.Domain.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+namespace JuanApp.Persistance.DAL.Configurations
+{
+    public class ProductSizeConfiguration : IEntityTypeConfiguration<ProductSize>
+    {
+        public void Configure(EntityTypeBuilder<ProductSize> builder)
+        {
+            // Composite key
+            builder.HasKey(ps => new { ps.ProductId, ps.SizeId });
+
+            // Relationships
+            builder.HasOne(ps => ps.Product)
+                .WithMany(p => p.ProductSizes)
+                .HasForeignKey(ps => ps.ProductId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasOne(ps => ps.Size)
+                .WithMany(s => s.ProductSizes)
+                .HasForeignKey(ps => ps.SizeId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Seed Data
+            builder.HasData(
+                // Running Shoes (Product 1) - Shoe sizes
+                new ProductSize { ProductId = 1, SizeId = 7, Stock = 10 },   // Size 7
+                new ProductSize { ProductId = 1, SizeId = 9, Stock = 15 },   // Size 8
+                new ProductSize { ProductId = 1, SizeId = 11, Stock = 12 },  // Size 9
+                new ProductSize { ProductId = 1, SizeId = 13, Stock = 8 },   // Size 10
+                new ProductSize { ProductId = 1, SizeId = 15, Stock = 5 },   // Size 11
+                
+                // T-Shirt (Product 2) - Clothing sizes
+                new ProductSize { ProductId = 2, SizeId = 2, Stock = 20 },   // S
+                new ProductSize { ProductId = 2, SizeId = 3, Stock = 25 },   // M
+                new ProductSize { ProductId = 2, SizeId = 4, Stock = 30 },   // L
+                new ProductSize { ProductId = 2, SizeId = 5, Stock = 15 },   // XL
+                new ProductSize { ProductId = 2, SizeId = 6, Stock = 10 }    // XXL
+            );
+        }
+    }
+}

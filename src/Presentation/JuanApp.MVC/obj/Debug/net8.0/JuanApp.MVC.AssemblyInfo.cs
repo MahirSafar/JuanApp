@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("JuanApp.MVC")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+846fc40f2fdb92a94536fefccca9aa16c99e5639")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+83b17b42087a7706b56315deef31d84e6be7f297")]
 [assembly: System.Reflection.AssemblyProductAttribute("JuanApp.MVC")]
 [assembly: System.Reflection.AssemblyTitleAttribute("JuanApp.MVC")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

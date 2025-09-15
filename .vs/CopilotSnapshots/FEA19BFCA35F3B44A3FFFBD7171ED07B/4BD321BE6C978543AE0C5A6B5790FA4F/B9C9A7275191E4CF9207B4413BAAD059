@@ -1,0 +1,242 @@
+﻿using JuanApp.Application.Helper;
+using JuanApp.Application.Models.BlogDtos;
+using JuanApp.Application.Services.Interfaces;
+using JuanApp.MVC.Areas.Manage.ViewModels;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace JuanApp.MVC.Areas.Manage.Controllers
+{
+    [Area("Manage")]
+    [Authorize(Roles = "Admin")]
+    public class BlogController(IBlogService blogService) : Controller
+    {
+        private const int PageSize = 6;
+        private const string BlogImageFolder = "blogs";
+        
+        public async Task<IActionResult> Index(int page = 1)
+        {
+            var blogs = await blogService.GetAllAsync();
+            var viewModels = blogs.Select(b => new BlogViewModel
+            {
+                Id = b.Id,
+                Title = b.Title,
+                Content = b.Content,
+                Author = b.Author,
+                ImageUrl = b.ImageUrl,
+                Created = b.Created,
+                LastModified = b.LastModified
+            }).ToList();
+
+            var paginatedList = new PaginatedList<BlogViewModel>(
+                viewModels.Skip((page - 1) * PageSize).Take(PageSize).ToList(),
+                viewModels.Count,
+                page,
+                PageSize
+            );
+
+            return View(paginatedList);
+        }
+        
+        public async Task<IActionResult> Detail(int id)
+        {
+            var blog = await blogService.GetByIdAsync(id);
+            if (blog == null)
+                return NotFound();
+                
+            var viewModel = new BlogViewModel
+            {
+                Id = blog.Id,
+                Title = blog.Title,
+                Content = blog.Content,
+                Author = blog.Author,
+                ImageUrl = blog.ImageUrl,
+                Created = blog.Created,
+                LastModified = blog.LastModified
+            };
+            return View(viewModel);
+        }
+        
+        public IActionResult Create()
+        {
+            ViewData["Title"] = "Create Blog";
+            return View(new BlogViewModel());
+        }
+        
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(BlogViewModel viewModel)
+        {
+            ViewData["Title"] = "Create Blog";
+            
+            // Require image for new blogs
+            if (viewModel.ImageFile == null)
+            {
+                ModelState.AddModelError("ImageFile", "Featured image is required for new blog posts.");
+            }
+            
+            // Validate image file if provided
+            if (viewModel.ImageFile != null)
+            {
+                if (!viewModel.ImageFile.CheckFileType("image"))
+                {
+                    ModelState.AddModelError("ImageFile", "Please select a valid image file.");
+                }
+                
+                if (!viewModel.ImageFile.CheckFileSize(5))
+                {
+                    ModelState.AddModelError("ImageFile", "Image size must be less than 5MB.");
+                }
+            }
+            
+            if (!ModelState.IsValid)
+                return View(viewModel);
+
+            string imageFileName;
+            
+            // Handle image upload (required for create)
+            try
+            {
+                // Ensure directory exists
+                string uploadPath = Path.Combine("wwwroot/uploads", BlogImageFolder);
+                Directory.CreateDirectory(uploadPath);
+                
+                imageFileName = viewModel.ImageFile!.SaveFile(BlogImageFolder);
+            }
+            catch (Exception)
+            {
+                ModelState.AddModelError("ImageFile", "Failed to upload image. Please try again.");
+                return View(viewModel);
+            }
+
+            var blog = new CreateBlogDto
+            {
+                Title = viewModel.Title,
+                Content = viewModel.Content,
+                Author = viewModel.Author,
+                ImageUrl = imageFileName
+            };
+            
+            await blogService.CreateAsync(blog);
+            TempData["SuccessMessage"] = "Blog created successfully.";
+            return RedirectToAction(nameof(Index));
+        }
+        
+        public async Task<IActionResult> Edit(int id)
+        {
+            ViewData["Title"] = "Edit Blog";
+            var blog = await blogService.GetByIdAsync(id);
+            if (blog == null)
+                return NotFound();
+
+            var viewModel = new BlogViewModel
+            {
+                Id = blog.Id,
+                Title = blog.Title,
+                Content = blog.Content,
+                Author = blog.Author,
+                ImageUrl = blog.ImageUrl,
+                Created = blog.Created,
+                LastModified = blog.LastModified
+            };
+            return View(viewModel);
+        }
+        
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, BlogViewModel viewModel)
+        {
+            ViewData["Title"] = "Edit Blog";
+            if (id != viewModel.Id)
+                return NotFound();
+            
+            // Validate image file if provided
+            if (viewModel.ImageFile != null)
+            {
+                if (!viewModel.ImageFile.CheckFileType("image"))
+                {
+                    ModelState.AddModelError("ImageFile", "Please select a valid image file.");
+                }
+                
+                if (!viewModel.ImageFile.CheckFileSize(5))
+                {
+                    ModelState.AddModelError("ImageFile", "Image size must be less than 5MB.");
+                }
+            }
+                
+            if (!ModelState.IsValid)
+                return View(viewModel);
+                
+            var existingBlog = await blogService.GetByIdAsync(id);
+            if (existingBlog == null)
+                return NotFound();
+
+            string? imageFileName = existingBlog.ImageUrl;
+            
+            // Handle image removal
+            if (viewModel.RemoveImage && !string.IsNullOrEmpty(imageFileName))
+            {
+                FileManager.DeleteFile(BlogImageFolder, imageFileName);
+                imageFileName = null;
+            }
+            
+            // Handle new image upload
+            if (viewModel.ImageFile != null)
+            {
+                try
+                {
+                    // Delete old image if exists
+                    if (!string.IsNullOrEmpty(imageFileName))
+                    {
+                        FileManager.DeleteFile(BlogImageFolder, imageFileName);
+                    }
+                    
+                    // Ensure directory exists
+                    string uploadPath = Path.Combine("wwwroot/uploads", BlogImageFolder);
+                    Directory.CreateDirectory(uploadPath);
+                    
+                    imageFileName = viewModel.ImageFile.SaveFile(BlogImageFolder);
+                }
+                catch (Exception)
+                {
+                    ModelState.AddModelError("ImageFile", "Failed to upload image. Please try again.");
+                    return View(viewModel);
+                }
+            }
+
+            var blog = new BlogDto
+            {
+                Id = viewModel.Id,
+                Title = viewModel.Title,
+                Content = viewModel.Content,
+                Author = viewModel.Author,
+                ImageUrl = imageFileName,
+                Created = existingBlog.Created,
+                LastModified = DateTime.UtcNow
+            };
+            
+            await blogService.UpdateAsync(blog);
+            TempData["SuccessMessage"] = "Blog updated successfully.";
+            return RedirectToAction(nameof(Index));
+        }
+        
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var blog = await blogService.GetByIdAsync(id);
+            if (blog == null)
+                return NotFound();
+            
+            // Delete associated image file
+            if (!string.IsNullOrEmpty(blog.ImageUrl))
+            {
+                FileManager.DeleteFile(BlogImageFolder, blog.ImageUrl);
+            }
+                
+            await blogService.DeleteAsync(id);
+            TempData["SuccessMessage"] = "Blog deleted successfully.";
+            return RedirectToAction(nameof(Index));
+        }
+    }
+}

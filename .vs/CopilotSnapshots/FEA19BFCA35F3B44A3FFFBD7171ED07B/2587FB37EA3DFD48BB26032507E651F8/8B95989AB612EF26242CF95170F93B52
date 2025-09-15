@@ -1,0 +1,47 @@
+﻿using JuanApp.Domain.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+namespace JuanApp.Persistance.DAL.Configurations
+{
+    public class ProductColorConfig : IEntityTypeConfiguration<ProductColor>
+    {
+        public void Configure(EntityTypeBuilder<ProductColor> builder)
+        {
+            // Composite key
+            builder.HasKey(pc => new { pc.ProductId, pc.ColorId });
+
+            // Relationships
+            builder.HasOne(pc => pc.Product)
+                .WithMany(p => p.ProductColors)
+                .HasForeignKey(pc => pc.ProductId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasOne(pc => pc.Color)
+                .WithMany(c => c.ProductColors)
+                .HasForeignKey(pc => pc.ColorId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Seed Data
+            builder.HasData(
+                // Running Shoes (Product 1) - Available colors
+                new ProductColor { ProductId = 1, ColorId = 4, Stock = 20 },  // Black
+                new ProductColor { ProductId = 1, ColorId = 5, Stock = 15 },  // White
+                new ProductColor { ProductId = 1, ColorId = 2, Stock = 10 },  // Blue
+                new ProductColor { ProductId = 1, ColorId = 6, Stock = 5 },   // Gray
+                
+                // T-Shirt (Product 2) - Available colors
+                new ProductColor { ProductId = 2, ColorId = 1, Stock = 25 },  // Red
+                new ProductColor { ProductId = 2, ColorId = 2, Stock = 30 },  // Blue
+                new ProductColor { ProductId = 2, ColorId = 3, Stock = 20 },  // Green
+                new ProductColor { ProductId = 2, ColorId = 4, Stock = 25 },  // Black
+                new ProductColor { ProductId = 2, ColorId = 5, Stock = 20 },  // White
+                
+                // Handbag (Product 3) - Available colors
+                new ProductColor { ProductId = 3, ColorId = 4, Stock = 8 },  // Black
+                new ProductColor { ProductId = 3, ColorId = 8, Stock = 10 }, // Brown
+                new ProductColor { ProductId = 3, ColorId = 7, Stock = 7 }   // Navy
+            );
+        }
+    }
+}
