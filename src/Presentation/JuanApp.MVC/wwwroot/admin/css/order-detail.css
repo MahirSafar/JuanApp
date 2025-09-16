@@ -1,0 +1,549 @@
+/* Order Detail Page Styles */
+/* CSS Variables Definition */
+:root {
+    --primary-bg: #111217;
+    --sidebar-bg: #0a0b0e;
+    --card-bg: #181a20;
+    --header-bg: #16171c;
+    --gold: #d4af37;
+    --cyan-teal: #1de9b6;
+    --cyan-teal-dark: #0e3c36;
+    --text-main: #f0f0f0;
+    --text-muted: #b0b0c0;
+    --border: #23242a;
+    --shadow: 0 4px 32px 0 rgba(30,30,36,0.18);
+}
+
+/* Page Layout */
+.zenith-page-wrapper {
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+.zenith-page-header {
+    margin-bottom: 2rem;
+}
+
+.zenith-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+.zenith-breadcrumb-item {
+    color: var(--cyan-teal);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: color 0.2s;
+}
+
+.zenith-breadcrumb-item:hover {
+    color: var(--gold);
+}
+
+.zenith-breadcrumb-separator {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+
+.zenith-breadcrumb-current {
+    color: var(--text-muted);
+}
+
+.zenith-header-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+}
+
+.zenith-page-title {
+    font-family: 'Fira Code', monospace;
+    font-size: 2rem;
+    color: var(--gold);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    letter-spacing: 0.05em;
+}
+
+/* Content Grid */
+.zenith-content-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+}
+
+.zenith-main-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.zenith-sidebar-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+/* Card Styles */
+.zenith-card {
+    background: rgba(24,26,32,0.95);
+    border-radius: 1rem;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.zenith-card:hover {
+    border-color: var(--cyan-teal);
+    box-shadow: 0 0 20px rgba(29, 233, 182, 0.1), var(--shadow);
+}
+
+.zenith-card-header {
+    background: linear-gradient(135deg, var(--card-bg) 0%, var(--sidebar-bg) 100%);
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.zenith-card-title {
+    font-family: 'Fira Code', monospace;
+    font-size: 1.1rem;
+    color: var(--gold);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    letter-spacing: 0.05em;
+}
+
+.zenith-card-body {
+    padding: 2rem;
+}
+
+/* Info Grid */
+.zenith-info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+
+.zenith-info-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.zenith-info-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.zenith-info-label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 600;
+}
+
+.zenith-info-value {
+    color: var(--text-main);
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+/* Specific Info Styles */
+.zenith-order-badge {
+    font-family: 'Fira Code', monospace;
+    background: linear-gradient(135deg, var(--cyan-teal), #0e8c7a);
+    color: var(--sidebar-bg);
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.zenith-customer-name {
+    color: var(--gold);
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.zenith-date-display {
+    color: var(--text-main);
+}
+
+.zenith-time-display {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.zenith-address {
+    line-height: 1.6;
+}
+
+.zenith-address-line {
+    color: var(--text-main);
+}
+
+.zenith-city {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.zenith-total-amount {
+    color: var(--gold);
+    font-size: 1.5rem;
+    font-weight: 700;
+    font-family: 'Fira Code', monospace;
+}
+
+/* Button Styles */
+.zenith-btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+}
+
+.zenith-btn-primary {
+    background: linear-gradient(135deg, var(--cyan-teal), #0e8c7a);
+    color: var(--sidebar-bg);
+}
+
+.zenith-btn-primary:hover {
+    background: linear-gradient(135deg, #0e8c7a, var(--cyan-teal));
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(29, 233, 182, 0.3);
+}
+
+.zenith-btn-secondary {
+    background: var(--card-bg);
+    color: var(--text-main);
+    border: 1px solid var(--border);
+}
+
+.zenith-btn-secondary:hover {
+    background: var(--border);
+    color: var(--gold);
+}
+
+.zenith-btn-full {
+    width: 100%;
+    justify-content: center;
+}
+
+/* Table Styles */
+.zenith-table-wrapper {
+    overflow-x: auto;
+    border-radius: 0.5rem;
+    border: 1px solid var(--border);
+}
+
+.zenith-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    background: transparent;
+}
+
+.zenith-table thead {
+    background: var(--sidebar-bg);
+}
+
+.zenith-table th {
+    padding: 1rem;
+    text-align: left;
+    color: var(--gold);
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--border);
+}
+
+.zenith-table-row {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.2s;
+}
+
+.zenith-table-row:hover {
+    background: rgba(29, 233, 182, 0.05);
+}
+
+.zenith-table td {
+    padding: 1rem;
+    vertical-align: middle;
+    color: var(--text-main);
+}
+
+.zenith-table tfoot {
+    background: var(--card-bg);
+}
+
+.zenith-total-row th {
+    border-top: 2px solid var(--border);
+    color: var(--gold);
+    font-size: 1rem;
+}
+
+.zenith-grand-total {
+    color: var(--gold) !important;
+    font-size: 1.2rem !important;
+    font-weight: 700 !important;
+    font-family: 'Fira Code', monospace !important;
+}
+
+/* Product Info */
+.zenith-product-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.zenith-product-name {
+    color: var(--text-main);
+    font-weight: 600;
+}
+
+.zenith-product-variants {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.zenith-variant-badge {
+    background: rgba(29, 233, 182, 0.15);
+    color: var(--cyan-teal);
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.3rem;
+    font-size: 0.75rem;
+    border: 1px solid rgba(29, 233, 182, 0.3);
+}
+
+.zenith-price {
+    color: var(--text-main);
+    font-weight: 500;
+}
+
+.zenith-quantity-badge {
+    background: var(--card-bg);
+    color: var(--text-main);
+    padding: 0.3rem 0.6rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    border: 1px solid var(--border);
+}
+
+.zenith-item-total {
+    color: var(--gold);
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+/* Status Management */
+.zenith-current-status {
+    margin-bottom: 2rem;
+}
+
+.zenith-status-display {
+    margin-top: 0.5rem;
+}
+
+.zenith-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.zenith-status-warning {
+    background: rgba(255, 193, 7, 0.2);
+    color: #ffc107;
+    border: 1px solid rgba(255, 193, 7, 0.4);
+}
+
+.zenith-status-info {
+    background: rgba(13, 202, 240, 0.2);
+    color: #0dcaf0;
+    border: 1px solid rgba(13, 202, 240, 0.4);
+}
+
+.zenith-status-primary {
+    background: rgba(29, 233, 182, 0.2);
+    color: var(--cyan-teal);
+    border: 1px solid rgba(29, 233, 182, 0.4);
+}
+
+.zenith-status-success {
+    background: rgba(25, 135, 84, 0.2);
+    color: #28a745;
+    border: 1px solid rgba(25, 135, 84, 0.4);
+}
+
+.zenith-status-danger {
+    background: rgba(220, 53, 69, 0.2);
+    color: #dc3545;
+    border: 1px solid rgba(220, 53, 69, 0.4);
+}
+
+/* Form Styles */
+.zenith-status-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.zenith-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.zenith-label {
+    color: var(--text-main);
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.zenith-select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: var(--sidebar-bg);
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    color: var(--text-main);
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+
+.zenith-select:focus {
+    border-color: var(--cyan-teal);
+    box-shadow: 0 0 0 2px rgba(29, 233, 182, 0.2);
+    outline: none;
+}
+
+/* Timeline Styles */
+.zenith-timeline {
+    position: relative;
+    padding-left: 2rem;
+}
+
+.zenith-timeline::before {
+    content: '';
+    position: absolute;
+    left: 0.75rem;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--border);
+}
+
+.zenith-timeline-item {
+    position: relative;
+    margin-bottom: 2rem;
+}
+
+.zenith-timeline-item:last-child {
+    margin-bottom: 0;
+}
+
+.zenith-timeline-marker {
+    position: absolute;
+    left: -1.75rem;
+    top: 0.25rem;
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 50%;
+    background: var(--border);
+    border: 2px solid var(--card-bg);
+    transition: all 0.3s ease;
+}
+
+.zenith-timeline-completed .zenith-timeline-marker {
+    background: var(--cyan-teal);
+    box-shadow: 0 0 0 3px rgba(29, 233, 182, 0.3);
+}
+
+.zenith-timeline-content {
+    padding-left: 0.5rem;
+}
+
+.zenith-timeline-title {
+    color: var(--text-main);
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin: 0 0 0.25rem 0;
+}
+
+.zenith-timeline-time {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+
+.zenith-timeline-completed .zenith-timeline-title {
+    color: var(--cyan-teal);
+}
+
+.zenith-timeline-completed .zenith-timeline-time {
+    color: var(--text-main);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .zenith-content-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .zenith-info-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .zenith-header-actions {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .zenith-card-body {
+        padding: 1.5rem;
+    }
+    
+    .zenith-table th,
+    .zenith-table td {
+        padding: 0.75rem 0.5rem;
+    }
+    
+    .zenith-page-title {
+        font-size: 1.5rem;
+    }
+    
+    .zenith-total-amount {
+        font-size: 1.2rem;
+    }
+}

@@ -1,4 +1,5 @@
 using AutoMapper;
+using JuanApp.Application.Models.CategoryDtos;
 using JuanApp.Application.Models.ProductDtos;
 using JuanApp.Application.Repositories;
 using JuanApp.Application.Services.Interfaces;

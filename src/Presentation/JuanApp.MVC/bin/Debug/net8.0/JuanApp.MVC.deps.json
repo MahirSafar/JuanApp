@@ -2163,7 +2163,8 @@
       },
       "JuanApp.Infrastructure/1.0.0": {
         "dependencies": {
-          "JuanApp.Application": "1.0.0"
+          "JuanApp.Application": "1.0.0",
+          "JuanApp.Persistance": "1.0.0"
         },
         "runtime": {
           "JuanApp.Infrastructure.dll": {

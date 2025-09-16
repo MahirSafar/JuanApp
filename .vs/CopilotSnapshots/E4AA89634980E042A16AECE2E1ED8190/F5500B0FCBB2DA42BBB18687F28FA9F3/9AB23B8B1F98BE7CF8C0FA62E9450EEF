@@ -1,0 +1,18 @@
+﻿@model JuanApp.MVC.ViewComponents.NavigationViewModel
+
+<!-- main menu navbar start -->
+<nav class="desktop-menu">
+    <ul>
+        <li class="active">
+            <a asp-controller="Home" asp-action="Index">
+                Home
+            </a>
+        </li>
+        <li class="static">
+            <a asp-controller="shop" asp-action="index">SHOP</a>
+        </li>
+       
+        <li><a asp-controller="Blog" asp-action="index">Blog</a></li>
+    </ul>
+</nav>
+<!-- main menu navbar end -->

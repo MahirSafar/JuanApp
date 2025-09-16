@@ -1,0 +1,443 @@
+@model BlogDetailViewModel
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<!-- main wrapper start -->
+<main>
+    <!-- page title area start -->
+    <section class="page-title-area" style="background-image: url('/assets/img/bg/page-title.jpg')">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="page-title-inner">
+                        <h1 class="page-title">Blog Details</h1>
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+                                <li class="breadcrumb-item"><a asp-controller="Blog" asp-action="Index">Blog</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">@Model.Title</li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- page title area end -->
+
+    <!-- blog details main wrapper start -->
+    <div class="blog-main-wrapper section-padding">
+        <div class="container">
+            <div class="row">
+                <!-- Main Content -->
+                <div class="col-lg-8">
+                    <div class="blog-details-wrapper">
+                        <article class="single-blog-details">
+                            @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                            {
+                                <div class="blog-thumb">
+                                    <img src="~/uploads/blogs/@Model.ImageUrl" alt="@Model.Title" class="img-fluid" />
+                                </div>
+                            }
+                            
+                            <div class="blog-content">
+                                <!-- Blog Meta -->
+                                <div class="blog-meta">
+                                    <span class="author">By: @Model.Author</span>
+                                    <span class="date">@Model.Created.ToString("MMMM dd, yyyy")</span>
+                                </div>
+                                
+                                <!-- Blog Title -->
+                                <h1 class="blog-title">@Model.Title</h1>
+                                
+                                <!-- Blog Content -->
+                                <div class="blog-body">
+                                    @Html.Raw(Model.Content)
+                                </div>
+                                
+                                <!-- Back to Blog -->
+                                <div class="blog-navigation mt-5 pt-4">
+                                    <a asp-action="Index" class="btn btn-primary">
+                                        <i class="fa fa-arrow-left mr-2"></i>Back to Blog
+                                    </a>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            
+                <!-- Sidebar -->
+                <div class="col-lg-4">
+                    <div class="sidebar-wrapper">
+                        <!-- Author Info Widget -->
+                        <div class="sidebar-single-widget">
+                            <h6 class="sidebar-title">About the Author</h6>
+                            <div class="sidebar-body">
+                                <div class="author-info text-center">
+                                    <div class="author-avatar mb-3">
+                                        <div class="avatar-placeholder rounded-circle d-inline-flex align-items-center justify-content-center" 
+                                             style="width: 80px; height: 80px; background: #007bff; color: white;">
+                                            <i class="fa fa-user fa-2x"></i>
+                                        </div>
+                                    </div>
+                                    <h5 class="author-name mb-2">@Model.Author</h5>
+                                    <p class="author-bio text-muted small mb-3">
+                                        Content creator and blogger sharing insights and experiences.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Related Posts Widget -->
+                        @if (Model.RelatedBlogs.Any())
+                        {
+                            <div class="sidebar-single-widget">
+                                <h6 class="sidebar-title">More from @Model.Author</h6>
+                                <div class="sidebar-body">
+                                    <ul class="related-post-list">
+                                        @foreach (var relatedBlog in Model.RelatedBlogs)
+                                        {
+                                            <li class="related-post-item">
+                                                <div class="related-post-wrapper">
+                                                    @if (!string.IsNullOrEmpty(relatedBlog.ImageUrl))
+                                                    {
+                                                        <div class="related-post-thumb">
+                                                            <img src="~/uploads/blogs/@relatedBlog.ImageUrl" alt="@relatedBlog.Title" />
+                                                        </div>
+                                                    }
+                                                    
+                                                    <div class="related-post-content">
+                                                        <h6 class="related-post-title">
+                                                            <a asp-action="Detail" asp-route-id="@relatedBlog.Id">
+                                                                @(relatedBlog.Title.Length > 60 ? relatedBlog.Title.Substring(0, 60) + "..." : relatedBlog.Title)
+                                                            </a>
+                                                        </h6>
+                                                        <div class="related-post-meta">
+                                                            <span class="date">@relatedBlog.Created.ToString("MMM dd, yyyy")</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        }
+                                    </ul>
+                                </div>
+                            </div>
+                        }
+                        
+                        <!-- Quick Actions Widget -->
+                        <div class="sidebar-single-widget">
+                            <h6 class="sidebar-title">Share This Post</h6>
+                            <div class="sidebar-body">
+                                <div class="social-share">
+                                    <div class="share-buttons">
+                                        <button class="btn btn-primary btn-sm mb-2 w-100" onclick="shareOnFacebook()">
+                                            <i class="fa fa-facebook mr-2"></i>Share on Facebook
+                                        </button>
+                                        <button class="btn btn-info btn-sm mb-2 w-100" onclick="shareOnTwitter()">
+                                            <i class="fa fa-twitter mr-2"></i>Share on Twitter
+                                        </button>
+                                        <button class="btn btn-success btn-sm mb-2 w-100" onclick="copyLink()">
+                                            <i class="fa fa-link mr-2"></i>Copy Link
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Navigation Widget -->
+                        <div class="sidebar-single-widget">
+                            <h6 class="sidebar-title">Explore More</h6>
+                            <div class="sidebar-body">
+                                <div class="navigation-links">
+                                    <a asp-action="Index" class="btn btn-outline-primary btn-sm mb-2 w-100">
+                                        <i class="fa fa-list mr-2"></i>All Blog Posts
+                                    </a>
+                                    <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary btn-sm w-100">
+                                        <i class="fa fa-home mr-2"></i>Back to Home
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<!-- main wrapper end -->
+
+@section Styles {
+    <style>
+        .blog-details-wrapper {
+            margin-bottom: 50px;
+        }
+        
+        .single-blog-details {
+            background: #ffffff;
+            border: 1px solid #eee;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .blog-thumb img {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+        }
+        
+        .blog-content {
+            padding: 40px;
+        }
+        
+        .blog-meta {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .blog-meta span {
+            color: #888;
+            font-size: 14px;
+            margin-right: 20px;
+        }
+        
+        .blog-title {
+            color: #333;
+            font-size: 32px;
+            font-weight: 700;
+            line-height: 1.3;
+            margin-bottom: 25px;
+        }
+        
+        .blog-body {
+            color: #666;
+            line-height: 1.8;
+            font-size: 16px;
+        }
+        
+        .blog-body p {
+            margin-bottom: 20px;
+        }
+        
+        .blog-body h1, .blog-body h2, .blog-body h3, .blog-body h4, .blog-body h5, .blog-body h6 {
+            color: #333;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .blog-body img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        
+        .blog-body blockquote {
+            border-left: 4px solid #007bff;
+            padding-left: 20px;
+            margin: 30px 0;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            font-style: italic;
+        }
+        
+        .blog-body ul, .blog-body ol {
+            margin-bottom: 20px;
+            padding-left: 30px;
+        }
+        
+        .blog-body li {
+            margin-bottom: 8px;
+        }
+        
+        .blog-navigation {
+            border-top: 1px solid #eee;
+            padding-top: 30px;
+        }
+        
+        /* Sidebar Styles */
+        .sidebar-wrapper {
+            margin-top: 0;
+        }
+        
+        .sidebar-single-widget {
+            background: #ffffff;
+            border: 1px solid #eee;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            padding: 30px 25px;
+        }
+        
+        .sidebar-title {
+            color: #333;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #007bff;
+        }
+        
+        .author-info .author-name {
+            color: #333;
+            font-weight: 600;
+        }
+        
+        .related-post-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .related-post-item {
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .related-post-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        
+        .related-post-wrapper {
+            display: flex;
+            align-items: flex-start;
+        }
+        
+        .related-post-thumb {
+            flex-shrink: 0;
+            margin-right: 15px;
+            width: 60px;
+            height: 60px;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .related-post-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .related-post-content {
+            flex-grow: 1;
+        }
+        
+        .related-post-title a {
+            color: #333;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 500;
+            line-height: 1.4;
+        }
+        
+        .related-post-title a:hover {
+            color: #007bff;
+        }
+        
+        .related-post-meta {
+            margin-top: 5px;
+        }
+        
+        .related-post-meta span {
+            color: #888;
+            font-size: 13px;
+        }
+        
+        .social-share .share-buttons .btn {
+            transition: all 0.3s ease;
+        }
+        
+        .social-share .share-buttons .btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .navigation-links .btn {
+            transition: all 0.3s ease;
+        }
+        
+        .navigation-links .btn:hover {
+            transform: translateY(-1px);
+        }
+        
+        /* Responsive */
+        @@media (max-width: 768px) {
+            .blog-content {
+                padding: 25px;
+            }
+            
+            .blog-title {
+                font-size: 26px;
+            }
+            
+            .sidebar-single-widget {
+                padding: 20px 15px;
+            }
+            
+            .related-post-wrapper {
+                flex-direction: column;
+            }
+            
+            .related-post-thumb {
+                margin-right: 0;
+                margin-bottom: 10px;
+                width: 100%;
+                height: 150px;
+            }
+        }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        function shareOnFacebook() {
+            const url = encodeURIComponent(window.location.href);
+            const title = encodeURIComponent('@Html.Raw(Html.Encode(Model.Title))');
+            window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank', 'width=600,height=400');
+        }
+        
+        function shareOnTwitter() {
+            const url = encodeURIComponent(window.location.href);
+            const title = encodeURIComponent('@Html.Raw(Html.Encode(Model.Title))');
+            const author = encodeURIComponent('@Model.Author');
+            window.open(`https://twitter.com/intent/tweet?text=${title}&url=${url}&via=${author}`, '_blank', 'width=600,height=400');
+        }
+        
+        function copyLink() {
+            navigator.clipboard.writeText(window.location.href).then(function() {
+                // Show a temporary success message
+                const btn = event.target.closest('button');
+                const originalHTML = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-check me-2"></i>Copied!';
+                btn.classList.remove('btn-outline-success');
+                btn.classList.add('btn-success');
+                
+                setTimeout(function() {
+                    btn.innerHTML = originalHTML;
+                    btn.classList.remove('btn-success');
+                    btn.classList.add('btn-outline-success');
+                }, 2000);
+            }).catch(function(err) {
+                console.error('Could not copy text: ', err);
+                alert('Failed to copy link. Please copy manually from the address bar.');
+            });
+        }
+        
+        // Smooth scrolling for anchor links within blog content
+        document.querySelectorAll('.blog-body a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+}

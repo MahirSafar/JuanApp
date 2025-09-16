@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using JuanApp.Application.Models.BasketDtos;
 using JuanApp.Application.Models.BlogDtos;
 using JuanApp.Application.Models.CategoryDtos;
 using JuanApp.Application.Models.ColorDtos;
+using JuanApp.Application.Models.OrderDtos;
 using JuanApp.Application.Models.ProductDtos;
 using JuanApp.Application.Models.ServiceDtos;
 using JuanApp.Application.Models.SettingDtos;
@@ -47,6 +49,15 @@ namespace JuanApp.Application.Profiles
             CreateMap<CreateProductDto, Product>().ReverseMap();
 
             CreateMap<ProductImage, ProductImageDto>().ReverseMap();
+
+            // Basket mappings
+            CreateMap<BasketItem, BasketItemDto>()
+                .ForMember(dest => dest.Stock, opt => opt.MapFrom(src => src.Product != null ? src.Product.Stock : 0));
+            CreateMap<CreateBasketItemDto, BasketItem>();
+
+            // Order mappings
+            CreateMap<Order, OrderDto>().ReverseMap();
+            CreateMap<OrderItem, OrderItemDto>().ReverseMap();
         }
     }
 }

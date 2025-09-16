@@ -1,0 +1,340 @@
+@model BasketViewModel
+@{
+    ViewData["Title"] = "Shopping Cart";
+}
+
+<div class="breadcrumb-area pt-35 pb-35 bg-gray">
+    <div class="container">
+        <div class="breadcrumb-content text-center">
+            <ul>
+                <li>
+                    <a asp-controller="Home" asp-action="Index">Home</a>
+                </li>
+                <li class="active">Shopping Cart</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- cart main wrapper start -->
+<div class="cart-main-wrapper pt-100 pb-100">
+    <div class="container">
+        @if (Model.Items.Any())
+        {
+            <div class="row">
+                <div class="col-lg-12">
+                    <!-- Cart Table Area -->
+                    <div class="cart-table table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th class="pro-thumbnail">Thumbnail</th>
+                                    <th class="pro-title">Product</th>
+                                    <th class="pro-price">Price</th>
+                                    <th class="pro-quantity">Quantity</th>
+                                    <th class="pro-subtotal">Total</th>
+                                    <th class="pro-remove">Remove</th>
+                                </tr>
+                            </thead>
+                            <tbody id="basket-items">
+                                @foreach (var item in Model.Items)
+                                {
+                                    <tr data-item-id="@item.Id" class="cart-item">
+                                        <td class="pro-thumbnail">
+                                            <a href="#">
+                                                <img class="img-fluid" src="~/uploads/products/@item.ImageUrl" 
+                                                     alt="@item.ProductName" style="width: 80px; height: 80px; object-fit: cover;" />
+                                            </a>
+                                        </td>
+                                        <td class="pro-title">
+                                            <a href="#">@item.ProductName</a>
+                                            @if (!string.IsNullOrEmpty(item.Size) || !string.IsNullOrEmpty(item.Color))
+                                            {
+                                                <div class="small text-muted">
+                                                    @if (!string.IsNullOrEmpty(item.Size))
+                                                    {
+                                                        <span>Size: @item.Size</span>
+                                                    }
+                                                    @if (!string.IsNullOrEmpty(item.Color))
+                                                    {
+                                                        @if (!string.IsNullOrEmpty(item.Size)) { <text> | </text> }
+                                                        <span>Color: @item.Color</span>
+                                                    }
+                                                </div>
+                                            }
+                                        </td>
+                                        <td class="pro-price">
+                                            <span>@item.Price.ToString("C")</span>
+                                        </td>
+                                        <td class="pro-quantity">
+                                            <div class="pro-qty">
+                                                <input type="number" value="@item.Quantity" 
+                                                       class="quantity-input" 
+                                                       data-item-id="@item.Id" 
+                                                       data-max="@item.Stock" 
+                                                       min="1"
+                                                       max="@item.Stock" />
+                                            </div>
+                                            @if (item.Stock <= 5)
+                                            {
+                                                <small class="text-warning">Only @item.Stock left in stock</small>
+                                            }
+                                        </td>
+                                        <td class="pro-subtotal">
+                                            <span class="item-total" data-price="@item.Price" data-quantity="@item.Quantity">@item.Total.ToString("C")</span>
+                                        </td>
+                                        <td class="pro-remove">
+                                            <button type="button" class="btn btn-sqr remove-item" data-item-id="@item.Id" title="Remove item">
+                                                <i class="fa fa-times"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- Cart Update Option -->
+                    <div class="cart-update-option d-block d-md-flex justify-content-between">
+                        <div class="cart-update">
+                            <button type="button" class="btn btn-sqr" id="clear-basket">Clear Cart</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-5 ml-auto">
+                    <!-- Cart Calculation Area -->
+                    <div class="cart-calculator-wrapper">
+                        <div class="cart-calculate-items">
+                            <h3>Cart Totals</h3>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <tr class="total">
+                                        <td>Total</td>
+                                        <td class="total-amount" id="total">@Model.Total.ToString("C")</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <a asp-controller="Checkout" asp-action="Index" class="btn btn-sqr d-block">Proceed To Checkout</a>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="text-center">
+                        <i class="fa fa-shopping-cart" style="font-size: 4rem; color: #ddd; margin-bottom: 20px;"></i>
+                        <h3>Your cart is empty</h3>
+                        <p>Add some products to your cart to see them here.</p>
+                        <a asp-controller="Home" asp-action="Index" class="btn btn-sqr">Continue Shopping</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            let isUpdating = false;
+
+            // Update quantity with better validation
+            $('.quantity-input').on('change blur', function() {
+                if (isUpdating) return;
+                
+                var $input = $(this);
+                var itemId = $input.data('item-id');
+                var quantity = parseInt($input.val());
+                var maxQuantity = parseInt($input.data('max'));
+                var originalQuantity = parseInt($input.attr('data-original-quantity') || $input.val());
+                
+                // Store original quantity for rollback
+                if (!$input.attr('data-original-quantity')) {
+                    $input.attr('data-original-quantity', originalQuantity);
+                }
+                
+                // Validate quantity
+                if (isNaN(quantity) || quantity < 0) {
+                    $input.val(originalQuantity);
+                    showError('Invalid quantity');
+                    return;
+                }
+                
+                if (quantity > maxQuantity) {
+                    $input.val(maxQuantity);
+                    quantity = maxQuantity;
+                    showError(`Maximum available quantity is ${maxQuantity}`);
+                }
+                
+                if (quantity === 0) {
+                    if (confirm('Remove this item from your cart?')) {
+                        removeItem(itemId);
+                        return;
+                    } else {
+                        $input.val(originalQuantity);
+                        return;
+                    }
+                }
+                
+                updateQuantity(itemId, quantity, $input);
+            });
+            
+            // Remove item
+            $('.remove-item').on('click', function() {
+                var itemId = $(this).data('item-id');
+                var productName = $(this).closest('tr').find('.pro-title a').text().trim();
+                
+                if (confirm(`Remove "${productName}" from your cart?`)) {
+                    removeItem(itemId);
+                }
+            });
+            
+            // Clear basket
+            $('#clear-basket').on('click', function() {
+                if (confirm('Are you sure you want to clear your cart? This action cannot be undone.')) {
+                    clearBasket();
+                }
+            });
+            
+            function updateQuantity(itemId, quantity, $input) {
+                if (isUpdating) return;
+                isUpdating = true;
+                
+                var originalValue = $input.attr('data-original-quantity');
+                $input.prop('disabled', true);
+                
+                $.ajax({
+                    url: '@Url.Action("UpdateQuantity", "Basket")',
+                    type: 'POST',
+                    data: {
+                        id: itemId,
+                        quantity: quantity
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            // Update the item total
+                            var $row = $input.closest('tr');
+                            var price = parseFloat($row.find('.item-total').data('price'));
+                            var newTotal = price * quantity;
+                            $row.find('.item-total').text(formatCurrency(newTotal)).attr('data-quantity', quantity);
+                            
+                            // Update original quantity
+                            $input.attr('data-original-quantity', quantity);
+                            
+                            updateCartTotals();
+                            updateBasketCount();
+                            
+                            if (response.message) {
+                                showSuccess(response.message);
+                            }
+                        } else {
+                            $input.val(originalValue);
+                            showError(response.message);
+                        }
+                    },
+                    error: function() {
+                        $input.val(originalValue);
+                        showError('Error updating quantity');
+                    },
+                    complete: function() {
+                        $input.prop('disabled', false);
+                        isUpdating = false;
+                    }
+                });
+            }
+            
+            function removeItem(itemId) {
+                var $row = $(`tr[data-item-id="${itemId}"]`);
+                
+                $.ajax({
+                    url: '@Url.Action("RemoveItem", "Basket")',
+                    type: 'POST',
+                    data: { id: itemId },
+                    success: function(response) {
+                        if (response.success) {
+                            $row.fadeOut(300, function() {
+                                $(this).remove();
+                                updateCartTotals();
+                                updateBasketCount();
+                                
+                                // Check if cart is empty
+                                if ($('#basket-items tr').length === 0) {
+                                    location.reload();
+                                }
+                            });
+                            
+                            showSuccess(response.message);
+                        } else {
+                            showError(response.message);
+                        }
+                    },
+                    error: function() {
+                        showError('Error removing item');
+                    }
+                });
+            }
+            
+            function clearBasket() {
+                $.ajax({
+                    url: '@Url.Action("ClearBasket", "Basket")',
+                    type: 'POST',
+                    success: function(response) {
+                        if (response.success) {
+                            showSuccess(response.message);
+                            setTimeout(() => location.reload(), 1000);
+                        } else {
+                            showError(response.message);
+                        }
+                    },
+                    error: function() {
+                        showError('Error clearing basket');
+                    }
+                });
+            }
+            
+            function updateCartTotals() {
+                var total = 0;
+                $('.item-total').each(function() {
+                    var text = $(this).text().replace(/[$,]/g, '');
+                    var value = parseFloat(text) || 0;
+                    total += value;
+                });
+                
+                $('#total').text(formatCurrency(total));
+            }
+            
+            function updateBasketCount() {
+                if (window.basketManager) {
+                    window.basketManager.updateBasketCount();
+                }
+            }
+            
+            function formatCurrency(amount) {
+                return new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'USD'
+                }).format(amount || 0);
+            }
+            
+            function showSuccess(message) {
+                if (window.basketManager) {
+                    window.basketManager.showSuccess(message);
+                } else {
+                    alert(message);
+                }
+            }
+            
+            function showError(message) {
+                if (window.basketManager) {
+                    window.basketManager.showError(message);
+                } else {
+                    alert(message);
+                }
+            }
+        });
+    </script>
+}}

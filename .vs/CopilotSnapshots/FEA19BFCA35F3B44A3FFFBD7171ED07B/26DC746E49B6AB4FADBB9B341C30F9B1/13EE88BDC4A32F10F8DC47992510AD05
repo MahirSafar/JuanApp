@@ -1,0 +1,71 @@
+﻿using JuanApp.Application.Services.Interfaces;
+using Microsoft.AspNetCore.Mvc;
+
+namespace JuanApp.MVC.ViewComponents
+{
+    public class SiteSettingsViewComponent : ViewComponent
+    {
+        private readonly ISettingService _settingService;
+
+        public SiteSettingsViewComponent(ISettingService settingService)
+        {
+            _settingService = settingService;
+        }
+
+        public async Task<IViewComponentResult> InvokeAsync()
+        {
+            try
+            {
+                var settings = await _settingService.GetAllAsync();
+                var settingsDictionary = settings.ToDictionary(s => s.Key, s => s.Value);
+                
+                // Add default values if not found in database
+                var defaultSettings = new Dictionary<string, string>
+                {
+                    ["SiteName"] = "Juan Store",
+                    ["SiteTitle"] = "Juan - Premium Shoes Store",
+                    ["SiteDescription"] = "Discover our amazing collection of premium shoes",
+                    ["WelcomeMessage"] = "Welcome to Juan online store",
+                    ["FooterText"] = "Juan - Premium Shoes Store. All Rights Reserved",
+                    ["Phone"] = "+1 (555) 123-4567",
+                    ["Email"] = "info@juanstore.com",
+                    ["Address"] = "184 Main Rd E, St Albans VIC 3021, Australia",
+                    ["FacebookUrl"] = "#",
+                    ["TwitterUrl"] = "#",
+                    ["InstagramUrl"] = "#",
+                    ["LinkedInUrl"] = "#",
+                    ["Currency"] = "USD",
+                    ["CurrencySymbol"] = "$"
+                };
+
+                // Merge with database settings
+                foreach (var defaultSetting in defaultSettings)
+                {
+                    if (!settingsDictionary.ContainsKey(defaultSetting.Key))
+                    {
+                        settingsDictionary[defaultSetting.Key] = defaultSetting.Value;
+                    }
+                }
+
+                return View(settingsDictionary);
+            }
+            catch
+            {
+                // Return default settings if there's an error
+                var defaultSettings = new Dictionary<string, string>
+                {
+                    ["SiteName"] = "Juan Store",
+                    ["SiteTitle"] = "Juan - Premium Shoes Store",
+                    ["SiteDescription"] = "Discover our amazing collection of premium shoes",
+                    ["WelcomeMessage"] = "Welcome to Juan online store",
+                    ["FooterText"] = "Juan - Premium Shoes Store. All Rights Reserved",
+                    ["Phone"] = "+1 (555) 123-4567",
+                    ["Email"] = "info@juanstore.com",
+                    ["Address"] = "184 Main Rd E, St Albans VIC 3021, Australia"
+                };
+
+                return View(defaultSettings);
+            }
+        }
+    }
+}

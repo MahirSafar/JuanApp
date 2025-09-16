@@ -1,0 +1,171 @@
+﻿@model JuanApp.MVC.ViewComponents.NavigationViewModel
+
+<!-- main menu navbar start -->
+<nav class="desktop-menu">
+    <ul>
+        <li class="active">
+            <a asp-controller="Home" asp-action="Index">
+                Home
+            </a>
+        </li>
+        <li class="static">
+            <a href="#">Shop <i class="fa fa-angle-down"></i></a>
+            <ul class="megamenu dropdown">
+                <li class="mega-title">
+                    <a href="#">By Category</a>
+                    <ul>
+                        @if (Model.Categories.Any())
+                        {
+                            @foreach (var category in Model.Categories.Take(4))
+                            {
+                                <li>
+                                    <a asp-controller="Home" asp-action="ProductsByCategory" asp-route-id="@category.Id">
+                                        @category.Name
+                                    </a>
+                                </li>
+                            }
+                        }
+                        else
+                        {
+                            <li><a href="#">Men's Shoes</a></li>
+                            <li><a href="#">Women's Shoes</a></li>
+                            <li><a href="#">Sports Shoes</a></li>
+                            <li><a href="#">Casual Shoes</a></li>
+                        }
+                    </ul>
+                </li>
+                <li class="mega-title">
+                    <a href="#">By Gender</a>
+                    <ul>
+                        <li>
+                            <a asp-controller="Home" asp-action="ProductsByGender" asp-route-gender="Men">
+                                Men's Collection
+                            </a>
+                        </li>
+                        <li>
+                            <a asp-controller="Home" asp-action="ProductsByGender" asp-route-gender="Women">
+                                Women's Collection
+                            </a>
+                        </li>
+                        <li>
+                            <a asp-controller="Home" asp-action="ProductsByGender" asp-route-gender="Kids">
+                                Kids Collection
+                            </a>
+                        </li>
+                        <li>
+                            <a asp-controller="Home" asp-action="ProductsByGender" asp-route-gender="Unisex">
+                                Unisex Collection
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="mega-title">
+                    <a href="#">Shop Pages</a>
+                    <ul>
+                        <li><a asp-controller="Home" asp-action="Search">All Products</a></li>
+                        <li><a href="#">New Arrivals</a></li>
+                        <li><a href="#">Sale Items</a></li>
+                        <li><a href="#">Featured Products</a></li>
+                    </ul>
+                </li>
+                <li class="mega-title">
+                    <a href="#">More Categories</a>
+                    <ul>
+                        @if (Model.Categories.Count > 4)
+                        {
+                            @foreach (var category in Model.Categories.Skip(4).Take(4))
+                            {
+                                <li>
+                                    <a asp-controller="Home" asp-action="ProductsByCategory" asp-route-id="@category.Id">
+                                        @category.Name
+                                    </a>
+                                </li>
+                            }
+                        }
+                        else
+                        {
+                            <li><a href="#">Formal Shoes</a></li>
+                            <li><a href="#">Boots</a></li>
+                            <li><a href="#">Sandals</a></li>
+                            <li><a href="#">Accessories</a></li>
+                        }
+                    </ul>
+                </li>
+            </ul>
+        </li>
+        <li>
+            <a asp-controller="Home" asp-action="Search">
+                Products <i class="fa fa-angle-down"></i>
+            </a>
+            <ul class="dropdown">
+                <li>
+                    <a href="#">
+                        By Category
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                    <ul class="dropdown">
+                        @if (Model.Categories.Any())
+                        {
+                            @foreach (var category in Model.Categories.Take(6))
+                            {
+                                <li>
+                                    <a asp-controller="Home" asp-action="ProductsByCategory" asp-route-id="@category.Id">
+                                        @category.Name
+                                    </a>
+                                </li>
+                            }
+                        }
+                    </ul>
+                </li>
+                <li>
+                    <a href="#">
+                        By Gender
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                    <ul class="dropdown">
+                        <li>
+                            <a asp-controller="Home" asp-action="ProductsByGender" asp-route-gender="Men">Men's Shoes</a>
+                        </li>
+                        <li>
+                            <a asp-controller="Home" asp-action="ProductsByGender" asp-route-gender="Women">Women's Shoes</a>
+                        </li>
+                        <li>
+                            <a asp-controller="Home" asp-action="ProductsByGender" asp-route-gender="Kids">Kids Shoes</a>
+                        </li>
+                        <li>
+                            <a asp-controller="Home" asp-action="ProductsByGender" asp-route-gender="Unisex">Unisex Shoes</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#">
+                        Special Collections
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                    <ul class="dropdown">
+                        <li><a href="#">New Arrivals</a></li>
+                        <li><a href="#">Best Sellers</a></li>
+                        <li><a href="#">Sale Items</a></li>
+                        <li><a href="#">Featured Products</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+        <li>
+            <a href="#">
+                Pages <i class="fa fa-angle-down"></i>
+            </a>
+            <ul class="dropdown">
+                <li><a asp-controller="Home" asp-action="About">About Us</a></li>
+                <li><a asp-controller="Home" asp-action="Contact">Contact Us</a></li>
+                <li><a href="#">Size Guide</a></li>
+                <li><a href="#">Shipping Info</a></li>
+                <li><a href="#">Returns & Exchanges</a></li>
+                <li><a href="#">Privacy Policy</a></li>
+                <li><a href="#">Terms & Conditions</a></li>
+            </ul>
+        </li>
+        <li><a asp-controller="Home" asp-action="Contact">Contact us</a></li>
+    </ul>
+</nav>
+<!-- main menu navbar end -->

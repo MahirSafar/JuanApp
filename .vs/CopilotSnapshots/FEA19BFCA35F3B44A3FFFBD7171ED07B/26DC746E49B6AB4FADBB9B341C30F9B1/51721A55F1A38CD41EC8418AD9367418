@@ -1,0 +1,52 @@
+﻿using Microsoft.EntityFrameworkCore.Migrations;
+
+#nullable disable
+
+namespace JuanApp.Persistance.Migrations
+{
+    /// <inheritdoc />
+    public partial class AddDefaultSiteSettings : Migration
+    {
+        /// <inheritdoc />
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.InsertData(
+                table: "Settings",
+                columns: new[] { "Key", "Value", "Created", "IsDeleted" },
+                values: new object[,]
+                {
+                    { "SiteName", "Juan Store", DateTime.UtcNow, false },
+                    { "SiteTitle", "Juan - Premium Shoes Store", DateTime.UtcNow, false },
+                    { "SiteDescription", "Discover our amazing collection of premium shoes for men, women, and kids. Quality footwear with style and comfort.", DateTime.UtcNow, false },
+                    { "WelcomeMessage", "Welcome to Juan online store", DateTime.UtcNow, false },
+                    { "CompanyName", "Juan Store", DateTime.UtcNow, false },
+                    { "Phone", "+1 (555) 123-4567", DateTime.UtcNow, false },
+                    { "Email", "info@juanstore.com", DateTime.UtcNow, false },
+                    { "Address", "184 Main Rd E, St Albans VIC 3021, Australia", DateTime.UtcNow, false },
+                    { "FacebookUrl", "https://facebook.com/juanstore", DateTime.UtcNow, false },
+                    { "TwitterUrl", "https://twitter.com/juanstore", DateTime.UtcNow, false },
+                    { "InstagramUrl", "https://instagram.com/juanstore", DateTime.UtcNow, false },
+                    { "LinkedInUrl", "https://linkedin.com/company/juanstore", DateTime.UtcNow, false },
+                    { "FooterCopyright", "All Rights Reserved", DateTime.UtcNow, false },
+                    { "Currency", "USD", DateTime.UtcNow, false },
+                    { "CurrencySymbol", "$", DateTime.UtcNow, false },
+                    { "NewsletterTitle", "Subscribe to our newsletter", DateTime.UtcNow, false },
+                    { "NewsletterDescription", "Get the latest updates on new products and upcoming sales", DateTime.UtcNow, false }
+                });
+        }
+
+        /// <inheritdoc />
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DeleteData(
+                table: "Settings",
+                keyColumn: "Key",
+                keyValues: new object[] { 
+                    "SiteName", "SiteTitle", "SiteDescription", "WelcomeMessage", "CompanyName", 
+                    "Phone", "Email", "Address", "FacebookUrl", "TwitterUrl", "InstagramUrl", 
+                    "LinkedInUrl", "FooterCopyright", "Currency", "CurrencySymbol", 
+                    "NewsletterTitle", "NewsletterDescription" 
+                });
+        }
+    }
+}

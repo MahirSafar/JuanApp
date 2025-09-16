@@ -1,0 +1,464 @@
+﻿@model HomeIndexViewModel
+@{
+    ViewData["Title"] = "Home";
+}
+
+    <!-- main wrapper start -->
+<main>
+    <!-- hero slider section start -->
+    <section class="hero-slider">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="hero-slider-active slick-arrow-style slick-arrow-style_hero slick-dot-style">
+                        @if (Model.Sliders.Any())
+                        {
+                            @foreach (var slider in Model.Sliders)
+                            {
+                                <!-- single slider item start -->
+                                <div class="hero-single-slide">
+                                    <div class="hero-slider-item">
+                                        <div class="hero-slider-image">
+                                            <img src="~/uploads/sliders/@slider.ImageUrl" alt="@slider.Title" class="slider-bg-image" />
+                                        </div>
+                                        <div class="hero-slider-content slide-1">
+                                            <h5 class="slide-subtitle">@slider.Subtitle</h5>
+                                            <h2 class="slide-title">@slider.Title</h2>
+                                            <p class="slide-desc">@slider.Description</p>
+                                            <a href="@slider.ButtonUrl" class="btn btn-hero">@slider.ButtonText</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- single slider item end -->
+                            }
+                        }
+                        else
+                        {
+                            <!-- Default slider if no sliders in database -->
+                            <div class="hero-single-slide">
+                                <div class="hero-slider-item">
+                                    <div class="hero-slider-image">
+                                        <img src="~/assets/img/slider/slider-1.jpg" alt="Welcome to Juan Store" class="slider-bg-image" />
+                                    </div>
+                                    <div class="hero-slider-content slide-1">
+                                        <h5 class="slide-subtitle">Welcome to Juan Store!</h5>
+                                        <h2 class="slide-title">New Collection</h2>
+                                        <p class="slide-desc">Discover our amazing collection of premium products</p>
+                                        <a href="/shop" class="btn btn-hero">SHOP NOW</a>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- hero slider section end -->
+    
+    <!-- service features start -->
+    <section class="service-policy-area">
+        <div class="container">
+            <div class="row">
+                @if (Model.Services.Any())
+                {
+                    @foreach (var service in Model.Services.Take(3))
+                    {
+                        <!-- single policy item start -->
+                        <div class="col-lg-4">
+                            <div class="service-policy-item mt-30 bg-@(Model.Services.IndexOf(service) + 1)">
+                                <div class="policy-icon">
+                                    @if (!string.IsNullOrEmpty(service.Icon))
+                                    {
+                                        <i class="@service.Icon"></i>
+                                    }
+                                    else
+                                    {
+                                        <img src="~/assets/img/icon/policy-@(Model.Services.IndexOf(service) + 1).png" alt="policy icon" />
+                                    }
+                                </div>
+                                <div class="policy-content">
+                                    <h5 class="policy-title">@service.Title.ToUpper()</h5>
+                                    <p class="policy-desc">@service.Description</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- single policy item end -->
+                    }
+                }
+                else
+                {
+                    <!-- Default services if none in database -->
+                    <div class="col-lg-4">
+                        <div class="service-policy-item mt-30 bg-1">
+                            <div class="policy-icon">
+                                <img src="~/assets/img/icon/policy-1.png" alt="policy icon" />
+                            </div>
+                            <div class="policy-content">
+                                <h5 class="policy-title">FREE SHIPPING</h5>
+                                <p class="policy-desc">Free shipping on all order</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="service-policy-item mt-30 bg-2">
+                            <div class="policy-icon">
+                                <img src="~/assets/img/icon/policy-2.png" alt="policy icon" />
+                            </div>
+                            <div class="policy-content">
+                                <h5 class="policy-title">ONLINE SUPPORT</h5>
+                                <p class="policy-desc">Online support 24 hours a day</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="service-policy-item mt-30 bg-3">
+                            <div class="policy-icon">
+                                <img src="~/assets/img/icon/policy-3.png" alt="policy icon" />
+                            </div>
+                            <div class="policy-content">
+                                <h5 class="policy-title">MONEY RETURN</h5>
+                                <p class="policy-desc">Back guarantee under 5 days</p>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
+    <!-- service features end -->
+    
+    <!-- our product area start -->
+    <section class="our-product section-padding">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="section-title text-center">
+                        <h2 class="title">Our Product</h2>
+                        <p class="sub-title">Discover our amazing collection of premium products</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="product-carousel-4 mbn-50 slick-row-15 slick-arrow-style">
+                        @if (Model.FeaturedProducts.Any())
+                        {
+                            @foreach (var product in Model.FeaturedProducts)
+                            {
+                                <!-- product single item start -->
+                                <div class="product-item mb-50">
+                                    <div class="product-thumb">
+                                        @if (product.IsOnSale)
+                                        {
+                                            <span class="sale-badge">Sale!</span>
+                                        }
+                                        @if (!product.IsInStock)
+                                        {
+                                            <span class="stock-badge">Out of Stock</span>
+                                        }
+                                        <a href="@Url.Action("ProductDetail", "Home", new { id = product.Id })">
+                                            @if (!string.IsNullOrEmpty(product.MainImageUrl))
+                                            {
+                                                <img src="~/uploads/products/@product.MainImageUrl" alt="@product.Name" />
+                                            }
+                                            else
+                                            {
+                                                <img src="~/assets/img/product/default-product.jpg" alt="@product.Name" />
+                                            }
+                                        </a>
+                                    </div>
+                                    <div class="product-content">
+                                        <h5 class="product-name">
+                                            <a href="@Url.Action("ProductDetail", "Home", new { id = product.Id })">@product.Name</a>
+                                        </h5>
+                                        <div class="price-box">
+                                            @if (product.IsOnSale)
+                                            {
+                                                <span class="price-regular">$@product.DiscountedPrice.ToString("F2")</span>
+                                                <span class="price-old"><del>$@product.Price.ToString("F2")</del></span>
+                                            }
+                                            else
+                                            {
+                                                <span class="price-regular">$@product.Price.ToString("F2")</span>
+                                            }
+                                        </div>
+                                        <div class="product-action-link">
+                                            <a href="#" data-toggle="tooltip" title="Wishlist">
+                                                <i class="ion-android-favorite-outline"></i>
+                                            </a>
+                                            <a href="#" data-toggle="tooltip" title="Add To Cart" data-product-id="@product.Id">
+                                                <i class="ion-bag"></i>
+                                            </a>
+                                            <a href="@Url.Action("ProductDetail", "Home", new { id = product.Id })" data-toggle="tooltip" title="View Product">
+                                                <i class="ion-ios-eye-outline"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- product single item end -->
+                            }
+                        }
+                        else
+                        {
+                            <div class="col-12 text-center">
+                                <p>No products available at the moment.</p>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- our product area end -->
+    
+    <!-- banner statistic area start -->
+    <div class="banner-statistics">
+        <div class="container">
+            <div class="row no-gutters mtn-30">
+                <div class="col-md-6">
+                    <div class="img-container mt-30">
+                        <a href="@Url.Action("ProductsByGender", "Home", new { gender = "Men" })">
+                            <img src="~/assets/img/banner/banner-1.jpg" alt="banner-image" />
+                        </a>
+                        <div class="banner-text">
+                            <h5 class="banner-subtitle">sports shoes</h5>
+                            <h3 class="banner-title">20% Off<br />For Sports men</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="img-container mt-30">
+                        <a href="@Url.Action("ProductsByGender", "Home", new { gender = "Women" })">
+                            <img src="~/assets/img/banner/banner-2.jpg" alt="banner-image" />
+                        </a>
+                        <div class="banner-text">
+                            <h5 class="banner-subtitle">sports shoes</h5>
+                            <h3 class="banner-title">20% Off<br />For Sports women</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- banner statistic area end -->
+    
+    <!-- new products area start -->
+    <section class="top-seller-area section-padding">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="section-title text-center">
+                        <h2 class="title">New Products</h2>
+                        <p class="sub-title">Check out our latest arrivals</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xl-4 col-lg-5 col-md-5">
+                    <div class="product-banner">
+                        <a href="@Url.Action("Search", "Home")">
+                            <img src="~/assets/img/banner/banner-3.jpg" alt="product banner" />
+                        </a>
+                    </div>
+                </div>
+                <div class="col-xl-8 col-lg-7 col-md-7">
+                    <div class="top-seller-carousel slick-row-15 mtn-30">
+                        @if (Model.NewProducts.Any())
+                        {
+                            @foreach (var product in Model.NewProducts)
+                            {
+                                <!-- product item start -->
+                                <div class="slide-item">
+                                    <div class="pro-item-small mt-30">
+                                        <div class="product-thumb">
+                                            <a href="@Url.Action("ProductDetail", "Home", new { id = product.Id })">
+                                                @if (!string.IsNullOrEmpty(product.MainImageUrl))
+                                                {
+                                                    <img src="~/uploads/products/@product.MainImageUrl" alt="@product.Name" />
+                                                }
+                                                else
+                                                {
+                                                    <img src="~/assets/img/product/default-product.jpg" alt="@product.Name" />
+                                                }
+                                            </a>
+                                        </div>
+                                        <div class="pro-small-content">
+                                            <h6 class="product-name">
+                                                <a href="@Url.Action("ProductDetail", "Home", new { id = product.Id })">@product.Name</a>
+                                            </h6>
+                                            <div class="price-box">
+                                                @if (product.IsOnSale)
+                                                {
+                                                    <span class="price-regular">$@product.DiscountedPrice.ToString("F2")</span>
+                                                    <span class="price-old"><del>$@product.Price.ToString("F2")</del></span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="price-regular">$@product.Price.ToString("F2")</span>
+                                                }
+                                            </div>
+                                            <div class="ratings">
+                                                <!-- TODO: Implement product ratings -->
+                                                <span><i class="ion-android-star"></i></span>
+                                                <span><i class="ion-android-star"></i></span>
+                                                <span><i class="ion-android-star"></i></span>
+                                                <span><i class="ion-android-star"></i></span>
+                                                <span><i class="ion-android-star"></i></span>
+                                            </div>
+                                            <div class="product-link-2">
+                                                <a href="#" data-toggle="tooltip" title="Wishlist">
+                                                    <i class="ion-android-favorite-outline"></i>
+                                                </a>
+                                                <a href="#" data-toggle="tooltip" title="Add To Cart" data-product-id="@product.Id">
+                                                    <i class="ion-bag"></i>
+                                                </a>
+                                                <a href="@Url.Action("ProductDetail", "Home", new { id = product.Id })" data-toggle="tooltip" title="View Product">
+                                                    <i class="ion-ios-eye-outline"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- product item end -->
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- new products area end -->
+    
+    <!-- latest blog area start -->
+    <section class="latest-blog-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="section-title text-center">
+                        <h2 class="title">our blog</h2>
+                        <p class="sub-title">Read our latest news and insights</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="blog-carousel-active slick-row-15">
+                        @if (Model.LatestBlogs.Any())
+                        {
+                            @foreach (var blog in Model.LatestBlogs)
+                            {
+                                <!-- blog single item start -->
+                                <div class="blog-post-item">
+                                    <div class="blog-thumb">
+                                        <a href="@Url.Action("Detail", "Blog", new { id = blog.Id })">
+                                            @if (!string.IsNullOrEmpty(blog.ImageUrl))
+                                            {
+                                                <img src="~/uploads/blogs/@blog.ImageUrl" alt="@blog.Title" />
+                                            }
+                                            else
+                                            {
+                                                <img src="~/assets/img/blog/default-blog.jpg" alt="@blog.Title" />
+                                            }
+                                        </a>
+                                    </div>
+                                    <div class="blog-content">
+                                        <h5 class="blog-title">
+                                            <a href="@Url.Action("Detail", "Blog", new { id = blog.Id })">
+                                                @(blog.Title.Length > 60 ? blog.Title.Substring(0, 60) + "..." : blog.Title)
+                                            </a>
+                                        </h5>
+                                        <ul class="blog-meta">
+                                            <li><span>By: </span>@blog.Author,</li>
+                                            <li><span>On: </span>@blog.Created.ToString("MMM dd, yyyy")</li>
+                                        </ul>
+                                        <a href="@Url.Action("Detail", "Blog", new { id = blog.Id })" class="read-more">Read More...</a>
+                                    </div>
+                                </div>
+                                <!-- blog single item end -->
+                            }
+                        }
+                        else
+                        {
+                            <div class="col-12 text-center">
+                                <p>No blog posts available.</p>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- latest blog area end -->
+    
+    <!-- brand area start -->
+    <div class="brand-area section-padding">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="brand-active-carousel">
+                        <div class="brand-item">
+                            <a href="#">
+                                <img src="~/assets/img/brand/br1.png" alt="brand image" />
+                            </a>
+                        </div>
+                        <div class="brand-item">
+                            <a href="#">
+                                <img src="~/assets/img/brand/br2.png" alt="brand image" />
+                            </a>
+                        </div>
+                        <div class="brand-item">
+                            <a href="#">
+                                <img src="~/assets/img/brand/br3.png" alt="brand image" />
+                            </a>
+                        </div>
+                        <div class="brand-item">
+                            <a href="#">
+                                <img src="~/assets/img/brand/br4.png" alt="brand image" />
+                            </a>
+                        </div>
+                        <div class="brand-item">
+                            <a href="#">
+                                <img src="~/assets/img/brand/br5.png" alt="brand image" />
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- brand area end -->
+</main>
+<!-- main wrapper end -->
+
+<style>
+    .sale-badge {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: #e74c3c;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 3px;
+        font-size: 12px;
+        font-weight: bold;
+        z-index: 1;
+    }
+    
+    .stock-badge {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background: #95a5a6;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 3px;
+        font-size: 12px;
+        font-weight: bold;
+        z-index: 1;
+    }
+    
+    .product-thumb {
+        position: relative;
+    }
+</style>

@@ -1,0 +1,289 @@
+﻿@using JuanApp.Domain.Models
+@model OrderViewModel
+@{
+    ViewData["Title"] = $"Order Details - {Model.OrderNumber}";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/admin/css/order-detail.css" />
+}
+
+<div class="zenith-page-wrapper">
+    <div class="zenith-page-header">
+        <div class="zenith-breadcrumb">
+            <a asp-action="Index" asp-controller="Dashboard" class="zenith-breadcrumb-item">
+                <i class="fas fa-chart-line"></i> Dashboard
+            </a>
+            <span class="zenith-breadcrumb-separator"><i class="fas fa-chevron-right"></i></span>
+            <a asp-action="Index" class="zenith-breadcrumb-item">Orders</a>
+            <span class="zenith-breadcrumb-separator"><i class="fas fa-chevron-right"></i></span>
+            <span class="zenith-breadcrumb-current">@Model.OrderNumber</span>
+        </div>
+        <div class="zenith-header-actions">
+            <h1 class="zenith-page-title">
+                <i class="fas fa-receipt"></i>
+                Order Details
+            </h1>
+            <a asp-action="Index" class="zenith-btn zenith-btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Orders
+            </a>
+        </div>
+    </div>
+
+    <div class="zenith-content-grid">
+        <!-- Order Information -->
+        <div class="zenith-main-content">
+            <div class="zenith-card">
+                <div class="zenith-card-header">
+                    <h4 class="zenith-card-title">
+                        <i class="fas fa-info-circle"></i>
+                        Order Information
+                    </h4>
+                </div>
+                <div class="zenith-card-body">
+                    <div class="zenith-info-grid">
+                        <div class="zenith-info-section">
+                            <div class="zenith-info-group">
+                                <label class="zenith-info-label">Order Number</label>
+                                <div class="zenith-info-value">
+                                    <span class="zenith-order-badge">@Model.OrderNumber</span>
+                                </div>
+                            </div>
+                            
+                            <div class="zenith-info-group">
+                                <label class="zenith-info-label">Customer Name</label>
+                                <div class="zenith-info-value zenith-customer-name">@Model.FullCustomerName</div>
+                            </div>
+                            
+                            <div class="zenith-info-group">
+                                <label class="zenith-info-label">Order Date</label>
+                                <div class="zenith-info-value zenith-date-display">
+                                    @Model.OrderDate.ToString("MMMM dd, yyyy")
+                                    <span class="zenith-time-display">at @Model.OrderDate.ToString("HH:mm")</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="zenith-info-section">
+                            <div class="zenith-info-group">
+                                <label class="zenith-info-label">Delivery Address</label>
+                                <div class="zenith-info-value zenith-address">
+                                    <div class="zenith-address-line">@Model.Address</div>
+                                    <div class="zenith-city">@Model.City</div>
+                                </div>
+                            </div>
+                            
+                            <div class="zenith-info-group">
+                                <label class="zenith-info-label">Total Amount</label>
+                                <div class="zenith-info-value">
+                                    <span class="zenith-total-amount">@Model.TotalAmount.ToString("C")</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order Items -->
+            <div class="zenith-card">
+                <div class="zenith-card-header">
+                    <h4 class="zenith-card-title">
+                        <i class="fas fa-shopping-bag"></i>
+                        Order Items (@Model.OrderItems.Count)
+                    </h4>
+                </div>
+                <div class="zenith-card-body">
+                    <div class="zenith-table-wrapper">
+                        <table class="zenith-table">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Price</th>
+                                    <th>Quantity</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.OrderItems)
+                                {
+                                    <tr class="zenith-table-row">
+                                        <td>
+                                            <div class="zenith-product-info">
+                                                <div class="zenith-product-name">@item.ProductName</div>
+                                                @if (!string.IsNullOrEmpty(item.Size) || !string.IsNullOrEmpty(item.Color))
+                                                {
+                                                    <div class="zenith-product-variants">
+                                                        @if (!string.IsNullOrEmpty(item.Size))
+                                                        {
+                                                            <span class="zenith-variant-badge">Size: @item.Size</span>
+                                                        }
+                                                        @if (!string.IsNullOrEmpty(item.Color))
+                                                        {
+                                                            <span class="zenith-variant-badge">Color: @item.Color</span>
+                                                        }
+                                                    </div>
+                                                }
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="zenith-price">@item.Price.ToString("C")</span>
+                                        </td>
+                                        <td>
+                                            <span class="zenith-quantity-badge">@item.Quantity</span>
+                                        </td>
+                                        <td>
+                                            <span class="zenith-item-total">@item.Total.ToString("C")</span>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                            <tfoot>
+                                <tr class="zenith-total-row">
+                                    <th colspan="3">Total Amount:</th>
+                                    <th class="zenith-grand-total">@Model.TotalAmount.ToString("C")</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="zenith-sidebar-content">
+            <!-- Order Status Management -->
+            <div class="zenith-card">
+                <div class="zenith-card-header">
+                    <h4 class="zenith-card-title">
+                        <i class="fas fa-cog"></i>
+                        Order Status
+                    </h4>
+                </div>
+                <div class="zenith-card-body">
+                    <div class="zenith-current-status">
+                        <label class="zenith-info-label">Current Status</label>
+                        <div class="zenith-status-display">
+                            @switch (Model.Status)
+                            {
+                                case OrderStatus.Pending:
+                                    <span class="zenith-status-badge zenith-status-warning">
+                                        <i class="fas fa-clock"></i>Pending
+                                    </span>
+                                    break;
+                                case OrderStatus.Confirmed:
+                                    <span class="zenith-status-badge zenith-status-info">
+                                        <i class="fas fa-check-circle"></i>Confirmed
+                                    </span>
+                                    break;
+                                case OrderStatus.Shipped:
+                                    <span class="zenith-status-badge zenith-status-primary">
+                                        <i class="fas fa-shipping-fast"></i>Shipped
+                                    </span>
+                                    break;
+                                case OrderStatus.Delivered:
+                                    <span class="zenith-status-badge zenith-status-success">
+                                        <i class="fas fa-check-double"></i>Delivered
+                                    </span>
+                                    break;
+                                case OrderStatus.Cancelled:
+                                    <span class="zenith-status-badge zenith-status-danger">
+                                        <i class="fas fa-times-circle"></i>Cancelled
+                                    </span>
+                                    break;
+                            }
+                        </div>
+                    </div>
+
+                    <form asp-action="UpdateStatus" method="post" class="zenith-status-form">
+                        <input type="hidden" name="id" value="@Model.Id" />
+                        <div class="zenith-form-group">
+                            <label for="status" class="zenith-label">Update Status</label>
+                            <select name="status" id="status" class="zenith-select">
+                                <option value="0" selected="@(Model.Status == OrderStatus.Pending)">Pending</option>
+                                <option value="1" selected="@(Model.Status == OrderStatus.Confirmed)">Confirmed</option>
+                                <option value="2" selected="@(Model.Status == OrderStatus.Shipped)">Shipped</option>
+                                <option value="3" selected="@(Model.Status == OrderStatus.Delivered)">Delivered</option>
+                                <option value="4" selected="@(Model.Status == OrderStatus.Cancelled)">Cancelled</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="zenith-btn zenith-btn-primary zenith-btn-full">
+                            <i class="fas fa-save"></i>Update Status
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Order Timeline -->
+            <div class="zenith-card">
+                <div class="zenith-card-header">
+                    <h4 class="zenith-card-title">
+                        <i class="fas fa-history"></i>
+                        Order Timeline
+                    </h4>
+                </div>
+                <div class="zenith-card-body">
+                    <div class="zenith-timeline">
+                        <div class="zenith-timeline-item zenith-timeline-completed">
+                            <div class="zenith-timeline-marker"></div>
+                            <div class="zenith-timeline-content">
+                                <h6 class="zenith-timeline-title">Order Placed</h6>
+                                <div class="zenith-timeline-time">@Model.OrderDate.ToString("MMM dd, yyyy HH:mm")</div>
+                            </div>
+                        </div>
+                        
+                        <div class="zenith-timeline-item @(Model.Status >= OrderStatus.Confirmed ? "zenith-timeline-completed" : "")">
+                            <div class="zenith-timeline-marker"></div>
+                            <div class="zenith-timeline-content">
+                                <h6 class="zenith-timeline-title">Order Confirmed</h6>
+                                <div class="zenith-timeline-time">
+                                    @if (Model.Status >= OrderStatus.Confirmed)
+                                    {
+                                        <text>Confirmed</text>
+                                    }
+                                    else
+                                    {
+                                        <text>Pending confirmation</text>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="zenith-timeline-item @(Model.Status >= OrderStatus.Shipped ? "zenith-timeline-completed" : "")">
+                            <div class="zenith-timeline-marker"></div>
+                            <div class="zenith-timeline-content">
+                                <h6 class="zenith-timeline-title">Order Shipped</h6>
+                                <div class="zenith-timeline-time">
+                                    @if (Model.Status >= OrderStatus.Shipped)
+                                    {
+                                        <text>In transit</text>
+                                    }
+                                    else
+                                    {
+                                        <text>Preparing for shipment</text>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="zenith-timeline-item @(Model.Status >= OrderStatus.Delivered ? "zenith-timeline-completed" : "")">
+                            <div class="zenith-timeline-marker"></div>
+                            <div class="zenith-timeline-content">
+                                <h6 class="zenith-timeline-title">Order Delivered</h6>
+                                <div class="zenith-timeline-time">
+                                    @if (Model.Status >= OrderStatus.Delivered)
+                                    {
+                                        <text>Successfully delivered</text>
+                                    }
+                                    else
+                                    {
+                                        <text>Awaiting delivery</text>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

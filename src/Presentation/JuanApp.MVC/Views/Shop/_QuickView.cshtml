@@ -1,0 +1,245 @@
+@model ProductDetailViewModel
+
+<div class="row">
+    <!-- Product Images -->
+    <div class="col-md-6">
+        <div class="product-gallery">
+            <div class="main-image mb-3">
+                <img src="@(!string.IsNullOrEmpty(Model.MainImageUrl) ? "/uploads/products/" + Model.MainImageUrl : "/assets/images/no-image.jpg")" 
+                     alt="@Model.Name" 
+                     class="img-fluid rounded">
+            </div>
+            @if (Model.ProductImages.Any())
+            {
+                <div class="row g-2">
+                    @foreach (var image in Model.ProductImages.Take(4))
+                    {
+                        <div class="col-3">
+                            <img src="/uploads/products/@image.ImageUrl" 
+                                 alt="@Model.Name" 
+                                 class="img-fluid rounded thumbnail-image"
+                                 onclick="changeMainImage(this.src)">
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Product Details -->
+    <div class="col-md-6">
+        <div class="product-details">
+            <div class="product-category text-primary mb-2">@Model.CategoryName</div>
+            <h3 class="product-title text-dark mb-3">@Model.Name</h3>
+            
+            <!-- Price -->
+            <div class="product-price mb-3">
+                <span class="current-price text-success fs-4 fw-bold">$@Model.DiscountedPrice.ToString("F2")</span>
+                @if (Model.IsOnSale)
+                {
+                    <span class="original-price text-muted ms-2 text-decoration-line-through">$@Model.Price.ToString("F2")</span>
+                    <span class="badge bg-danger ms-2">-@Model.Discount%</span>
+                }
+            </div>
+
+            <!-- Stock Status -->
+            <div class="stock-status mb-3">
+                @if (Model.IsInStock)
+                {
+                    <span class="text-success">
+                        <i class="fas fa-check-circle me-1"></i>
+                        @Model.Stock in stock
+                    </span>
+                }
+                else
+                {
+                    <span class="text-danger">
+                        <i class="fas fa-times-circle me-1"></i>
+                        Out of stock
+                    </span>
+                }
+            </div>
+
+            <!-- Description -->
+            <div class="product-description mb-3">
+                <p class="text-dark">@Model.Description</p>
+            </div>
+
+            <!-- Product Options -->
+            <div class="product-options">
+                <!-- Colors -->
+                @if (Model.AvailableColors.Any())
+                {
+                    <div class="option-group mb-3">
+                        <label class="form-label text-dark">Color:</label>
+                        <div class="color-options d-flex gap-2">
+                            @foreach (var color in Model.AvailableColors)
+                            {
+                                <div class="color-option border rounded-circle" 
+                                     style="width: 30px; height: 30px; background-color: @color.HexCode; cursor: pointer;"
+                                     title="@color.Name"
+                                     data-color-id="@color.Id">
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+
+                <!-- Sizes -->
+                @if (Model.AvailableSizes.Any())
+                {
+                    <div class="option-group mb-3">
+                        <label class="form-label text-dark">Size:</label>
+                        <div class="size-options d-flex gap-2 flex-wrap">
+                            @foreach (var size in Model.AvailableSizes)
+                            {
+                                <div class="size-option btn btn-outline-secondary btn-sm" 
+                                     data-size-id="@size.Id">
+                                    @size.Size
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+
+                <!-- Quantity -->
+                <div class="option-group mb-3">
+                    <label class="form-label text-dark">Quantity:</label>
+                    <div class="quantity-input d-flex align-items-center gap-2">
+                        <button type="button" class="btn btn-outline-secondary btn-sm" onclick="decreaseQuantity()">-</button>
+                        <input type="number" id="quantity" value="1" min="1" max="@Model.Stock" class="form-control text-center" style="width: 80px;">
+                        <button type="button" class="btn btn-outline-secondary btn-sm" onclick="increaseQuantity()">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="product-actions">
+                @if (Model.IsInStock)
+                {
+                    <button class="btn btn-primary btn-lg me-2 mb-2" onclick="addToCartQuickView(@Model.Id)">
+                        <i class="fas fa-shopping-cart me-2"></i>Add to Cart
+                    </button>
+                }
+                else
+                {
+                    <button class="btn btn-secondary btn-lg me-2 mb-2" disabled>
+                        <i class="fas fa-times me-2"></i>Out of Stock
+                    </button>
+                }
+                
+                <button class="btn btn-outline-danger btn-lg mb-2" onclick="addToWishlistQuickView(@Model.Id)">
+                    <i class="fas fa-heart me-2"></i>Wishlist
+                </button>
+
+                <div class="mt-3">
+                    <a href="@Url.Action("Detail", "Product", new { id = Model.Id })" class="btn btn-outline-primary">
+                        <i class="fas fa-eye me-2"></i>View Full Details
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .thumbnail-image {
+        cursor: pointer;
+        transition: opacity 0.3s ease;
+    }
+    
+    .thumbnail-image:hover {
+        opacity: 0.7;
+    }
+    
+    .color-option {
+        border: 2px solid #ddd !important;
+        transition: all 0.3s ease;
+    }
+    
+    .color-option:hover,
+    .color-option.selected {
+        border-color: #007bff !important;
+        transform: scale(1.1);
+    }
+    
+    .size-option {
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .size-option:hover,
+    .size-option.selected {
+        background-color: #007bff;
+        border-color: #007bff;
+        color: white;
+    }
+</style>
+
+<script>
+    function changeMainImage(src) {
+        document.querySelector('.main-image img').src = src;
+    }
+    
+    function increaseQuantity() {
+        var input = document.getElementById('quantity');
+        var max = parseInt(input.getAttribute('max'));
+        var current = parseInt(input.value);
+        if (current < max) {
+            input.value = current + 1;
+        }
+    }
+    
+    function decreaseQuantity() {
+        var input = document.getElementById('quantity');
+        var current = parseInt(input.value);
+        if (current > 1) {
+            input.value = current - 1;
+        }
+    }
+    
+    function addToCartQuickView(productId) {
+        var selectedColor = document.querySelector('.color-option.selected');
+        var selectedSize = document.querySelector('.size-option.selected');
+        var quantity = document.getElementById('quantity').value;
+        
+        // You can implement the add to cart logic here
+        console.log('Add to cart:', {
+            productId: productId,
+            colorId: selectedColor ? selectedColor.dataset.colorId : null,
+            sizeId: selectedSize ? selectedSize.dataset.sizeId : null,
+            quantity: quantity
+        });
+        
+        // Close modal after adding to cart
+        $('#quickViewModal').modal('hide');
+        
+        // Show success message
+        alert('Product added to cart successfully!');
+    }
+    
+    function addToWishlistQuickView(productId) {
+        // Implement add to wishlist logic
+        console.log('Add to wishlist:', productId);
+        alert('Product added to wishlist!');
+    }
+    
+    // Color and size selection
+    document.querySelectorAll('.color-option').forEach(function(option) {
+        option.addEventListener('click', function() {
+            document.querySelectorAll('.color-option').forEach(function(o) {
+                o.classList.remove('selected');
+            });
+            this.classList.add('selected');
+        });
+    });
+    
+    document.querySelectorAll('.size-option').forEach(function(option) {
+        option.addEventListener('click', function() {
+            document.querySelectorAll('.size-option').forEach(function(o) {
+                o.classList.remove('selected');
+            });
+            this.classList.add('selected');
+        });
+    });
+</script>

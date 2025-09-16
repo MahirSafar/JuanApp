@@ -1,0 +1,58 @@
+using JuanApp.Application.Services.Interfaces;
+using Microsoft.AspNetCore.Mvc;
+
+namespace JuanApp.MVC.ViewComponents
+{
+    public class NavigationViewComponent : ViewComponent
+    {
+        private readonly ICategoryService _categoryService;
+        private readonly ISettingService _settingService;
+
+        public NavigationViewComponent(ICategoryService categoryService, ISettingService settingService)
+        {
+            _categoryService = categoryService;
+            _settingService = settingService;
+        }
+
+        public async Task<IViewComponentResult> InvokeAsync()
+        {
+            try
+            {
+                var categories = await _categoryService.GetAllAsync();
+                var settings = await _settingService.GetAllAsync();
+
+                var navigationData = new NavigationViewModel
+                {
+                    Categories = categories.Take(8).Select(c => new NavigationCategoryViewModel
+                    {
+                        Id = c.Id,
+                        Name = c.Name
+                    }).ToList(),
+                    Settings = settings.ToDictionary(s => s.Key, s => s.Value)
+                };
+
+                return View(navigationData);
+            }
+            catch
+            {
+                return View(new NavigationViewModel
+                {
+                    Categories = new List<NavigationCategoryViewModel>(),
+                    Settings = new Dictionary<string, string>()
+                });
+            }
+        }
+    }
+
+    public class NavigationViewModel
+    {
+        public List<NavigationCategoryViewModel> Categories { get; set; } = new();
+        public Dictionary<string, string> Settings { get; set; } = new();
+    }
+
+    public class NavigationCategoryViewModel
+    {
+        public int Id { get; set; }
+        public string Name { get; set; } = "";
+    }
+}

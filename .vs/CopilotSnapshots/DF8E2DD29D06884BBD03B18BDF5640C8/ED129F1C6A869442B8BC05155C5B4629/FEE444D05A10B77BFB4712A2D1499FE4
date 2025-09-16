@@ -1,0 +1,131 @@
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace JuanApp.MVC.ViewModels
+{
+    public class HomeIndexViewModel
+    {
+        public List<SliderItemViewModel> Sliders { get; set; } = new();
+        public List<ServiceItemViewModel> Services { get; set; } = new();
+        public List<ProductItemViewModel> FeaturedProducts { get; set; } = new();
+        public List<ProductItemViewModel> NewProducts { get; set; } = new();
+        public List<BlogItemViewModel> LatestBlogs { get; set; } = new();
+        public Dictionary<string, string> Settings { get; set; } = new();
+    }
+
+    public class SliderItemViewModel
+    {
+        public int Id { get; set; }
+        public string Title { get; set; } = "";
+        public string Subtitle { get; set; } = "";
+        public string Description { get; set; } = "";
+        public string ImageUrl { get; set; } = "";
+        public string ButtonText { get; set; } = "";
+        public string ButtonUrl { get; set; } = "";
+    }
+
+    public class ServiceItemViewModel
+    {
+        public int Id { get; set; }
+        public string Title { get; set; } = "";
+        public string Description { get; set; } = "";
+        public string Icon { get; set; } = "";
+    }
+
+    public class ProductItemViewModel
+    {
+        public int Id { get; set; }
+        public string Name { get; set; } = "";
+        public decimal Price { get; set; }
+        public decimal Discount { get; set; }
+        public string MainImageUrl { get; set; } = "";
+        public string CategoryName { get; set; } = "";
+        public int Stock { get; set; }
+        
+        public decimal DiscountedPrice
+        {
+            get
+            {
+                if (Discount > 0)
+                    return Price - (Price * Discount / 100);
+                return Price;
+            }
+        }
+        
+        public bool IsOnSale => Discount > 0;
+        public bool IsInStock => Stock > 0;
+    }
+
+    public class BlogItemViewModel
+    {
+        public int Id { get; set; }
+        public string Title { get; set; } = "";
+        public string ImageUrl { get; set; } = "";
+        public string Author { get; set; } = "";
+        public DateTime Created { get; set; }
+    }
+
+    public class ProductDetailViewModel
+    {
+        public int Id { get; set; }
+        public string Name { get; set; } = "";
+        public decimal Price { get; set; }
+        public decimal Discount { get; set; }
+        public string Description { get; set; } = "";
+        public int Stock { get; set; }
+        public string Gender { get; set; } = "";
+        public string MainImageUrl { get; set; } = "";
+        public string CategoryName { get; set; } = "";
+        public List<ProductImageItemViewModel> ProductImages { get; set; } = new();
+        public List<int> SelectedColorIds { get; set; } = new();
+        public List<int> SelectedSizeIds { get; set; } = new();
+        public List<int> SelectedTagIds { get; set; } = new();
+        public List<ProductItemViewModel> RelatedProducts { get; set; } = new();
+        
+        public decimal DiscountedPrice
+        {
+            get
+            {
+                if (Discount > 0)
+                    return Price - (Price * Discount / 100);
+                return Price;
+            }
+        }
+        
+        public bool IsOnSale => Discount > 0;
+        public bool IsInStock => Stock > 0;
+    }
+
+    public class ProductImageItemViewModel
+    {
+        public int Id { get; set; }
+        public string ImageUrl { get; set; } = "";
+    }
+
+    public class AboutViewModel
+    {
+        public Dictionary<string, string> Settings { get; set; } = new();
+        public List<ServiceItemViewModel> Services { get; set; } = new();
+    }
+
+    public class ContactFormViewModel
+    {
+        [Required(ErrorMessage = "Name is required")]
+        [StringLength(100, ErrorMessage = "Name cannot exceed 100 characters")]
+        public string Name { get; set; } = "";
+
+        [Required(ErrorMessage = "Email is required")]
+        [EmailAddress(ErrorMessage = "Please enter a valid email address")]
+        public string Email { get; set; } = "";
+
+        [Required(ErrorMessage = "Subject is required")]
+        [StringLength(200, ErrorMessage = "Subject cannot exceed 200 characters")]
+        public string Subject { get; set; } = "";
+
+        [Required(ErrorMessage = "Message is required")]
+        [StringLength(1000, ErrorMessage = "Message cannot exceed 1000 characters")]
+        public string Message { get; set; } = "";
+
+        [Phone(ErrorMessage = "Please enter a valid phone number")]
+        public string? Phone { get; set; }
+    }
+}

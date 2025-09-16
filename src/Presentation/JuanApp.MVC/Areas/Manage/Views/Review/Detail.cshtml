@@ -1,0 +1,634 @@
+@model ReviewViewModel
+@using JuanApp.Domain.Enums
+
+@{
+    ViewData["Title"] = "Review Details";
+}
+
+<!-- Success/Error Messages -->
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="zenith-alert zenith-alert-success">
+        <i class="fas fa-check-circle me-2"></i>@TempData["SuccessMessage"]
+        <button type="button" class="zenith-alert-close" onclick="this.parentElement.style.display='none'">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="zenith-alert zenith-alert-error">
+        <i class="fas fa-exclamation-circle me-2"></i>@TempData["ErrorMessage"]
+        <button type="button" class="zenith-alert-close" onclick="this.parentElement.style.display='none'">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+}
+
+<!-- Page Header -->
+<div class="zenith-page-header">
+    <div class="zenith-page-title-section">
+        <h1 class="zenith-page-title">Review Details</h1>
+        <p class="zenith-page-subtitle">View and manage review information</p>
+    </div>
+    <div class="zenith-page-actions">
+        <a href="@Url.Action("Index")" class="zenith-btn zenith-btn-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Back to Reviews
+        </a>
+    </div>
+</div>
+
+    <div class="zenith-detail-layout">
+        <!-- Review Information -->
+        <div class="zenith-detail-main">
+            <div class="zenith-card">
+                <div class="zenith-card-header">
+                    <h6 class="zenith-card-title">
+                        <i class="fas fa-comment me-2"></i>Review Information
+                    </h6>
+                </div>
+                <div class="zenith-card-body">
+                    <div class="zenith-detail-grid">
+                        <div class="zenith-detail-item">
+                            <h6 class="zenith-detail-label">Product</h6>
+                            <h5 class="zenith-detail-value zenith-text-primary">@Model.ProductName</h5>
+                            <small class="zenith-detail-meta">Product ID: @Model.ProductId</small>
+                        </div>
+                        <div class="zenith-detail-item">
+                            <h6 class="zenith-detail-label">Customer</h6>
+                            <h5 class="zenith-detail-value">@(!string.IsNullOrEmpty(Model.UserFullName) ? Model.UserFullName : Model.UserName)</h5>
+                            <small class="zenith-detail-meta">Username: @Model.UserName</small>
+                        </div>
+                    </div>
+
+                    <div class="zenith-detail-grid zenith-detail-grid-three">
+                        <div class="zenith-detail-item">
+                            <h6 class="zenith-detail-label">Rating</h6>
+                            <div class="zenith-rating-display">
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    if (i <= Model.Rate)
+                                    {
+                                        <i class="fas fa-star zenith-star-filled zenith-star-large"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="far fa-star zenith-star-empty zenith-star-large"></i>
+                                    }
+                                }
+                                <span class="zenith-rating-score">@Model.Rate/5</span>
+                            </div>
+                        </div>
+                        <div class="zenith-detail-item">
+                            <h6 class="zenith-detail-label">Status</h6>
+                            @switch (Model.Status)
+                            {
+                                case ReviewStatus.Pending:
+                                    <span class="zenith-badge zenith-badge-warning zenith-badge-large">
+                                        <i class="fas fa-clock me-1"></i>Pending
+                                    </span>
+                                    break;
+                                case ReviewStatus.Approved:
+                                    <span class="zenith-badge zenith-badge-success zenith-badge-large">
+                                        <i class="fas fa-check me-1"></i>Approved
+                                    </span>
+                                    break;
+                                case ReviewStatus.Rejected:
+                                    <span class="zenith-badge zenith-badge-danger zenith-badge-large">
+                                        <i class="fas fa-times me-1"></i>Rejected
+                                    </span>
+                                    break;
+                            }
+                        </div>
+                        <div class="zenith-detail-item">
+                            <h6 class="zenith-detail-label">Review ID</h6>
+                            <span class="zenith-detail-id">#@Model.Id</span>
+                        </div>
+                    </div>
+
+                    <div class="zenith-detail-content">
+                        <h6 class="zenith-detail-label">Review Content</h6>
+                        <div class="zenith-content-display">
+                            <p class="zenith-content-text">@Model.Content</p>
+                        </div>
+                    </div>
+
+                    <div class="zenith-detail-grid">
+                        <div class="zenith-detail-item">
+                            <h6 class="zenith-detail-label">Created Date</h6>
+                            <div class="zenith-date-display">
+                                <div class="zenith-date-line">
+                                    <i class="fas fa-calendar me-2"></i>@Model.Created.ToString("MMMM dd, yyyy")
+                                </div>
+                                <div class="zenith-date-line">
+                                    <i class="fas fa-clock me-2"></i>@Model.Created.ToString("HH:mm:ss")
+                                </div>
+                            </div>
+                        </div>
+                        @if (Model.LastModified.HasValue)
+                        {
+                            <div class="zenith-detail-item">
+                                <h6 class="zenith-detail-label">Last Modified</h6>
+                                <div class="zenith-date-display">
+                                    <div class="zenith-date-line">
+                                        <i class="fas fa-calendar me-2"></i>@Model.LastModified.Value.ToString("MMMM dd, yyyy")
+                                    </div>
+                                    <div class="zenith-date-line">
+                                        <i class="fas fa-clock me-2"></i>@Model.LastModified.Value.ToString("HH:mm:ss")
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Actions Panel -->
+        <div class="zenith-detail-sidebar">
+            <div class="zenith-card">
+                <div class="zenith-card-header">
+                    <h6 class="zenith-card-title">
+                        <i class="fas fa-cogs me-2"></i>Actions
+                    </h6>
+                </div>
+                <div class="zenith-card-body">
+                    @if (Model.Status == ReviewStatus.Pending)
+                    {
+                        <div class="zenith-action-group">
+                            <form method="post" asp-action="Approve" asp-route-id="@Model.Id">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="zenith-btn zenith-btn-success zenith-btn-full" 
+                                        onclick="return confirm('Are you sure you want to approve this review?')">
+                                    <i class="fas fa-check me-2"></i>Approve Review
+                                </button>
+                            </form>
+                            <form method="post" asp-action="Reject" asp-route-id="@Model.Id">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="zenith-btn zenith-btn-warning zenith-btn-full" 
+                                        onclick="return confirm('Are you sure you want to reject this review?')">
+                                    <i class="fas fa-times me-2"></i>Reject Review
+                                </button>
+                            </form>
+                        </div>
+                        <div class="zenith-divider"></div>
+                    }
+
+                    <div class="zenith-action-group">
+                        <form method="post" asp-action="Delete" asp-route-id="@Model.Id">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="zenith-btn zenith-btn-danger zenith-btn-full" 
+                                    onclick="return confirm('Are you sure you want to delete this review? This action cannot be undone.')">
+                                <i class="fas fa-trash me-2"></i>Delete Review
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="zenith-divider"></div>
+
+                    <div class="zenith-warning-note">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <span>All actions are permanent and cannot be undone.</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Review Statistics -->
+            <div class="zenith-card zenith-stats-card">
+                <div class="zenith-card-header">
+                    <h6 class="zenith-card-title">
+                        <i class="fas fa-chart-bar me-2"></i>Quick Info
+                    </h6>
+                </div>
+                <div class="zenith-card-body">
+                    <div class="zenith-stats-grid">
+                        <div class="zenith-stat-item">
+                            <div class="zenith-stat-border">
+                                <h6 class="zenith-stat-label">Review ID</h6>
+                                <h4 class="zenith-stat-value">#@Model.Id</h4>
+                            </div>
+                        </div>
+                        <div class="zenith-stat-item">
+                            <h6 class="zenith-stat-label">Rating</h6>
+                            <h4 class="zenith-stat-value zenith-stat-rating">@Model.Rate<small>/5</small></h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<style>
+    /* Zenith Theme Styles for Review Detail */
+    .zenith-alert {
+        padding: 1rem 1.5rem;
+        border-radius: 0.8rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1.5rem;
+        border: 1px solid transparent;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    
+    .zenith-alert-success {
+        background: linear-gradient(135deg, rgba(29, 233, 182, 0.1), rgba(29, 233, 182, 0.05));
+        color: var(--cyan-teal);
+        border-color: rgba(29, 233, 182, 0.3);
+    }
+    
+    .zenith-alert-error {
+        background: linear-gradient(135deg, rgba(220, 53, 69, 0.1), rgba(220, 53, 69, 0.05));
+        color: #dc3545;
+        border-color: rgba(220, 53, 69, 0.3);
+    }
+    
+    .zenith-alert-close {
+        background: none;
+        border: none;
+        color: inherit;
+        cursor: pointer;
+        padding: 0.25rem;
+        border-radius: 50%;
+        transition: background 0.2s;
+    }
+    
+    .zenith-alert-close:hover {
+        background: rgba(255,255,255,0.1);
+    }
+    
+    .zenith-page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 2rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid var(--border);
+    }
+    
+    .zenith-page-title {
+        font-family: 'Fira Code', monospace;
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--gold);
+        margin-bottom: 0.5rem;
+        letter-spacing: 0.02em;
+    }
+    
+    .zenith-page-subtitle {
+        color: var(--text-muted);
+        font-size: 1.1rem;
+        margin: 0;
+    }
+    
+    .zenith-btn {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.6rem;
+        text-decoration: none;
+        font-weight: 500;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-size: 0.95rem;
+    }
+    
+    .zenith-btn-primary {
+        background: linear-gradient(135deg, var(--cyan-teal), #17a085);
+        color: white;
+        box-shadow: 0 4px 12px rgba(29, 233, 182, 0.3);
+    }
+    
+    .zenith-btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(29, 233, 182, 0.4);
+        color: white;
+    }
+    
+    .zenith-btn-secondary {
+        background: var(--card-bg);
+        color: var(--text-muted);
+        border: 1px solid var(--border);
+    }
+    
+    .zenith-btn-secondary:hover {
+        background: var(--border);
+        color: var(--text-main);
+    }
+    
+    .zenith-btn-success {
+        background: linear-gradient(135deg, var(--cyan-teal), #17a085);
+        color: white;
+        box-shadow: 0 4px 12px rgba(29, 233, 182, 0.3);
+    }
+    
+    .zenith-btn-success:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(29, 233, 182, 0.4);
+        color: white;
+    }
+    
+    .zenith-btn-warning {
+        background: linear-gradient(135deg, var(--gold), #b8860b);
+        color: var(--sidebar-bg);
+        box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+    }
+    
+    .zenith-btn-warning:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(212, 175, 55, 0.4);
+        color: var(--sidebar-bg);
+    }
+    
+    .zenith-btn-danger {
+        background: linear-gradient(135deg, #dc3545, #c82333);
+        color: white;
+        box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+    }
+    
+    .zenith-btn-danger:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(220, 53, 69, 0.4);
+        color: white;
+    }
+    
+    .zenith-btn-full {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .zenith-card-header {
+        padding: 1.5rem 2rem 1rem 2rem;
+        border-bottom: 1px solid var(--border);
+    }
+    
+    .zenith-card-body {
+        padding: 2rem;
+    }
+    
+    .zenith-detail-layout {
+        display: grid;
+        grid-template-columns: 1fr 320px;
+        gap: 2rem;
+    }
+    
+    .zenith-detail-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+    
+    .zenith-detail-grid-three {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+    
+    .zenith-detail-item {
+        padding: 0;
+    }
+    
+    .zenith-detail-label {
+        color: var(--gold);
+        font-weight: 600;
+        margin-bottom: 0.75rem;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+    
+    .zenith-detail-value {
+        color: var(--text-main);
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        font-size: 1.25rem;
+        line-height: 1.3;
+    }
+    
+    .zenith-text-primary {
+        color: var(--cyan-teal) !important;
+    }
+    
+    .zenith-detail-meta {
+        color: var(--text-muted);
+        font-size: 0.85rem;
+    }
+    
+    .zenith-detail-id {
+        color: var(--gold);
+        font-weight: 700;
+        font-size: 1.25rem;
+        font-family: 'Fira Code', monospace;
+    }
+    
+    .zenith-rating-display {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+    
+    .zenith-star-large {
+        font-size: 1.5rem;
+    }
+    
+    .zenith-star-filled {
+        color: var(--gold);
+        filter: drop-shadow(0 0 4px var(--gold));
+    }
+    
+    .zenith-star-empty {
+        color: var(--text-muted);
+    }
+    
+    .zenith-rating-score {
+        margin-left: 0.75rem;
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--text-main);
+    }
+    
+    .zenith-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.6rem 1rem;
+        border-radius: 1rem;
+        font-size: 0.9rem;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+    }
+    
+    .zenith-badge-large {
+        padding: 0.75rem 1.25rem;
+        font-size: 1rem;
+    }
+    
+    .zenith-badge-warning {
+        background: linear-gradient(135deg, var(--gold), #b8860b);
+        color: var(--sidebar-bg);
+        box-shadow: 0 4px 8px rgba(212, 175, 55, 0.3);
+    }
+    
+    .zenith-badge-success {
+        background: linear-gradient(135deg, var(--cyan-teal), #17a085);
+        color: white;
+        box-shadow: 0 4px 8px rgba(29, 233, 182, 0.3);
+    }
+    
+    .zenith-badge-danger {
+        background: linear-gradient(135deg, #dc3545, #c82333);
+        color: white;
+        box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+    }
+    
+    .zenith-detail-content {
+        margin-bottom: 2rem;
+    }
+    
+    .zenith-content-display {
+        background: var(--sidebar-bg);
+        border: 1px solid var(--border);
+        border-left: 4px solid var(--cyan-teal);
+        border-radius: 0.6rem;
+        padding: 1.5rem;
+        margin-top: 0.75rem;
+    }
+    
+    .zenith-content-text {
+        color: var(--text-main);
+        font-size: 1rem;
+        line-height: 1.7;
+        margin: 0;
+    }
+    
+    .zenith-date-display {
+        color: var(--text-main);
+    }
+    
+    .zenith-date-line {
+        display: flex;
+        align-items: center;
+        margin-bottom: 0.5rem;
+        font-size: 0.95rem;
+    }
+    
+    .zenith-date-line:last-child {
+        margin-bottom: 0;
+    }
+    
+    .zenith-date-line i {
+        color: var(--cyan-teal);
+        width: 1.2rem;
+    }
+    
+    .zenith-action-group {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .zenith-divider {
+        height: 1px;
+        background: var(--border);
+        margin: 1.5rem 0;
+    }
+    
+    .zenith-warning-note {
+        display: flex;
+        align-items: center;
+        color: var(--text-muted);
+        font-size: 0.85rem;
+        text-align: center;
+        justify-content: center;
+        padding: 1rem;
+        background: rgba(var(--text-muted), 0.05);
+        border-radius: 0.5rem;
+    }
+    
+    .zenith-stats-card {
+        margin-top: 1.5rem;
+    }
+    
+    .zenith-stats-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0;
+    }
+    
+    .zenith-stat-item {
+        text-align: center;
+        padding: 1rem 0.5rem;
+    }
+    
+    .zenith-stat-border {
+        border-right: 1px solid var(--border);
+        padding-right: 1rem;
+    }
+    
+    .zenith-stat-label {
+        color: var(--text-muted);
+        font-size: 0.85rem;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+    }
+    
+    .zenith-stat-value {
+        color: var(--text-main);
+        font-weight: 700;
+        margin: 0;
+        font-size: 1.5rem;
+    }
+    
+    .zenith-stat-rating {
+        color: var(--gold);
+    }
+    
+    .zenith-stat-value small {
+        color: var(--text-muted);
+        font-size: 0.7em;
+        font-weight: 400;
+    }
+    
+    @@media (max-width: 1024px) {
+        .zenith-detail-layout {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+        
+        .zenith-detail-grid-three {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+    
+    @@media (max-width: 768px) {
+        .zenith-page-header {
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .zenith-detail-grid {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+        
+        .zenith-detail-grid-three {
+            grid-template-columns: 1fr;
+        }
+        
+        .zenith-card-body {
+            padding: 1.5rem;
+        }
+        
+        .zenith-stats-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .zenith-stat-border {
+            border-right: none;
+            border-bottom: 1px solid var(--border);
+            padding-right: 0;
+            padding-bottom: 1rem;
+            margin-bottom: 1rem;
+        }
+    }
+</style>

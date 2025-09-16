@@ -1,0 +1,589 @@
+﻿@using JuanApp.Domain.Models
+@model OrderListViewModel
+@{
+    ViewData["Title"] = "Order Management";
+}
+
+<div class="zenith-page-wrapper">
+    <div class="zenith-page-header">
+        <div class="zenith-breadcrumb">
+            <a asp-action="Index" asp-controller="Dashboard" class="zenith-breadcrumb-item">
+                <i class="fas fa-chart-line"></i> Dashboard
+            </a>
+            <span class="zenith-breadcrumb-separator"><i class="fas fa-chevron-right"></i></span>
+            <span class="zenith-breadcrumb-current">Orders</span>
+        </div>
+        <h1 class="zenith-page-title">
+            <i class="fas fa-shopping-cart"></i>
+            Order Management
+        </h1>
+    </div>
+
+    <!-- Filter Section -->
+    <div class="zenith-card">
+        <div class="zenith-card-header">
+            <h4 class="zenith-card-title">
+                <i class="fas fa-filter"></i>
+                Order Filters
+            </h4>
+        </div>
+        <div class="zenith-card-body">
+            <form method="get" asp-action="Index" class="zenith-filter-form">
+                <div class="zenith-form-group">
+                    <label for="status" class="zenith-label">Order Status</label>
+                    <select name="status" id="status" class="zenith-select">
+                        <option value="">All Orders</option>
+                        <option value="Pending" selected="@(Model.StatusFilter == "Pending")">Pending</option>
+                        <option value="Confirmed" selected="@(Model.StatusFilter == "Confirmed")">Confirmed</option>
+                        <option value="Shipped" selected="@(Model.StatusFilter == "Shipped")">Shipped</option>
+                        <option value="Delivered" selected="@(Model.StatusFilter == "Delivered")">Delivered</option>
+                        <option value="Cancelled" selected="@(Model.StatusFilter == "Cancelled")">Cancelled</option>
+                    </select>
+                </div>
+                <div class="zenith-form-actions">
+                    <button type="submit" class="zenith-btn zenith-btn-primary">
+                        <i class="fas fa-filter"></i> Filter
+                    </button>
+                    <a asp-action="Index" class="zenith-btn zenith-btn-secondary">
+                        <i class="fas fa-times"></i> Clear
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Orders Table -->
+    <div class="zenith-card">
+        <div class="zenith-card-header">
+            <h4 class="zenith-card-title">
+                <i class="fas fa-list"></i>
+                Orders (@Model.TotalCount)
+            </h4>
+        </div>
+        <div class="zenith-card-body">
+            @if (Model.Orders.Any())
+            {
+                <div class="zenith-table-wrapper">
+                    <table class="zenith-table">
+                        <thead>
+                            <tr>
+                                <th>Order #</th>
+                                <th>Customer</th>
+                                <th>Date</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                                <th>Items</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var order in Model.Orders)
+                            {
+                                <tr class="zenith-table-row">
+                                    <td>
+                                        <div class="zenith-order-number">@order.OrderNumber</div>
+                                    </td>
+                                    <td>
+                                        <div class="zenith-customer-info">
+                                            <div class="zenith-customer-name">@order.FullCustomerName</div>
+                                            <div class="zenith-customer-city">@order.City</div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="zenith-date-info">
+                                            <div class="zenith-date">@order.OrderDate.ToString("MMM dd, yyyy")</div>
+                                            <div class="zenith-time">@order.OrderDate.ToString("HH:mm")</div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="zenith-amount">@order.TotalAmount.ToString("C")</div>
+                                    </td>
+                                    <td>
+                                        @switch (order.Status)
+                                        {
+                                            case OrderStatus.Pending:
+                                                <span class="zenith-badge zenith-badge-warning">Pending</span>
+                                                break;
+                                            case OrderStatus.Confirmed:
+                                                <span class="zenith-badge zenith-badge-info">Confirmed</span>
+                                                break;
+                                            case OrderStatus.Shipped:
+                                                <span class="zenith-badge zenith-badge-primary">Shipped</span>
+                                                break;
+                                            case OrderStatus.Delivered:
+                                                <span class="zenith-badge zenith-badge-success">Delivered</span>
+                                                break;
+                                            case OrderStatus.Cancelled:
+                                                <span class="zenith-badge zenith-badge-danger">Cancelled</span>
+                                                break;
+                                        }
+                                    </td>
+                                    <td>
+                                        <span class="zenith-badge zenith-badge-secondary">@order.OrderItems.Count items</span>
+                                    </td>
+                                    <td>
+                                        <div class="zenith-action-buttons">
+                                            <a asp-action="Detail" asp-route-id="@order.Id" 
+                                               class="zenith-btn zenith-btn-sm zenith-btn-outline" 
+                                               title="View Details">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                @if (Model.TotalPages > 1)
+                {
+                    <div class="zenith-pagination-wrapper">
+                        <nav class="zenith-pagination">
+                            @if (Model.CurrentPage > 1)
+                            {
+                                <a href="@Url.Action("Index", new { page = Model.CurrentPage - 1, status = Model.StatusFilter })" 
+                                   class="zenith-pagination-btn zenith-pagination-prev">
+                                    <i class="fas fa-chevron-left"></i>
+                                </a>
+                            }
+                            
+                            @for (int i = Math.Max(1, Model.CurrentPage - 2); i <= Math.Min(Model.TotalPages, Model.CurrentPage + 2); i++)
+                            {
+                                <a href="@Url.Action("Index", new { page = i, status = Model.StatusFilter })" 
+                                   class="zenith-pagination-btn @(i == Model.CurrentPage ? "zenith-pagination-active" : "")">
+                                    @i
+                                </a>
+                            }
+                            
+                            @if (Model.CurrentPage < Model.TotalPages)
+                            {
+                                <a href="@Url.Action("Index", new { page = Model.CurrentPage + 1, status = Model.StatusFilter })" 
+                                   class="zenith-pagination-btn zenith-pagination-next">
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
+                            }
+                        </nav>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="zenith-empty-state">
+                    <div class="zenith-empty-icon">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <h4 class="zenith-empty-title">No Orders Found</h4>
+                    <p class="zenith-empty-description">There are no orders matching your criteria.</p>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<style>
+/* Page Layout */
+.zenith-page-wrapper {
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+.zenith-page-header {
+    margin-bottom: 2rem;
+}
+
+.zenith-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+.zenith-breadcrumb-item {
+    color: var(--cyan-teal);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: color 0.2s;
+}
+
+.zenith-breadcrumb-item:hover {
+    color: var(--gold);
+}
+
+.zenith-breadcrumb-separator {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+
+.zenith-breadcrumb-current {
+    color: var(--text-muted);
+}
+
+.zenith-page-title {
+    font-family: 'Fira Code', monospace;
+    font-size: 2rem;
+    color: var(--gold);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    letter-spacing: 0.05em;
+}
+
+/* Card Styles */
+.zenith-card {
+    background: rgba(24,26,32,0.95);
+    border-radius: 1rem;
+    border: 1px solid var(--border);
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow);
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.zenith-card:hover {
+    border-color: var(--cyan-teal);
+    box-shadow: 0 0 20px rgba(29, 233, 182, 0.1), var(--shadow);
+}
+
+.zenith-card-header {
+    background: linear-gradient(135deg, var(--card-bg) 0%, var(--sidebar-bg) 100%);
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.zenith-card-title {
+    font-family: 'Fira Code', monospace;
+    font-size: 1.1rem;
+    color: var(--gold);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    letter-spacing: 0.05em;
+}
+
+.zenith-card-body {
+    padding: 2rem;
+}
+
+/* Form Styles */
+.zenith-filter-form {
+    display: flex;
+    align-items: end;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.zenith-form-group {
+    flex: 1;
+    min-width: 200px;
+}
+
+.zenith-label {
+    display: block;
+    color: var(--text-main);
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.zenith-select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: var(--sidebar-bg);
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    color: var(--text-main);
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+
+.zenith-select:focus {
+    border-color: var(--cyan-teal);
+    box-shadow: 0 0 0 2px rgba(29, 233, 182, 0.2);
+    outline: none;
+}
+
+.zenith-form-actions {
+    display: flex;
+    gap: 1rem;
+}
+
+/* Button Styles */
+.zenith-btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+}
+
+.zenith-btn-primary {
+    background: linear-gradient(135deg, var(--cyan-teal), #0e8c7a);
+    color: var(--sidebar-bg);
+}
+
+.zenith-btn-primary:hover {
+    background: linear-gradient(135deg, #0e8c7a, var(--cyan-teal));
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(29, 233, 182, 0.3);
+}
+
+.zenith-btn-secondary {
+    background: var(--card-bg);
+    color: var(--text-main);
+    border: 1px solid var(--border);
+}
+
+.zenith-btn-secondary:hover {
+    background: var(--border);
+    color: var(--gold);
+}
+
+.zenith-btn-sm {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+}
+
+.zenith-btn-outline {
+    background: transparent;
+    color: var(--cyan-teal);
+    border: 1px solid var(--cyan-teal);
+}
+
+.zenith-btn-outline:hover {
+    background: var(--cyan-teal);
+    color: var(--sidebar-bg);
+}
+
+/* Table Styles */
+.zenith-table-wrapper {
+    overflow-x: auto;
+    border-radius: 0.5rem;
+    border: 1px solid var(--border);
+}
+
+.zenith-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.zenith-table thead {
+    background: var(--sidebar-bg);
+}
+
+.zenith-table th {
+    padding: 1rem;
+    text-align: left;
+    color: var(--gold);
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--border);
+}
+
+.zenith-table-row {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.2s;
+}
+
+.zenith-table-row:hover {
+    background: rgba(29, 233, 182, 0.05);
+}
+
+.zenith-table td {
+    padding: 1rem;
+    vertical-align: middle;
+}
+
+/* Table Content Styles */
+.zenith-order-number {
+    font-family: 'Fira Code', monospace;
+    color: var(--cyan-teal);
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.zenith-customer-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.zenith-customer-name {
+    color: var(--text-main);
+    font-weight: 500;
+}
+
+.zenith-customer-city {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+
+.zenith-date-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.zenith-date {
+    color: var(--text-main);
+}
+
+.zenith-time {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+
+.zenith-amount {
+    color: var(--gold);
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+/* Badge Styles */
+.zenith-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.zenith-badge-warning {
+    background: rgba(255, 193, 7, 0.2);
+    color: #ffc107;
+    border: 1px solid rgba(255, 193, 7, 0.3);
+}
+
+.zenith-badge-info {
+    background: rgba(13, 202, 240, 0.2);
+    color: #0dcaf0;
+    border: 1px solid rgba(13, 202, 240, 0.3);
+}
+
+.zenith-badge-primary {
+    background: rgba(29, 233, 182, 0.2);
+    color: var(--cyan-teal);
+    border: 1px solid rgba(29, 233, 182, 0.3);
+}
+
+.zenith-badge-success {
+    background: rgba(25, 135, 84, 0.2);
+    color: #198754;
+    border: 1px solid rgba(25, 135, 84, 0.3);
+}
+
+.zenith-badge-danger {
+    background: rgba(220, 53, 69, 0.2);
+    color: #dc3545;
+    border: 1px solid rgba(220, 53, 69, 0.3);
+}
+
+.zenith-badge-secondary {
+    background: rgba(108, 117, 125, 0.2);
+    color: #6c757d;
+    border: 1px solid rgba(108, 117, 125, 0.3);
+}
+
+/* Action Buttons */
+.zenith-action-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* Pagination */
+.zenith-pagination-wrapper {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: center;
+}
+
+.zenith-pagination {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.zenith-pagination-btn {
+    padding: 0.5rem 0.75rem;
+    background: var(--card-bg);
+    color: var(--text-main);
+    text-decoration: none;
+    border-radius: 0.5rem;
+    border: 1px solid var(--border);
+    transition: all 0.2s;
+    min-width: 2.5rem;
+    text-align: center;
+}
+
+.zenith-pagination-btn:hover {
+    background: var(--cyan-teal);
+    color: var(--sidebar-bg);
+    border-color: var(--cyan-teal);
+}
+
+.zenith-pagination-active {
+    background: var(--gold) !important;
+    color: var(--sidebar-bg) !important;
+    border-color: var(--gold) !important;
+}
+
+/* Empty State */
+.zenith-empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+}
+
+.zenith-empty-icon {
+    font-size: 4rem;
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+}
+
+.zenith-empty-title {
+    color: var(--text-main);
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.zenith-empty-description {
+    color: var(--text-muted);
+    font-size: 1rem;
+    margin: 0;
+}
+
+    .zenith-form-actions {
+        flex-direction: column;
+    }
+    
+    .zenith-table-wrapper {
+        font-size: 0.8rem;
+    }
+    
+    .zenith-table th,
+    .zenith-table td {
+        padding: 0.75rem 0.5rem;
+    }
+    
+    .zenith-pagination {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+}
+</style>

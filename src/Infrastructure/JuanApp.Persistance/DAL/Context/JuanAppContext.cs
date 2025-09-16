@@ -23,6 +23,9 @@ namespace JuanApp.Persistance.DAL.Context
         public DbSet<ProductTag> ProductTags { get; set; }
         public DbSet<Setting> Settings { get; set; }
         public DbSet<Blog> Blogs { get; set; }
+        public DbSet<BasketItem> BasketItems { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(JuanAppContext).Assembly);

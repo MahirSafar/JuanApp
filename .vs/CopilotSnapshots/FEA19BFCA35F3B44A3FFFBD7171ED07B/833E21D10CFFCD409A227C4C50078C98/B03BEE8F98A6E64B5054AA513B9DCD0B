@@ -1,0 +1,420 @@
+﻿using JuanApp.Application.Services.Interfaces;
+using JuanApp.MVC.ViewModels;
+using Microsoft.AspNetCore.Mvc;
+
+namespace JuanApp.MVC.Controllers
+{
+    public class HomeController : Controller
+    {
+        private readonly ISliderService _sliderService;
+        private readonly IServiceService _serviceService;
+        private readonly IProductService _productService;
+        private readonly IBlogService _blogService;
+        private readonly ISettingService _settingService;
+        private readonly ICategoryService _categoryService;
+
+        public HomeController(
+            ISliderService sliderService,
+            IServiceService serviceService,
+            IProductService productService,
+            IBlogService blogService,
+            ISettingService settingService,
+            ICategoryService categoryService)
+        {
+            _sliderService = sliderService;
+            _serviceService = serviceService;
+            _productService = productService;
+            _blogService = blogService;
+            _settingService = settingService;
+            _categoryService = categoryService;
+        }
+
+        public async Task<IActionResult> Index()
+        {
+            try
+            {
+                // Get all data for the home page
+                var sliders = await _sliderService.GetAllAsync();
+                var services = await _serviceService.GetAllAsync();
+                var allProducts = await _productService.GetAllAsync();
+                var blogs = await _blogService.GetAllAsync();
+                var settings = await _settingService.GetAllAsync();
+
+                // Create view model
+                var viewModel = new HomeIndexViewModel
+                {
+                    // Hero sliders
+                    Sliders = sliders.Select(s => new SliderItemViewModel
+                    {
+                        Id = s.Id,
+                        Title = s.Title,
+                        Subtitle = s.Subtitle,
+                        Description = s.Description,
+                        ImageUrl = s.ImageUrl,
+                        ButtonText = s.ButtonText,
+                        ButtonUrl = s.ButtonUrl
+                    }).ToList(),
+
+                    // Service features (Free shipping, Support, etc.)
+                    Services = services.Take(3).Select(s => new ServiceItemViewModel
+                    {
+                        Id = s.Id,
+                        Title = s.Title,
+                        Description = s.Description,
+                        Icon = s.Icon
+                    }).ToList(),
+
+                    // Featured products (carousel)
+                    FeaturedProducts = allProducts.Take(8).Select(p => new ProductItemViewModel
+                    {
+                        Id = p.Id,
+                        Name = p.Name,
+                        Price = p.Price,
+                        Discount = p.Discount,
+                        MainImageUrl = p.MainImageUrl,
+                        CategoryName = p.CategoryName,
+                        Stock = p.Stock
+                    }).ToList(),
+
+                    // New products
+                    NewProducts = allProducts.OrderByDescending(p => p.Created)
+                                           .Take(6)
+                                           .Select(p => new ProductItemViewModel
+                                           {
+                                               Id = p.Id,
+                                               Name = p.Name,
+                                               Price = p.Price,
+                                               Discount = p.Discount,
+                                               MainImageUrl = p.MainImageUrl,
+                                               CategoryName = p.CategoryName,
+                                               Stock = p.Stock
+                                           }).ToList(),
+
+                    // Latest blog posts
+                    LatestBlogs = blogs.OrderByDescending(b => b.Created)
+                                     .Take(4)
+                                     .Select(b => new BlogItemViewModel
+                                     {
+                                         Id = b.Id,
+                                         Title = b.Title,
+                                         ImageUrl = b.ImageUrl,
+                                         Author = b.Author,
+                                         Created = b.Created
+                                     }).ToList(),
+
+                    // Site settings
+                    Settings = settings.ToDictionary(s => s.Key, s => s.Value)
+                };
+
+                return View(viewModel);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception here if you have logging configured
+                // For now, return empty view model to prevent crashes
+                var emptyViewModel = new HomeIndexViewModel
+                {
+                    Sliders = new List<SliderItemViewModel>(),
+                    Services = new List<ServiceItemViewModel>(),
+                    FeaturedProducts = new List<ProductItemViewModel>(),
+                    NewProducts = new List<ProductItemViewModel>(),
+                    LatestBlogs = new List<BlogItemViewModel>(),
+                    Settings = new Dictionary<string, string>()
+                };
+
+                return View(emptyViewModel);
+            }
+        }
+
+        public async Task<IActionResult> Search(string searchTerm, int? categoryId, decimal? minPrice, decimal? maxPrice, string? gender)
+        {
+            if (string.IsNullOrWhiteSpace(searchTerm) && !categoryId.HasValue && !minPrice.HasValue && !maxPrice.HasValue && string.IsNullOrWhiteSpace(gender))
+            {
+                return RedirectToAction("Index");
+            }
+
+            try
+            {
+                IEnumerable<Application.Models.ProductDtos.ProductDto> products;
+
+                if (!string.IsNullOrWhiteSpace(searchTerm))
+                {
+                    products = await _productService.SearchAsync(searchTerm);
+                }
+                else if (categoryId.HasValue)
+                {
+                    products = await _productService.GetByCategoryAsync(categoryId.Value);
+                }
+                else if (!string.IsNullOrWhiteSpace(gender))
+                {
+                    products = await _productService.GetByGenderAsync(gender);
+                }
+                else
+                {
+                    products = await _productService.GetAllAsync();
+                }
+
+                // Apply additional filters
+                if (minPrice.HasValue)
+                {
+                    products = products.Where(p => p.Price >= minPrice.Value);
+                }
+
+                if (maxPrice.HasValue)
+                {
+                    products = products.Where(p => p.Price <= maxPrice.Value);
+                }
+
+                var searchResults = products.Select(p => new ProductItemViewModel
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    Price = p.Price,
+                    Discount = p.Discount,
+                    MainImageUrl = p.MainImageUrl,
+                    CategoryName = p.CategoryName,
+                    Stock = p.Stock
+                }).ToList();
+
+                var categories = await _categoryService.GetAllAsync();
+                ViewBag.Categories = categories;
+                ViewBag.SearchTerm = searchTerm;
+                ViewBag.CategoryId = categoryId;
+                ViewBag.MinPrice = minPrice;
+                ViewBag.MaxPrice = maxPrice;
+                ViewBag.Gender = gender;
+
+                return View(searchResults);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                return View(new List<ProductItemViewModel>());
+            }
+        }
+
+        public async Task<IActionResult> ProductsByCategory(int id)
+        {
+            try
+            {
+                var products = await _productService.GetByCategoryAsync(id);
+                var categories = await _categoryService.GetAllAsync();
+                var category = categories.FirstOrDefault(c => c.Id == id);
+
+                var productViewModels = products.Select(p => new ProductItemViewModel
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    Price = p.Price,
+                    Discount = p.Discount,
+                    MainImageUrl = p.MainImageUrl,
+                    CategoryName = p.CategoryName,
+                    Stock = p.Stock
+                }).ToList();
+
+                ViewBag.CategoryName = category?.Name ?? "Products";
+                ViewBag.CategoryId = id;
+                
+                return View("Search", productViewModels);
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("Index");
+            }
+        }
+
+        public async Task<IActionResult> ProductsByGender(string gender)
+        {
+            if (string.IsNullOrWhiteSpace(gender))
+            {
+                return RedirectToAction("Index");
+            }
+
+            try
+            {
+                var products = await _productService.GetByGenderAsync(gender);
+
+                var productViewModels = products.Select(p => new ProductItemViewModel
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    Price = p.Price,
+                    Discount = p.Discount,
+                    MainImageUrl = p.MainImageUrl,
+                    CategoryName = p.CategoryName,
+                    Stock = p.Stock
+                }).ToList();
+
+                ViewBag.CategoryName = $"{gender} Products";
+                ViewBag.Gender = gender;
+
+                return View("Search", productViewModels);
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("Index");
+            }
+        }
+
+        public async Task<IActionResult> ProductDetail(int id)
+        {
+            try
+            {
+                var product = await _productService.GetByIdAsync(id);
+                if (product == null)
+                {
+                    return NotFound();
+                }
+
+                var viewModel = new ProductDetailViewModel
+                {
+                    Id = product.Id,
+                    Name = product.Name,
+                    Price = product.Price,
+                    Discount = product.Discount,
+                    Description = product.Description,
+                    Stock = product.Stock,
+                    Gender = product.Gender,
+                    MainImageUrl = product.MainImageUrl,
+                    CategoryName = product.CategoryName,
+                    ProductImages = product.ProductImages.Select(pi => new ProductImageItemViewModel
+                    {
+                        Id = pi.Id,
+                        ImageUrl = pi.ImageUrl
+                    }).ToList(),
+                    SelectedColorIds = product.SelectedColorIds,
+                    SelectedSizeIds = product.SelectedSizeIds,
+                    SelectedTagIds = product.SelectedTagIds
+                };
+
+                // Get related products
+                var relatedProducts = await _productService.GetByCategoryAsync(product.CategoryId);
+                viewModel.RelatedProducts = relatedProducts.Where(p => p.Id != id)
+                                                          .Take(4)
+                                                          .Select(p => new ProductItemViewModel
+                                                          {
+                                                              Id = p.Id,
+                                                              Name = p.Name,
+                                                              Price = p.Price,
+                                                              Discount = p.Discount,
+                                                              MainImageUrl = p.MainImageUrl,
+                                                              CategoryName = p.CategoryName,
+                                                              Stock = p.Stock
+                                                          }).ToList();
+
+                return View(viewModel);
+            }
+            catch (Exception ex)
+            {
+                return NotFound();
+            }
+        }
+
+        public async Task<IActionResult> About()
+        {
+            try
+            {
+                var settings = await _settingService.GetAllAsync();
+                var services = await _serviceService.GetAllAsync();
+
+                var viewModel = new AboutViewModel
+                {
+                    Settings = settings.ToDictionary(s => s.Key, s => s.Value),
+                    Services = services.Select(s => new ServiceItemViewModel
+                    {
+                        Id = s.Id,
+                        Title = s.Title,
+                        Description = s.Description,
+                        Icon = s.Icon
+                    }).ToList()
+                };
+
+                return View(viewModel);
+            }
+            catch (Exception ex)
+            {
+                return View(new AboutViewModel());
+            }
+        }
+
+        public async Task<IActionResult> Contact()
+        {
+            try
+            {
+                var settings = await _settingService.GetAllAsync();
+                ViewBag.Settings = settings.ToDictionary(s => s.Key, s => s.Value);
+                return View();
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }
+        }
+
+        [HttpPost]
+        public IActionResult Contact(ContactFormViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            // TODO: Implement contact form submission (email sending, etc.)
+            TempData["SuccessMessage"] = "Thank you for your message. We'll get back to you soon!";
+            return RedirectToAction("Contact");
+        }
+
+        // API endpoints for AJAX calls
+        [HttpGet]
+        public async Task<IActionResult> GetProducts(int page = 1, int pageSize = 8, int? categoryId = null, string? gender = null)
+        {
+            try
+            {
+                IEnumerable<var> products;
+
+                if (categoryId.HasValue)
+                {
+                    products = await _productService.GetByCategoryAsync(categoryId.Value);
+                }
+                else if (!string.IsNullOrWhiteSpace(gender))
+                {
+                    products = await _productService.GetByGenderAsync(gender);
+                }
+                else
+                {
+                    products = await _productService.GetAllAsync();
+                }
+
+                var pagedProducts = products.Skip((page - 1) * pageSize)
+                                          .Take(pageSize)
+                                          .Select(p => new ProductItemViewModel
+                                          {
+                                              Id = p.Id,
+                                              Name = p.Name,
+                                              Price = p.Price,
+                                              Discount = p.Discount,
+                                              MainImageUrl = p.MainImageUrl,
+                                              CategoryName = p.CategoryName,
+                                              Stock = p.Stock
+                                          });
+
+                return Json(new
+                {
+                    products = pagedProducts,
+                    totalCount = products.Count(),
+                    currentPage = page,
+                    totalPages = (int)Math.Ceiling((double)products.Count() / pageSize)
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = "Failed to load products" });
+            }
+        }
+
+        public IActionResult Error()
+        {
+            return View();
+        }
+    }
+}

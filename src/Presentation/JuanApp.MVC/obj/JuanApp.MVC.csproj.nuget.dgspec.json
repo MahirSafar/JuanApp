@@ -192,6 +192,9 @@
             "projectReferences": {
               "C:\\Users\\Mahir\\Saved Games\\JuanApp\\src\\Core\\JuanApp.Application\\JuanApp.Application.csproj": {
                 "projectPath": "C:\\Users\\Mahir\\Saved Games\\JuanApp\\src\\Core\\JuanApp.Application\\JuanApp.Application.csproj"
+              },
+              "C:\\Users\\Mahir\\Saved Games\\JuanApp\\src\\Infrastructure\\JuanApp.Persistance\\JuanApp.Persistance.csproj": {
+                "projectPath": "C:\\Users\\Mahir\\Saved Games\\JuanApp\\src\\Infrastructure\\JuanApp.Persistance\\JuanApp.Persistance.csproj"
               }
             }
           }

@@ -1,0 +1,2064 @@
+﻿@model ProductDetailViewModel
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<!-- Hidden form for CSRF token -->
+<form style="display: none;">
+    @Html.AntiForgeryToken()
+</form>
+
+<!-- Breadcrumb Section -->
+<div class="breadcrumb-area">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="breadcrumb-wrap">
+                    <nav aria-label="breadcrumb">
+                        <ul class="breadcrumb">
+                            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+                            <li class="breadcrumb-item"><a asp-controller="Product" asp-action="Index">Products</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">@Model.Name</li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Product Detail Section -->
+<div class="product-details-area section-padding">
+    <div class="container">
+        <div class="row">
+            <!-- Product Images -->
+            <div class="col-lg-6 col-md-6">
+                <div class="product-details-img">
+                    <div class="product-gallery">
+                        <!-- Main Image -->
+                        <div class="main-image-container mb-4">
+                            @if (!string.IsNullOrEmpty(Model.MainImageUrl))
+                            {
+                                <img id="mainProductImage" src="~/uploads/products/@Model.MainImageUrl" alt="@Model.Name" class="main-product-image img-fluid" />
+                            }
+                            else
+                            {
+                                <div class="no-image-placeholder">
+                                    <i class="fas fa-image fa-4x text-muted"></i>
+                                    <p class="text-muted mt-2">No image available</p>
+                                </div>
+                            }
+                            @if (Model.IsOnSale)
+                            {
+                                <span class="product-badge sale-badge">-@Model.Discount% OFF</span>
+                            }
+                            @if (!Model.IsInStock)
+                            {
+                                <span class="product-badge stock-badge">OUT OF STOCK</span>
+                            }
+                        </div>
+                        
+                        <!-- Thumbnail Images -->
+                        @if (Model.ProductImages.Any() || !string.IsNullOrEmpty(Model.MainImageUrl))
+                        {
+                            <div class="thumbnail-gallery">
+                                <div class="row g-2">
+                                    @if (!string.IsNullOrEmpty(Model.MainImageUrl))
+                                    {
+                                        <div class="col-3">
+                                            <div class="thumbnail-item active" title="Main Image">
+                                                <img src="~/uploads/products/@Model.MainImageUrl" alt="@Model.Name Main" class="thumbnail-image" data-image="/uploads/products/@Model.MainImageUrl" />
+                                            </div>
+                                        </div>
+                                    }
+                                    @foreach (var image in Model.ProductImages.Take(3))
+                                    {
+                                        <div class="col-3">
+                                            <div class="thumbnail-item" title="Product Image @(Model.ProductImages.ToList().IndexOf(image) + 1)">
+                                                <img src="~/uploads/products/@image.ImageUrl" alt="@Model.Name - Image @(Model.ProductImages.ToList().IndexOf(image) + 1)" class="thumbnail-image" data-image="/uploads/products/@image.ImageUrl" />
+                                            </div>
+                                        </div>
+                                    }
+                                    
+                                    @* Add placeholder thumbnails if we have less than 4 images *@
+                                    @{
+                                        var totalImages = 1 + Model.ProductImages.Take(3).Count(); // Main image + additional images
+                                        var placeholderCount = 4 - totalImages;
+                                    }
+                                    @for (int i = 0; i < placeholderCount; i++)
+                                    {
+                                        <div class="col-3">
+                                            <div class="thumbnail-item placeholder-thumbnail">
+                                                <div class="thumbnail-placeholder">
+                                                    <i class="fas fa-image text-muted"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                                <small class="text-muted mt-2 d-block">Click thumbnails to change main image</small>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Product Information -->
+            <div class="col-lg-6 col-md-6">
+                <div class="product-details-content">
+                    <!-- Product Meta -->
+                    <div class="product-meta mb-3">
+                        <span class="category-badge">@Model.CategoryName</span>
+                        <span class="gender-badge">@Model.Gender</span>
+                    </div>
+                    
+                    <!-- Product Title -->
+                    <h1 class="product-title">@Model.Name</h1>
+                    
+                    <!-- Product Rating (with link to reviews) -->
+                    <div class="product-rating mb-3">
+                        <div class="rating-stars">
+                            @if (Model.ReviewStatistics.TotalReviews > 0)
+                            {
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    if (i <= Math.Floor(Model.ReviewStatistics.AverageRating))
+                                    {
+                                        <i class="fas fa-star"></i>
+                                    }
+                                    else if (i - Model.ReviewStatistics.AverageRating < 1)
+                                    {
+                                        <i class="fas fa-star-half-alt"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="far fa-star"></i>
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                <i class="far fa-star"></i>
+                                <i class="far fa-star"></i>
+                                <i class="far fa-star"></i>
+                                <i class="far fa-star"></i>
+                                <i class="far fa-star"></i>
+                            }
+                        </div>
+                        <span class="rating-count">
+                            <a href="#reviews" class="text-decoration-none" onclick="switchToReviewsTab()">
+                                (@(Model.ReviewStatistics.TotalReviews > 0 ? Model.ReviewStatistics.AverageRating.ToString("F1") : "0.0") / @Model.ReviewStatistics.TotalReviews review@(Model.ReviewStatistics.TotalReviews != 1 ? "s" : ""))
+                            </a>
+                        </span>
+                    </div>
+                    
+                    <!-- Product Price -->
+                    <div class="product-price-section mb-4">
+                        @if (Model.IsOnSale)
+                        {
+                            <div class="price-container">
+                                <span class="current-price">$@Model.DiscountedPrice.ToString("F2")</span>
+                                <span class="original-price">$@Model.Price.ToString("F2")</span>
+                                <span class="save-amount">You save $@((Model.Price - Model.DiscountedPrice).ToString("F2"))</span>
+                            </div>
+                        }
+                        else
+                        {
+                            <span class="current-price">$@Model.Price.ToString("F2")</span>
+                        }
+                    </div>
+                    
+                    <!-- Stock Status -->
+                    <div class="stock-status mb-4">
+                        @if (Model.IsInStock)
+                        {
+                            <span class="in-stock">
+                                <i class="fas fa-check-circle"></i>
+                                In Stock (@Model.Stock units available)
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="out-of-stock">
+                                <i class="fas fa-times-circle"></i>
+                                Out of Stock
+                            </span>
+                        }
+                    </div>
+                    
+                    <!-- Product Description -->
+                    <div class="product-description mb-4">
+                        <p>@Model.Description</p>
+                    </div>
+                    
+                    <!-- Product Options -->
+                    <div class="product-options">
+                        <!-- Colors -->
+                        @if (Model.AvailableColors.Any())
+                        {
+                            <div class="option-group mb-4">
+                                <h6 class="option-title">Available Colors:</h6>
+                                <div class="color-options">
+                                    @foreach (var color in Model.AvailableColors)
+                                    {
+                                        <div class="color-option" data-color-id="@color.Id" data-color-name="@color.Name">
+                                            <span class="color-name">@color.Name</span>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        }
+                        
+                        <!-- Sizes -->
+                        @if (Model.AvailableSizes.Any())
+                        {
+                            <div class="option-group mb-4">
+                                <h6 class="option-title">Select Size:</h6>
+                                <div class="size-options">
+                                    @foreach (var size in Model.AvailableSizes)
+                                    {
+                                        <div class="size-option" data-size-id="@size.Id">
+                                            <span class="size-value">@size.Size</span>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        }
+                        
+                        <!-- Quantity and Add to Cart -->
+                        @if (Model.IsInStock)
+                        {
+                            <div class="cart-section">
+                                <div class="quantity-cart-box">
+                                    <div class="quantity-section">
+                                        <span class="quantity-label">Quantity:</span>
+                                        <div class="quantity-input">
+                                            <button type="button" class="qty-btn minus" onclick="decreaseQuantity()">-</button>
+                                            <input type="number" id="productQuantity" value="1" min="1" max="@Model.Stock" readonly>
+                                            <button type="button" class="qty-btn plus" onclick="increaseQuantity()">+</button>
+                                        </div>
+                                    </div>
+                                    <button type="button" class="add-to-cart-btn" onclick="addToCart(@Model.Id)">
+                                        <i class="fas fa-shopping-cart"></i>
+                                        <span class="btn-text">Add to Cart</span>
+                                    </button>
+                                </div>
+                                
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="out-of-stock-section">
+                                <button type="button" class="notify-btn" disabled>
+                                    <i class="fas fa-bell"></i>
+                                    Notify When Available
+                                </button>
+                            </div>
+                        }
+                    </div>
+                    
+                    <!-- Product Features -->
+                    <div class="product-features mt-4">
+                        <div class="feature-item">
+                            <i class="fas fa-truck"></i>
+                            <span>Free Shipping on orders over $50</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-undo-alt"></i>
+                            <span>30-day return policy</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>2-year warranty</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Product Tags -->
+                    @if (Model.Tags.Any())
+                    {
+                        <div class="product-tags-section mt-4">
+                            <h6 class="tags-title">Tags:</h6>
+                            <div class="tags-list">
+                                @foreach (var tag in Model.Tags)
+                                {
+                                    <span class="product-tag">#@tag.Name</span>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+       
+    </div>
+</div>
+
+<!-- Product Tabs Section -->
+<div class="product-tabs-area">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="product-tabs">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" data-bs-toggle="tab" href="#description" role="tab" aria-controls="description" aria-selected="true">Description</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="tab" href="#specifications" role="tab" aria-controls="specifications" aria-selected="false">Specifications</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="tab" href="#reviews" role="tab" aria-controls="reviews" aria-selected="false">Reviews (@Model.ReviewStatistics.TotalReviews)</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="description" role="tabpanel">
+                            <div class="description-content">
+                                <p class="lead">@Model.Description</p>
+                                <h5>Key Features:</h5>
+                                <ul>
+                                    <li>Premium quality materials</li>
+                                    <li>Comfortable fit</li>
+                                    <li>Durable construction</li>
+                                    <li>Stylish design</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="specifications" role="tabpanel">
+                            <div class="specifications-content">
+                                <table class="table table-striped">
+                                    <tr>
+                                        <td><strong>Category:</strong></td>
+                                        <td>@Model.CategoryName</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Gender:</strong></td>
+                                        <td>@Model.Gender</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Available Colors:</strong></td>
+                                        <td>@string.Join(", ", Model.AvailableColors.Select(c => c.Name))</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Available Sizes:</strong></td>
+                                        <td>@string.Join(", ", Model.AvailableSizes.Select(s => s.Size))</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="reviews" role="tabpanel">
+                            <div class="reviews-content">
+                                <!-- Reviews Summary -->
+                                @if (Model.ReviewStatistics.TotalReviews > 0)
+                                {
+                                    <div class="review-summary">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="average-rating">
+                                                    <span class="rating-score">@Model.ReviewStatistics.AverageRating</span>
+                                                    <div class="rating-stars">
+                                                        @for (int i = 1; i <= 5; i++)
+                                                        {
+                                                            if (i <= Math.Floor(Model.ReviewStatistics.AverageRating))
+                                                            {
+                                                                <i class="fas fa-star"></i>
+                                                            }
+                                                            else if (i - Model.ReviewStatistics.AverageRating < 1)
+                                                            {
+                                                                <i class="fas fa-star-half-alt"></i>
+                                                            }
+                                                            else
+                                                            {
+                                                                <i class="far fa-star"></i>
+                                                            }
+                                                        }
+                                                    </div>
+                                                    <span class="total-reviews">Based on @Model.ReviewStatistics.TotalReviews review@(Model.ReviewStatistics.TotalReviews != 1 ? "s" : "")</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <div class="rating-breakdown">
+                                                    @for (int i = 5; i >= 1; i--)
+                                                    {
+                                                        var count = i == 5 ? Model.ReviewStatistics.FiveStarCount :
+                                                                   i == 4 ? Model.ReviewStatistics.FourStarCount :
+                                                                   i == 3 ? Model.ReviewStatistics.ThreeStarCount :
+                                                                   i == 2 ? Model.ReviewStatistics.TwoStarCount :
+                                                                   Model.ReviewStatistics.OneStarCount;
+                                                        var percentage = Model.ReviewStatistics.TotalReviews > 0 ? (count * 100.0 / Model.ReviewStatistics.TotalReviews) : 0;
+                                                        
+                                                        <div class="rating-bar">
+                                                            <span class="star-label">@i star</span>
+                                                            <div class="progress">
+                                                                <div class="progress-bar bg-warning" style="width: @percentage%"></div>
+                                                            </div>
+                                                            <span class="count">@count</span>
+                                                        </div>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+
+                                <!-- Write Review Section -->
+                                @if (User.Identity?.IsAuthenticated == true)
+                                {
+                                    @if (!Model.HasUserReviewed)
+                                    {
+                                        <div class="write-review-section">
+                                            <h5>Write a Review</h5>
+                                            <form id="reviewForm">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" id="productId" value="@Model.Id" />
+                                                
+                                                <div class="rating-input mb-3">
+                                                    <label class="form-label">Your Rating</label>
+                                                    <div class="star-rating">
+                                                        @for (int i = 1; i <= 5; i++)
+                                                        {
+                                                            <span class="star" data-rating="@i">
+                                                                <i class="far fa-star"></i>
+                                                            </span>
+                                                        }
+                                                    </div>
+                                                    <input type="hidden" id="ratingValue" name="Rate" value="0" />
+                                                </div>
+                                                
+                                                <div class="mb-3">
+                                                    <label for="reviewContent" class="form-label">Your Review</label>
+                                                    <textarea class="form-control" id="reviewContent" name="Content" rows="4" 
+                                                              placeholder="Share your thoughts about this product..." 
+                                                              minlength="10" maxlength="500" required></textarea>
+                                                    <div class="form-text">Minimum 10 characters, maximum 500 characters.</div>
+                                                </div>
+                                                
+                                                <button type="submit" class="btn btn-primary">
+                                                    <i class="fas fa-paper-plane me-2"></i>Submit Review
+                                                </button>
+                                            </form>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="alert alert-info">
+                                            <i class="fas fa-info-circle me-2"></i>
+                                            You have already reviewed this product. Thank you for your feedback!
+                                        </div>
+                                    }
+                                }
+                                else
+                                {
+                                    <div class="login-to-review">
+                                        <div class="alert alert-warning">
+                                            <i class="fas fa-sign-in-alt me-2"></i>
+                                            <a href="@Url.Action("Login", "Account", new { returnUrl = Url.Action("Detail", "Product", new { id = Model.Id }) })" class="alert-link">Login</a> 
+                                            to write a review for this product.
+                                        </div>
+                                    </div>
+                                }
+
+                                <!-- Reviews List -->
+                                @if (Model.Reviews.Any())
+                                {
+                                    <div class="reviews-list">
+                                        <h5>Customer Reviews</h5>
+                                        @foreach (var review in Model.Reviews)
+                                        {
+                                            <div class="review-item">
+                                                <div class="review-header">
+                                                    <div class="reviewer-info">
+                                                        <strong>@(!string.IsNullOrEmpty(review.UserFullName) ? review.UserFullName : review.UserName)</strong>
+                                                        <div class="review-rating">
+                                                            @for (int i = 1; i <= 5; i++)
+                                                            {
+                                                                if (i <= review.Rate)
+                                                                {
+                                                                    <i class="fas fa-star text-warning"></i>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <i class="far fa-star text-muted"></i>
+                                                                }
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                    <span class="review-date">@review.Created.ToString("MMM dd, yyyy")</span>
+                                                </div>
+                                                <div class="review-content">
+                                                    <p>@review.Content</p>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                }
+                                else if (Model.ReviewStatistics.TotalReviews == 0)
+                                {
+                                    <div class="no-reviews">
+                                        <div class="text-center py-5">
+                                            <i class="fas fa-star fa-3x text-muted mb-3"></i>
+                                            <h5>No reviews yet</h5>
+                                            <p class="text-muted">Be the first to review this product!</p>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Related Products -->
+@if (Model.RelatedProducts.Any())
+{
+    <div class="related-products-area section-padding">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="section-title text-center">
+                        <h2 class="title">Related Products</h2>
+                        <p class="sub-title">You might also like these products</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                @foreach (var relatedProduct in Model.RelatedProducts)
+                {
+                    <div class="col-lg-3 col-md-6 col-sm-6">
+                        <div class="product-item mb-50">
+                            <div class="product-thumb">
+                                @if (relatedProduct.IsOnSale)
+                                {
+                                    <span class="sale-badge">-@relatedProduct.Discount%</span>
+                                }
+                                <a href="@Url.Action("Detail", "Product", new { id = relatedProduct.Id })">
+                                    @if (!string.IsNullOrEmpty(relatedProduct.MainImageUrl))
+                                    {
+                                        <img src="~/uploads/products/@relatedProduct.MainImageUrl" alt="@relatedProduct.Name" />
+                                    }
+                                    else
+                                    {
+                                        <div class="no-image-placeholder-small">
+                                            <i class="fas fa-image"></i>
+                                        </div>
+                                    }
+                                </a>
+                            </div>
+                            <div class="product-content">
+                                <h5 class="product-name">
+                                    <a href="@Url.Action("Detail", "Product", new { id = relatedProduct.Id })">@relatedProduct.Name</a>
+                                </h5>
+                                <div class="price-box">
+                                    @if (relatedProduct.IsOnSale)
+                                    {
+                                        <span class="price-regular">$@relatedProduct.DiscountedPrice.ToString("F2")</span>
+                                        <span class="price-old"><del>$@relatedProduct.Price.ToString("F2")</del></span>
+                                    }
+                                    else
+                                    {
+                                        <span class="price-regular">$@relatedProduct.Price.ToString("F2")</span>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+}
+</div>
+
+@section Styles {
+    <style>
+        /* === MODERN PRODUCT DETAIL STYLES === */
+        
+        /* Breadcrumb */
+        .breadcrumb-area {
+            background: #f8f9fa;
+            padding: 20px 0;
+        }
+        
+        .breadcrumb {
+            background: none;
+            margin-bottom: 0;
+            padding: 0;
+        }
+        
+        .breadcrumb-item a {
+            color: #6c757d;
+            text-decoration: none;
+        }
+        
+        .breadcrumb-item.active {
+            color: #495057;
+            font-weight: 600;
+        }
+        
+        /* Section Padding */
+        .section-padding {
+            padding: 80px 0;
+        }
+        
+        .product-details-area {
+            padding: 60px 0;
+        }
+        
+        /* Product Gallery */
+        .main-image-container {
+            position: relative;
+            overflow: hidden;
+            border-radius: 15px;
+            background: #fff;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .main-product-image {
+            width: 100%;
+            height: 500px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+            border-radius: 15px;
+            cursor: zoom-in;
+        }
+        
+        .main-product-image:hover {
+            transform: scale(1.02);
+        }
+        
+        .main-product-image.loading {
+            opacity: 0.7;
+        }
+        
+        .no-image-placeholder {
+            height: 500px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 15px;
+            border: 2px dashed #dee2e6;
+        }
+        
+        .product-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 8px 16px;
+            border-radius: 25px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            z-index: 10;
+        }
+        
+        .sale-badge {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4);
+        }
+        
+        .stock-badge {
+            background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+            color: white;
+        }
+        
+        /* Thumbnail Gallery */
+        .thumbnail-gallery {
+            margin-top: 20px;
+        }
+        
+        .thumbnail-item {
+            border-radius: 10px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 3px solid transparent;
+            position: relative;
+        }
+        
+        .thumbnail-item:hover {
+            border-color: #007bff;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,123,255,0.3);
+        }
+        
+        .thumbnail-item.active {
+            border-color: #28a745;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40,167,69,0.4);
+        }
+        
+        .thumbnail-item.active::after {
+            content: '?';
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: #28a745;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .thumbnail-image {
+            width: 100%;
+            height: 80px;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.3s ease;
+        }
+        
+        .thumbnail-item:hover .thumbnail-image {
+            transform: scale(1.1);
+        }
+        
+        /* Placeholder thumbnails */
+        .placeholder-thumbnail {
+            border: 2px dashed #dee2e6 !important;
+            background: #f8f9fa;
+            cursor: default;
+        }
+        
+        .placeholder-thumbnail:hover {
+            border-color: #dee2e6 !important;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+        
+        .thumbnail-placeholder {
+            width: 100%;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        
+        /* Product Content */
+        .product-details-content {
+            padding: 20px 0;
+        }
+        
+        .product-meta {
+            margin-bottom: 15px;
+        }
+        
+        .category-badge,
+        .gender-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-right: 10px;
+        }
+        
+        .category-badge {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+        }
+        
+        .gender-badge {
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            color: white;
+        }
+        
+        .product-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+        
+        /* Product Rating */
+        .product-rating {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .rating-stars {
+            color: #f39c12;
+            font-size: 18px;
+        }
+        
+        .rating-count a {
+            color: #6c757d;
+            transition: color 0.3s ease;
+        }
+        
+        .rating-count a:hover {
+            color: #007bff;
+        }
+        
+        /* Price Section */
+        .product-price-section {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            padding: 25px;
+            border-radius: 15px;
+            border-left: 5px solid #007bff;
+        }
+        
+        .current-price {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #27ae60;
+            display: block;
+        }
+        
+        .original-price {
+            font-size: 1.5rem;
+            color: #95a5a6;
+            text-decoration: line-through;
+            margin-left: 15px;
+        }
+        
+        .save-amount {
+            display: block;
+            color: #e74c3c;
+            font-weight: 600;
+            margin-top: 5px;
+            font-size: 14px;
+        }
+        
+        /* Stock Status */
+        .stock-status {
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+        
+        .in-stock {
+            background: rgba(39, 174, 96, 0.1);
+            color: #27ae60;
+            border: 1px solid rgba(39, 174, 96, 0.3);
+        }
+        
+        .out-of-stock {
+            background: rgba(231, 76, 60, 0.1);
+            color: #e74c3c;
+            border: 1px solid rgba(231, 76, 60, 0.3);
+        }
+        
+        /* Product Description */
+        .product-description {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #555;
+        }
+        
+        /* Product Options */
+        .option-group {
+            border-bottom: 1px solid #eee;
+            padding-bottom: 20px;
+        }
+        
+        .option-title {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        
+        /* Color Options */
+        .color-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .color-option {
+            padding: 10px 20px;
+            border: 2px solid #dee2e6;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+        }
+        
+        .color-option:hover,
+        .color-option.selected {
+            border-color: #007bff;
+            background: #007bff;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,123,255,0.3);
+        }
+        
+        /* Size Options */
+        .size-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .size-option {
+            width: 50px;
+            height: 50px;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+            font-weight: 600;
+        }
+        
+        .size-option:hover,
+        .size-option.selected {
+            border-color: #007bff;
+            background: #007bff;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,123,255,0.3);
+        }
+        
+        /* Cart Section */
+        .cart-section {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 1px solid #eee;
+        }
+        
+        .quantity-cart-box {
+            display: flex;
+            gap: 20px;
+            align-items: end;
+            margin-bottom: 20px;
+        }
+        
+        .quantity-section {
+            flex: 0 0 auto;
+        }
+        
+        .quantity-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+        
+        .quantity-input {
+            display: flex;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            overflow: hidden;
+            background: white;
+        }
+        
+        .qty-btn {
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: #f8f9fa;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .qty-btn:hover {
+            background: #007bff;
+            color: white;
+        }
+        
+        .quantity-input input {
+            width: 60px;
+            height: 40px;
+            text-align: center;
+            border: none;
+            outline: none;
+            font-weight: 600;
+        }
+        
+        /* Add to Cart Button */
+        .add-to-cart-btn {
+            flex: 1;
+            height: 50px;
+            background: linear-gradient(135deg, #28a745, #20c997);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .add-to-cart-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(40, 167, 69, 0.4);
+        }
+        
+        .add-to-cart-btn:active {
+            transform: translateY(0);
+        }
+        
+        .add-to-cart-btn.loading {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+        
+        .add-to-cart-btn.success {
+            background: linear-gradient(135deg, #28a745, #20c997);
+        }
+        
+        /* Action Buttons */
+        .product-actions {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .action-btn {
+            flex: 1;
+            padding: 12px 20px;
+            border: 2px solid #dee2e6;
+            background: white;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .action-btn:hover {
+            border-color: #007bff;
+            color: #007bff;
+            transform: translateY(-2px);
+        }
+        
+        /* Product Features */
+        .product-features {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            color: #555;
+        }
+        
+        .feature-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .feature-item i {
+            color: #28a745;
+            width: 20px;
+        }
+        
+        /* Product Tags */
+        .product-tags-section {
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+        
+        .tags-title {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .tags-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .product-tag {
+            background: linear-gradient(135deg, #6c757d, #495057);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        /* Product Tabs */
+        .product-tabs-area {
+            background: #f8f9fa;
+            padding: 60px 0;
+        }
+        
+        .product-tabs .nav-tabs {
+            border-bottom: 3px solid #dee2e6;
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .product-tabs .nav-link {
+            border: none;
+            padding: 15px 30px;
+            font-weight: 600;
+            color: #6c757d;
+            border-radius: 10px 10px 0 0;
+            margin-right: 5px;
+            background: transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: block;
+            position: relative;
+            z-index: 11;
+        }
+        
+        .product-tabs .nav-link:hover {
+            background: rgba(0, 123, 255, 0.1);
+            color: #007bff;
+        }
+        
+        .product-tabs .nav-link.active {
+            background: white;
+            color: #007bff;
+            border-bottom: 3px solid #007bff;
+            position: relative;
+        }
+        
+        .product-tabs .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: #007bff;
+        }
+        
+        .tab-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            min-height: 400px;
+        }
+        
+        .tab-pane {
+            display: none;
+        }
+        
+        .tab-pane.show.active {
+            display: block;
+            animation: fadeInUp 0.3s ease-in-out;
+        }
+        
+        @@keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Reviews */
+        .review-summary {
+            text-align: center;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .rating-score {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #f39c12;
+            display: block;
+        }
+        
+        .average-rating .rating-stars {
+            font-size: 24px;
+            margin: 10px 0;
+        }
+        
+        .total-reviews {
+            color: #6c757d;
+            font-size: 14px;
+        }
+
+        /* Rating Breakdown */
+        .rating-breakdown {
+            padding: 20px 0;
+        }
+
+        .rating-bar {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            gap: 15px;
+        }
+
+        .star-label {
+            min-width: 60px;
+            font-size: 14px;
+            color: #6c757d;
+        }
+
+        .rating-bar .progress {
+            flex: 1;
+            height: 8px;
+            background: #e9ecef;
+        }
+
+        .rating-bar .count {
+            min-width: 30px;
+            font-size: 14px;
+            color: #6c757d;
+            text-align: right;
+        }
+
+        /* Write Review Section */
+        .write-review-section {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid #e9ecef;
+            margin-bottom: 30px;
+        }
+
+        .write-review-section h5 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        /* Star Rating Input */
+        .star-rating {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 10px;
+        }
+
+        .star-rating .star {
+            cursor: pointer;
+            font-size: 24px;
+            color: #ddd;
+            transition: color 0.2s ease;
+        }
+
+        .star-rating .star:hover,
+        .star-rating .star.active {
+            color: #f39c12;
+        }
+
+        .star-rating .star i {
+            transition: all 0.2s ease;
+        }
+
+        .star-rating .star:hover i {
+            transform: scale(1.1);
+        }
+
+        /* Reviews List */
+        .reviews-list {
+            margin-top: 40px;
+        }
+
+        .reviews-list h5 {
+            color: #2c3e50;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .review-item {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            border: 1px solid #e9ecef;
+            margin-bottom: 20px;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .review-item:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .reviewer-info strong {
+            color: #2c3e50;
+            font-size: 16px;
+        }
+
+        .review-rating {
+            margin-top: 5px;
+        }
+
+        .review-date {
+            color: #6c757d;
+            font-size: 14px;
+        }
+
+        .review-content {
+            line-height: 1.6;
+            color: #555;
+        }
+
+        /* Login to Review */
+        .login-to-review {
+            margin-bottom: 30px;
+        }
+
+        /* No Reviews */
+        .no-reviews {
+            background: #f8f9fa;
+            border-radius: 15px;
+            margin-top: 30px;
+        }
+        
+        /* Related Products */
+        .related-products-area {
+            background: white;
+        }
+        
+        .section-title {
+            margin-bottom: 50px;
+        }
+        
+        .section-title .title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .section-title .sub-title {
+            color: #6c757d;
+            font-size: 16px;
+        }
+        
+        /* Product Item Styles */
+        .product-item {
+            transition: all 0.3s ease;
+        }
+        
+        .product-item:hover {
+            transform: translateY(-10px);
+        }
+        
+        .product-thumb {
+            position: relative;
+            overflow: hidden;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .product-thumb img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        
+        .product-item:hover .product-thumb img {
+            transform: scale(1.1);
+        }
+        
+        .product-content {
+            text-align: center;
+        }
+        
+        .product-name {
+            margin-bottom: 10px;
+        }
+        
+        .product-name a {
+            color: #2c3e50;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .price-box {
+            font-weight: 700;
+        }
+        
+        .price-regular {
+            color: #27ae60;
+            font-size: 18px;
+        }
+        
+        .price-old {
+            color: #95a5a6;
+            margin-left: 10px;
+        }
+        
+        /* Responsive Design */
+        @@media (max-width: 768px) {
+            .product-title {
+                font-size: 2rem;
+            }
+            
+            .current-price {
+                font-size: 2rem;
+            }
+            
+            .main-product-image {
+                height: 300px;
+            }
+            
+            .no-image-placeholder {
+                height: 300px;
+            }
+            
+            .quantity-cart-box {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .product-actions {
+                flex-direction: column;
+            }
+            
+            .section-padding {
+                padding: 40px 0;
+            }
+            
+            .product-details-area {
+                padding: 30px 0;
+            }
+        }
+        
+        /* Animation */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @@keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .slide-up {
+            animation: slideUp 0.3s ease-out;
+        }
+        
+        @@keyframes slideUp {
+            from { transform: translateY(10px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        /* Debug Styles */
+        .debug-info {
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .debug-info img {
+            margin: 2px;
+            border: 1px solid #ccc;
+        }
+    </style>
+}
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        $(document).ready(function() {
+            console.log('Product detail page loaded');
+            // Initialize page
+            initializeProductDetail();
+            initializeReviewFunctionality();
+            initializeTabs();
+        });
+        
+        function initializeProductDetail() {
+            console.log('Initializing product detail functionality');
+            
+            // Image gallery functionality - Fixed version
+            $('.thumbnail-image').off('click').on('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                console.log('Thumbnail clicked');
+                
+                const $thumbnail = $(this);
+                let newImageSrc = $thumbnail.data('image');
+                console.log('Original image source:', newImageSrc);
+                
+                // Ensure we have a valid image source
+                if (!newImageSrc || newImageSrc.trim() === '') {
+                    console.error('No valid image source found in data-image attribute');
+                    showToast('Invalid image source', 'error');
+                    return;
+                }
+                
+                // Normalize the image path - remove any tilde if present and ensure proper path
+                if (newImageSrc.startsWith('~/')) {
+                    newImageSrc = newImageSrc.substring(1); // Remove the tilde
+                }
+                
+                // Ensure the path starts with forward slash
+                if (!newImageSrc.startsWith('/')) {
+                    newImageSrc = '/' + newImageSrc;
+                }
+                
+                console.log('Normalized image source:', newImageSrc);
+                
+                // Update active thumbnail immediately for better UX
+                $('.thumbnail-item').removeClass('active');
+                $thumbnail.closest('.thumbnail-item').addClass('active');
+                
+                // Update main image with fade effect
+                const $mainImage = $('#mainProductImage');
+                if ($mainImage.length) {
+                    console.log('Updating main image...');
+                    
+                    // Add loading class
+                    $mainImage.addClass('loading');
+                    
+                    // Create a new image to test if it loads
+                    const testImg = new Image();
+                    
+                    testImg.onload = function() {
+                        console.log('Image loaded successfully:', newImageSrc);
+                        // Image loaded successfully, now update the main image
+                        $mainImage.fadeOut(200, function() {
+                            $(this).attr('src', newImageSrc)
+                                  .removeClass('loading')
+                                  .fadeIn(200);
+                        });
+                    };
+                    
+                    testImg.onerror = function() {
+                        console.error('Failed to load image:', newImageSrc);
+                        
+                        // Try alternative path formats
+                        const alternativePaths = [
+                            '/uploads/products/' + newImageSrc.split('/').pop(), // Just filename
+                            '~/uploads/products/' + newImageSrc.split('/').pop(), // With tilde
+                            newImageSrc.replace('/uploads/products/', '/wwwroot/uploads/products/'), // With wwwroot
+                        ];
+                        
+                        console.log('Trying alternative paths:', alternativePaths);
+                        
+                        let pathIndex = 0;
+                        const tryAlternativePath = () => {
+                            if (pathIndex < alternativePaths.length) {
+                                const altPath = alternativePaths[pathIndex];
+                                console.log('Trying alternative path:', altPath);
+                                
+                                const altImg = new Image();
+                                altImg.onload = function() {
+                                    console.log('Alternative path loaded successfully:', altPath);
+                                    $mainImage.fadeOut(200, function() {
+                                        $(this).attr('src', altPath)
+                                              .removeClass('loading')
+                                              .fadeIn(200);
+                                    });
+                                };
+                                altImg.onerror = function() {
+                                    pathIndex++;
+                                    tryAlternativePath();
+                                };
+                                altImg.src = altPath;
+                            } else {
+                                // All paths failed
+                                console.error('All alternative paths failed');
+                                $mainImage.removeClass('loading');
+                                
+                                // Revert to previous active thumbnail
+                                $('.thumbnail-item').removeClass('active');
+                                $('.thumbnail-item').first().addClass('active');
+                                
+                                showToast('Failed to load image. Please try again or contact support.', 'error');
+                            }
+                        };
+                        
+                        tryAlternativePath();
+                    };
+                    
+                    // Start loading the image
+                    testImg.src = newImageSrc;
+                    
+                } else {
+                    console.error('Main image element not found');
+                    showToast('Image display element not found', 'error');
+                }
+            });
+            
+            // Color selection
+            $('.color-option').off('click').on('click', function() {
+                console.log('Color option clicked');
+                $('.color-option').removeClass('selected');
+                $(this).addClass('selected');
+                
+                // Add animation
+                $(this).addClass('slide-up');
+                setTimeout(() => $(this).removeClass('slide-up'), 300);
+            });
+            
+            // Size selection
+            $('.size-option').off('click').on('click', function() {
+                console.log('Size option clicked');
+                $('.size-option').removeClass('selected');
+                $(this).addClass('selected');
+                
+                // Add animation
+                $(this).addClass('slide-up');
+                setTimeout(() => $(this).removeClass('slide-up'), 300);
+            });
+            
+            // Wishlist button
+            $('.wishlist-btn').off('click').on('click', function() {
+                const $btn = $(this);
+                const $icon = $btn.find('i');
+                
+                if ($icon.hasClass('fas')) {
+                    $icon.removeClass('fas').addClass('far');
+                    $btn.html('<i class="far fa-heart"></i> Add to Wishlist');
+                    showToast('Removed from wishlist', 'info');
+                } else {
+                    $icon.removeClass('far').addClass('fas');
+                    $btn.html('<i class="fas fa-heart"></i> In Wishlist');
+                    showToast('Added to wishlist!', 'success');
+                }
+            });
+            
+            // Compare button
+            $('.compare-btn').off('click').on('click', function() {
+                showToast('Added to compare list!', 'success');
+            });
+            
+            // Debug: Log all thumbnail images
+            console.log('Found thumbnail images:', $('.thumbnail-image').length);
+            $('.thumbnail-image').each(function(index) {
+                console.log('Thumbnail ' + index + ':', $(this).data('image'));
+            });
+        }
+        
+        // Quantity controls
+        function increaseQuantity() {
+            const $input = $('#productQuantity');
+            const currentValue = parseInt($input.val()) || 1;
+            const maxValue = parseInt($input.attr('max')) || 999;
+            
+            if (currentValue < maxValue) {
+                $input.val(currentValue + 1);
+                animateQuantityChange();
+            }
+        }
+        
+        function decreaseQuantity() {
+            const $input = $('#productQuantity');
+            const currentValue = parseInt($input.val()) || 1;
+            
+            if (currentValue > 1) {
+                $input.val(currentValue - 1);
+                animateQuantityChange();
+            }
+        }
+        
+        function animateQuantityChange() {
+            const $input = $('#productQuantity');
+            $input.addClass('slide-up');
+            setTimeout(() => $input.removeClass('slide-up'), 300);
+        }
+        
+        // Add to cart functionality
+        function addToCart(productId) {
+            console.log('Add to cart called for product:', productId);
+            
+            const quantity = $('#productQuantity').val() || 1;
+            const selectedColor = $('.color-option.selected').data('color-id');
+            const selectedSize = $('.size-option.selected').data('size-id');
+            
+            console.log('Cart data:', { productId, quantity, selectedColor, selectedSize });
+            
+            // Validation
+            if ($('.color-option').length > 0 && !selectedColor) {
+                showToast('Please select a color', 'warning');
+                return;
+            }
+            
+            if ($('.size-option').length > 0 && !selectedSize) {
+                showToast('Please select a size', 'warning');
+                return;
+            }
+            
+            const $btn = $('.add-to-cart-btn');
+            const originalHtml = $btn.html();
+            
+            // Show loading state
+            $btn.addClass('loading').html('<i class="fas fa-spinner fa-spin"></i> <span>Adding...</span>');
+            
+            // Get CSRF token
+            const token = $('input[name="__RequestVerificationToken"]').val();
+            console.log('CSRF Token:', token ? 'Found' : 'Not found');
+            
+            // AJAX call to add to cart
+            $.ajax({
+                url: '/Basket/AddToBasket',
+                type: 'POST',
+                data: {
+                    productId: productId,
+                    quantity: quantity,
+                    colorId: selectedColor,
+                    sizeId: selectedSize,
+                    __RequestVerificationToken: token
+                },
+                success: function(response) {
+                    console.log('Add to cart response:', response);
+                    if (response && response.success) {
+                        // Success state
+                        $btn.removeClass('loading').addClass('success')
+                            .html('<i class="fas fa-check"></i> <span>Added to Cart!</span>');
+                        
+                        // Show success message
+                        showToast(response.message || 'Product added to cart successfully!', 'success');
+                        
+                        // Update cart count if basket manager exists
+                        if (window.basketManager && typeof window.basketManager.updateBasketCount === 'function') {
+                            window.basketManager.updateBasketCount();
+                        }
+                        
+                        // Reset button after 3 seconds
+                        setTimeout(function() {
+                            $btn.removeClass('success').html(originalHtml);
+                        }, 3000);
+                        
+                    } else {
+                        // Error handling
+                        $btn.removeClass('loading').html(originalHtml);
+                        showToast(response.message || 'Failed to add product to cart', 'error');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Add to cart error:', error);
+                    console.error('Response:', xhr.responseText);
+                    $btn.removeClass('loading').html(originalHtml);
+                    
+                    let errorMessage = 'Failed to add product to cart. Please try again.';
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMessage = xhr.responseJSON.message;
+                    }
+                    
+                    showToast(errorMessage, 'error');
+                }
+            });
+        }
+        
+        // Toast notification function
+        function showToast(message, type = 'info') {
+            const icon = {
+                'success': 'success',
+                'error': 'error',
+                'warning': 'warning',
+                'info': 'info'
+            }[type] || 'info';
+            
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: icon,
+                    title: message,
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                });
+            } else {
+                // Fallback to alert if SweetAlert2 is not available
+                alert(message);
+            }
+        }
+        
+        // Image zoom functionality (click to enlarge)
+        function initImageZoom() {
+            $('#mainProductImage').off('click').on('click', function() {
+                const imgSrc = $(this).attr('src');
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({
+                        imageUrl: imgSrc,
+                        imageAlt: '@Model.Name',
+                        showConfirmButton: false,
+                        showCloseButton: true,
+                        background: 'rgba(0,0,0,0.9)',
+                        backdrop: 'rgba(0,0,0,0.8)',
+                        customClass: {
+                            image: 'img-fluid'
+                        }
+                    });
+                }
+            });
+        }
+        
+        // Initialize image zoom
+        $(document).ready(function() {
+            initImageZoom();
+        });
+
+        // Tab Functionality
+        function initializeTabs() {
+            console.log('Initializing tabs functionality');
+            
+            // Handle tab clicks
+            $('.nav-tabs .nav-link').off('click').on('click', function(e) {
+                e.preventDefault();
+                
+                const $this = $(this);
+                const targetTab = $this.attr('href');
+                
+                console.log('Tab clicked:', targetTab);
+                
+                // Remove active class from all tabs and content
+                $('.nav-tabs .nav-link').removeClass('active').attr('aria-selected', 'false');
+                $('.tab-pane').removeClass('show active');
+                
+                // Add active class to clicked tab
+                $this.addClass('active').attr('aria-selected', 'true');
+                
+                // Show corresponding content
+                $(targetTab).addClass('show active');
+                
+                // If reviews tab is clicked, re-initialize review functionality
+                if (targetTab === '#reviews') {
+                    setTimeout(function() {
+                        initializeReviewFunctionality();
+                    }, 100);
+                }
+            });
+            
+            // Enable Bootstrap tab functionality
+            if (typeof bootstrap !== 'undefined') {
+                const triggerTabList = [].slice.call(document.querySelectorAll('.nav-tabs .nav-link'));
+                triggerTabList.forEach(function (triggerEl) {
+                    const tabTrigger = new bootstrap.Tab(triggerEl);
+                    
+                    triggerEl.addEventListener('click', function (event) {
+                        event.preventDefault();
+                        tabTrigger.show();
+                    });
+                });
+            }
+        }
+        
+        // Function to switch to reviews tab
+        function switchToReviewsTab() {
+            console.log('Switching to reviews tab');
+            
+            // Remove active from all tabs
+            $('.nav-tabs .nav-link').removeClass('active').attr('aria-selected', 'false');
+            $('.tab-pane').removeClass('show active');
+            
+            // Activate reviews tab
+            $('.nav-tabs .nav-link[href="#reviews"]').addClass('active').attr('aria-selected', 'true');
+            $('#reviews').addClass('show active');
+            
+            // Scroll to tabs section
+            $('html, body').animate({
+                scrollTop: $('.product-tabs-area').offset().top - 100
+            }, 500);
+            
+            // Re-initialize review functionality
+            setTimeout(function() {
+                initializeReviewFunctionality();
+            }, 100);
+        }
+
+        // Review Functionality
+        function initializeReviewFunctionality() {
+            console.log('Initializing review functionality');
+            
+            // Star rating functionality
+            $('.star-rating .star').off('click').on('click', function() {
+                const rating = $(this).data('rating');
+                updateStarRating(rating);
+                $('#ratingValue').val(rating);
+            });
+
+            $('.star-rating .star').off('mouseenter').on('mouseenter', function() {
+                const rating = $(this).data('rating');
+                highlightStars(rating);
+            });
+
+            $('.star-rating').off('mouseleave').on('mouseleave', function() {
+                const currentRating = $('#ratingValue').val() || 0;
+                updateStarRating(currentRating);
+            });
+
+            // Review form submission
+            $('#reviewForm').off('submit').on('submit', function(e) {
+                e.preventDefault();
+                submitReview();
+            });
+        }
+
+        function highlightStars(rating) {
+            $('.star-rating .star').each(function(index) {
+                const star = $(this);
+                const starRating = star.data('rating');
+                const icon = star.find('i');
+                
+                if (starRating <= rating) {
+                    icon.removeClass('far').addClass('fas');
+                    star.addClass('active');
+                } else {
+                    icon.removeClass('fas').addClass('far');
+                    star.removeClass('active');
+                }
+            });
+        }
+
+        function updateStarRating(rating) {
+            $('.star-rating .star').each(function(index) {
+                const star = $(this);
+                const starRating = star.data('rating');
+                const icon = star.find('i');
+                
+                if (starRating <= rating) {
+                    icon.removeClass('far').addClass('fas');
+                    star.addClass('active');
+                } else {
+                    icon.removeClass('fas').addClass('far');
+                    star.removeClass('active');
+                }
+            });
+        }
+
+        function submitReview() {
+            const rating = $('#ratingValue').val();
+            const content = $('#reviewContent').val();
+            const productId = $('#productId').val();
+
+            // Validation
+            if (!rating || rating == 0) {
+                showToast('Please select a rating', 'warning');
+                return;
+            }
+
+            if (!content || content.trim().length < 10) {
+                showToast('Please write at least 10 characters for your review', 'warning');
+                return;
+            }
+
+            if (content.trim().length > 500) {
+                showToast('Review content cannot exceed 500 characters', 'warning');
+                return;
+            }
+
+            // Get CSRF token
+            const token = $('input[name="__RequestVerificationToken"]').val();
+
+            // Show loading state
+            const $submitBtn = $('#reviewForm button[type="submit"]');
+            const originalText = $submitBtn.html();
+            $submitBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Submitting...');
+
+            // Submit review
+            $.ajax({
+                url: '/Product/SubmitReview',
+                type: 'POST',
+                data: {
+                    ProductId: productId,
+                    Rate: rating,
+                    Content: content.trim(),
+                    __RequestVerificationToken: token
+                },
+                success: function(response) {
+                    console.log('Review submission response:', response);
+                    
+                    if (response && response.success) {
+                        showToast(response.message, 'success');
+                        
+                        // Reset form
+                        $('#reviewForm')[0].reset();
+                        $('#ratingValue').val(0);
+                        updateStarRating(0);
+                        
+                        // Hide review form and show success message
+                        setTimeout(function() {
+                            $('.write-review-section').fadeOut(300, function() {
+                                $(this).replaceWith(`
+                                    <div class="alert alert-success">
+                                        <i class="fas fa-check-circle me-2"></i>
+                                        Thank you for your review! It will be published after approval.
+                                    </div>
+                                `);
+                            });
+                        }, 2000);
+                        
+                    } else {
+                        showToast(response.message || 'Failed to submit review', 'error');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Review submission error:', error);
+                    console.error('XHR Status:', xhr.status);
+                    console.error('Response Text:', xhr.responseText);
+                    console.error('Status:', status);
+                    
+                    let errorMessage = 'Failed to submit review. Please try again.';
+                    
+                    // Check if user is not authenticated
+                    if (xhr.status === 401) {
+                        errorMessage = 'Please log in to submit a review.';
+                        setTimeout(function() {
+                            window.location.href = '/Account/Login?returnUrl=' + encodeURIComponent(window.location.pathname);
+                        }, 2000);
+                    } else if (xhr.status === 403) {
+                        errorMessage = 'You do not have permission to submit reviews.';
+                    } else if (xhr.status === 400) {
+                        // Try to parse the response for specific error message
+                        try {
+                            const responseData = JSON.parse(xhr.responseText);
+                            if (responseData && responseData.message) {
+                                errorMessage = responseData.message;
+                            }
+                        } catch (e) {
+                            console.error('Could not parse error response:', e);
+                        }
+                    } else if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMessage = xhr.responseJSON.message;
+                    }
+                    
+                    showToast(errorMessage, 'error');
+                },
+                complete: function() {
+                    // Reset button state
+                    $submitBtn.prop('disabled', false).html(originalText);
+                }
+            });
+        }
+    </script>
+}

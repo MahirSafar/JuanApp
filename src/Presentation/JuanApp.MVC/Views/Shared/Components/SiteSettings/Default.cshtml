@@ -1,0 +1,9 @@
+@model Dictionary<string, string>
+
+@{
+    ViewData["SiteTitle"] = Model.GetValueOrDefault("SiteTitle", "Juan Store");
+    ViewData["SiteDescription"] = Model.GetValueOrDefault("SiteDescription", "Premium Shoes Store");
+}
+
+<!-- This view component provides site settings to the layout -->
+<!-- Settings are accessible through ViewData -->

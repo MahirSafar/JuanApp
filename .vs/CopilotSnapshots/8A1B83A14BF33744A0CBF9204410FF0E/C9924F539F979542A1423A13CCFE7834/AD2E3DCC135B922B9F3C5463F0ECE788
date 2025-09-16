@@ -1,0 +1,332 @@
+﻿using JuanApp.Application.Models.ReviewDtos;
+using JuanApp.Application.Services.Interfaces;
+using JuanApp.Application.Repositories;
+using JuanApp.Domain.Enums;
+using JuanApp.Domain.Models;
+using Microsoft.EntityFrameworkCore;
+
+namespace JuanApp.Application.Services.Implementations
+{
+    public class ReviewService : IReviewService
+    {
+        private readonly IGenericRepository<Review> _reviewRepository;
+        private readonly IGenericRepository<Product> _productRepository;
+        private readonly IGenericRepository<AppUser> _userRepository;
+
+        public ReviewService(
+            IGenericRepository<Review> reviewRepository,
+            IGenericRepository<Product> productRepository,
+            IGenericRepository<AppUser> userRepository)
+        {
+            _reviewRepository = reviewRepository;
+            _productRepository = productRepository;
+            _userRepository = userRepository;
+        }
+
+        public async Task<IEnumerable<ReviewDto>> GetApprovedReviewsByProductIdAsync(int productId)
+        {
+            var reviews = await _reviewRepository.GetAll()
+                .Include(r => r.AppUser)
+                .Where(r => r.ProductId == productId && r.Status == ReviewStatus.Approved)
+                .OrderByDescending(r => r.Created)
+                .ToListAsync();
+                
+            return reviews.Select(r => new ReviewDto
+            {
+                Id = r.Id,
+                Content = r.Content,
+                Rate = r.Rate,
+                Status = r.Status,
+                ProductId = r.ProductId,
+                AppUserId = r.AppUserId,
+                UserName = r.AppUser.UserName ?? "",
+                UserFullName = r.AppUser.FullName ?? "",
+                Created = r.Created,
+                LastModified = r.LastModified
+            });
+        }
+
+        public async Task<ReviewDto?> GetByIdAsync(int id)
+        {
+            var review = await _reviewRepository.GetAll()
+                .Include(r => r.AppUser)
+                .FirstOrDefaultAsync(r => r.Id == id);
+
+            if (review == null)
+                return null;
+
+            return new ReviewDto
+            {
+                Id = review.Id,
+                Content = review.Content,
+                Rate = review.Rate,
+                Status = review.Status,
+                ProductId = review.ProductId,
+                AppUserId = review.AppUserId,
+                UserName = review.AppUser.UserName ?? "",
+                UserFullName = review.AppUser.FullName ?? "",
+                Created = review.Created,
+                LastModified = review.LastModified ?? DateTime.UtcNow
+            };
+        }
+
+        public async Task<bool> HasUserReviewedProductAsync(string userId, int productId)
+        {
+            return await _reviewRepository.GetAll()
+                .AnyAsync(r => r.AppUserId == userId && r.ProductId == productId);
+        }
+
+        public async Task<CreateReviewResponseDto> CreateReviewAsync(CreateReviewDto createReviewDto)
+        {
+            try
+            {
+                // Check if user has already reviewed this product
+                var existingReview = await _reviewRepository.GetAll()
+                    .FirstOrDefaultAsync(r => r.AppUserId == createReviewDto.AppUserId && r.ProductId == createReviewDto.ProductId);
+
+                if (existingReview != null)
+                {
+                    return new CreateReviewResponseDto
+                    {
+                        Success = false,
+                        Message = "You have already reviewed this product."
+                    };
+                }
+
+                // Check if product exists
+                var productExists = await _productRepository.GetAll()
+                    .AnyAsync(p => p.Id == createReviewDto.ProductId);
+                if (!productExists)
+                {
+                    return new CreateReviewResponseDto
+                    {
+                        Success = false,
+                        Message = "Product not found."
+                    };
+                }
+
+                // Check if user exists
+                var userExists = await _userRepository.GetAll()
+                    .AnyAsync(u => u.Id == createReviewDto.AppUserId);
+                if (!userExists)
+                {
+                    return new CreateReviewResponseDto
+                    {
+                        Success = false,
+                        Message = "User not found."
+                    };
+                }
+
+                var review = new Review
+                {
+                    Content = createReviewDto.Content,
+                    Rate = createReviewDto.Rate,
+                    ProductId = createReviewDto.ProductId,
+                    AppUserId = createReviewDto.AppUserId,
+                    Status = ReviewStatus.Pending,
+                    Created = DateTime.UtcNow,
+                    LastModified = DateTime.UtcNow
+                };
+
+                await _reviewRepository.AddAsync(review);
+                await _reviewRepository.SaveAsync();
+
+                // Get the created review with user info
+                var createdReview = await _reviewRepository.GetAll()
+                    .Include(r => r.AppUser)
+                    .FirstOrDefaultAsync(r => r.Id == review.Id);
+
+                var reviewDto = new ReviewDto
+                {
+                    Id = createdReview.Id,
+                    Content = createdReview.Content,
+                    Rate = createdReview.Rate,
+                    Status = createdReview.Status,
+                    ProductId = createdReview.ProductId,
+                    AppUserId = createdReview.AppUserId,
+                    UserName = createdReview.AppUser.UserName ?? "",
+                    UserFullName = createdReview.AppUser.FullName ?? "",
+                    Created = createdReview.Created,
+                    LastModified = createdReview.LastModified ?? DateTime.UtcNow
+                };
+
+                return new CreateReviewResponseDto
+                {
+                    Success = true,
+                    Message = "Review submitted successfully. It will be published after approval.",
+                    Review = reviewDto
+                };
+            }
+            catch (Exception ex)
+            {
+                return new CreateReviewResponseDto
+                {
+                    Success = false,
+                    Message = "An error occurred while submitting the review. Please try again."
+                };
+            }
+        }
+
+        public async Task<bool> UpdateReviewAsync(int id, UpdateReviewDto updateReviewDto)
+        {
+            try
+            {
+                var review = await _reviewRepository.GetByIdAsync(id);
+                if (review == null)
+                    return false;
+
+                review.Content = updateReviewDto.Content;
+                review.Rate = updateReviewDto.Rate;
+                review.LastModified = DateTime.UtcNow;
+                review.Status = ReviewStatus.Pending; // Reset to pending after edit
+
+                _reviewRepository.Update(review);
+                await _reviewRepository.SaveAsync();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> DeleteReviewAsync(int id)
+        {
+            try
+            {
+                var review = await _reviewRepository.GetByIdAsync(id);
+                if (review == null)
+                    return false;
+
+                _reviewRepository.Remove(review);
+                await _reviewRepository.SaveAsync();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> ApproveReviewAsync(int id)
+        {
+            try
+            {
+                var review = await _reviewRepository.GetByIdAsync(id);
+                if (review == null)
+                    return false;
+
+                review.Status = ReviewStatus.Approved;
+                review.LastModified = DateTime.UtcNow;
+
+                _reviewRepository.Update(review);
+                await _reviewRepository.SaveAsync();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> RejectReviewAsync(int id)
+        {
+            try
+            {
+                var review = await _reviewRepository.GetByIdAsync(id);
+                if (review == null)
+                    return false;
+
+                review.Status = ReviewStatus.Rejected;
+                review.LastModified = DateTime.UtcNow;
+
+                _reviewRepository.Update(review);
+                await _reviewRepository.SaveAsync();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public async Task<ReviewStatisticsDto> GetReviewStatisticsAsync(int productId)
+        {
+            var reviews = await _reviewRepository.GetAll()
+                .Where(r => r.ProductId == productId && r.Status == ReviewStatus.Approved)
+                .ToListAsync();
+
+            if (!reviews.Any())
+            {
+                return new ReviewStatisticsDto
+                {
+                    TotalReviews = 0,
+                    AverageRating = 0,
+                    FiveStarCount = 0,
+                    FourStarCount = 0,
+                    ThreeStarCount = 0,
+                    TwoStarCount = 0,
+                    OneStarCount = 0
+                };
+            }
+
+            return new ReviewStatisticsDto
+            {
+                TotalReviews = reviews.Count,
+                AverageRating = Math.Round(reviews.Average(r => r.Rate), 1),
+                FiveStarCount = reviews.Count(r => r.Rate == 5),
+                FourStarCount = reviews.Count(r => r.Rate == 4),
+                ThreeStarCount = reviews.Count(r => r.Rate == 3),
+                TwoStarCount = reviews.Count(r => r.Rate == 2),
+                OneStarCount = reviews.Count(r => r.Rate == 1)
+            };
+        }
+
+        public async Task<IEnumerable<ReviewDto>> GetAllReviewsAsync()
+        {
+            var reviews = await _reviewRepository.GetAll()
+                .Include(r => r.AppUser)
+                .Include(r => r.Product)
+                .OrderByDescending(r => r.Created)
+                .ToListAsync();
+                
+            return reviews.Select(r => new ReviewDto
+            {
+                Id = r.Id,
+                Content = r.Content,
+                Rate = r.Rate,
+                Status = r.Status,
+                ProductId = r.ProductId,
+                AppUserId = r.AppUserId,
+                UserName = r.AppUser.UserName ?? "",
+                UserFullName = r.AppUser.FullName ?? "",
+                Created = r.Created,
+                LastModified = r.LastModified
+            });
+        }
+
+        public async Task<IEnumerable<ReviewDto>> GetPendingReviewsAsync()
+        {
+            var reviews = await _reviewRepository.GetAll()
+                .Include(r => r.AppUser)
+                .Include(r => r.Product)
+                .Where(r => r.Status == ReviewStatus.Pending)
+                .OrderByDescending(r => r.Created)
+                .ToListAsync();
+                
+            return reviews.Select(r => new ReviewDto
+            {
+                Id = r.Id,
+                Content = r.Content,
+                Rate = r.Rate,
+                Status = r.Status,
+                ProductId = r.ProductId,
+                AppUserId = r.AppUserId,
+                UserName = r.AppUser.UserName ?? "",
+                UserFullName = r.AppUser.FullName ?? "",
+                Created = r.Created,
+                LastModified = r.LastModified
+            });
+        }
+    }
+}

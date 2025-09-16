@@ -6,23 +6,35 @@ C:\Users\Mahir\Desktop\JuanApp\src\Presentation\JuanApp.MVC\obj\Debug\net8.0\Jua
 C:\Users\Mahir\Desktop\JuanApp\src\Presentation\JuanApp.MVC\obj\Debug\net8.0\JuanApp.MVC.MvcApplicationPartsAssemblyInfo.cache
 C:\Users\Mahir\Desktop\JuanApp\src\Presentation\JuanApp.MVC\obj\Debug\net8.0\JuanApp.MVC.RazorAssemblyInfo.cache
 C:\Users\Mahir\Desktop\JuanApp\src\Presentation\JuanApp.MVC\obj\Debug\net8.0\JuanApp.MVC.RazorAssemblyInfo.cs
+C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\JuanApp.MVC.exe
+C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\JuanApp.MVC.dll
+C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\AutoMapper.dll
+C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.Google.dll
+C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
+C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.dll
+C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Abstractions.dll
+C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Relational.dll
+C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.SqlServer.dll
+C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\Microsoft.Identity.Client.dll
+C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\Microsoft.SqlServer.Server.dll
+C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\System.Configuration.ConfigurationManager.dll
+C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\runtimes\win\lib\net6.0\Microsoft.Data.SqlClient.dll
+C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
+C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\JuanApp.Application.dll
+C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\JuanApp.Domain.dll
+C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\JuanApp.Persistance.dll
 C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\appsettings.Development.json
 C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\appsettings.json
 C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\JuanApp.MVC.staticwebassets.runtime.json
 C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\JuanApp.MVC.staticwebassets.endpoints.json
-C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\JuanApp.MVC.exe
 C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\JuanApp.MVC.deps.json
 C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\JuanApp.MVC.runtimeconfig.json
-C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\JuanApp.MVC.dll
 C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\JuanApp.MVC.pdb
-C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\AutoMapper.dll
 C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\Azure.Core.dll
 C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\Azure.Identity.dll
 C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\BouncyCastle.Cryptography.dll
 C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\Humanizer.dll
 C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\MailKit.dll
-C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.Google.dll
-C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
 C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\Microsoft.AspNetCore.Razor.Language.dll
 C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\Microsoft.Bcl.AsyncInterfaces.dll
 C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\Microsoft.Build.dll
@@ -40,11 +52,7 @@ C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0
 C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\Microsoft.Data.SqlClient.dll
 C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\Microsoft.DiaSymReader.dll
 C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\Microsoft.DotNet.Scaffolding.Shared.dll
-C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.dll
-C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Abstractions.dll
 C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Design.dll
-C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Relational.dll
-C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.SqlServer.dll
 C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\Microsoft.Extensions.DependencyInjection.dll
 C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
 C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\Microsoft.Extensions.DependencyModel.dll
@@ -54,7 +62,6 @@ C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0
 C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\Microsoft.Extensions.ObjectPool.dll
 C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\Microsoft.Extensions.Options.dll
 C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\Microsoft.Extensions.WebEncoders.dll
-C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\Microsoft.Identity.Client.dll
 C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\Microsoft.Identity.Client.Extensions.Msal.dll
 C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\Microsoft.IdentityModel.Abstractions.dll
 C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\Microsoft.IdentityModel.JsonWebTokens.dll
@@ -63,7 +70,6 @@ C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0
 C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
 C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
 C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\Microsoft.NET.StringTools.dll
-C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\Microsoft.SqlServer.Server.dll
 C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\Microsoft.VisualStudio.Web.CodeGeneration.dll
 C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\Microsoft.VisualStudio.Web.CodeGeneration.Core.dll
 C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\dotnet-aspnet-codegenerator-design.dll
@@ -90,7 +96,6 @@ C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0
 C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\System.Composition.Hosting.dll
 C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\System.Composition.Runtime.dll
 C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\System.Composition.TypedParts.dll
-C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\System.Configuration.ConfigurationManager.dll
 C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\System.Drawing.Common.dll
 C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll
 C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\System.Memory.Data.dll
@@ -241,10 +246,8 @@ C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0
 C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.resources.dll
 C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.resources.dll
 C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\runtimes\unix\lib\net6.0\Microsoft.Data.SqlClient.dll
-C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\runtimes\win\lib\net6.0\Microsoft.Data.SqlClient.dll
 C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\runtimes\win-arm\native\Microsoft.Data.SqlClient.SNI.dll
 C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll
-C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
 C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
 C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\runtimes\win\lib\net7.0\Microsoft.Win32.SystemEvents.dll
 C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\runtimes\win\lib\net7.0\System.Drawing.Common.dll
@@ -252,10 +255,7 @@ C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0
 C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\runtimes\win\lib\net8.0\System.Security.Cryptography.Pkcs.dll
 C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\runtimes\win\lib\net7.0\System.Security.Cryptography.ProtectedData.dll
 C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\runtimes\win\lib\net7.0\System.Windows.Extensions.dll
-C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\JuanApp.Application.dll
-C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\JuanApp.Domain.dll
 C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\JuanApp.Infrastructure.dll
-C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\JuanApp.Persistance.dll
 C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\JuanApp.Infrastructure.pdb
 C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\JuanApp.Persistance.pdb
 C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\bin\Debug\net8.0\JuanApp.Application.pdb
@@ -281,10 +281,10 @@ C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\obj\Debug\net8.0
 C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\obj\Debug\net8.0\staticwebassets.build.json.cache
 C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\obj\Debug\net8.0\staticwebassets.development.json
 C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\obj\Debug\net8.0\staticwebassets.build.endpoints.json
-C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\obj\Debug\net8.0\JuanApp..49AB3A46.Up2Date
 C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\obj\Debug\net8.0\JuanApp.MVC.dll
 C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\obj\Debug\net8.0\refint\JuanApp.MVC.dll
 C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\obj\Debug\net8.0\JuanApp.MVC.pdb
 C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\obj\Debug\net8.0\JuanApp.MVC.genruntimeconfig.cache
 C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\obj\Debug\net8.0\ref\JuanApp.MVC.dll
+C:\Users\Mahir\Saved Games\JuanApp\src\Presentation\JuanApp.MVC\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt

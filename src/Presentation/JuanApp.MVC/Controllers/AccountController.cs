@@ -13,11 +13,13 @@ namespace JuanApp.MVC.Controllers
     {
         private readonly IAccountService _accountService;
         private readonly IEmailService _emailService;
+        private readonly IOrderService _orderService;
 
-        public AccountController(IAccountService accountService, IEmailService emailService)
+        public AccountController(IAccountService accountService, IEmailService emailService, IOrderService orderService)
         {
             _accountService = accountService;
             _emailService = emailService;
+            _orderService = orderService;
         }
 
         public IActionResult Login()
@@ -58,7 +60,8 @@ namespace JuanApp.MVC.Controllers
                 return View(userLoginVm);
             }
 
-            HttpContext.Response.Cookies.Delete("basket");
+            // Transfer basket items from session to user and clear session basket
+            TempData["TransferBasket"] = true;
 
             if (returnUrl is null)
                 return RedirectToAction("Index", "Home");
@@ -72,7 +75,8 @@ namespace JuanApp.MVC.Controllers
         public async Task<IActionResult> Logout()
         {
             await _accountService.LogoutAsync();
-            HttpContext.Response.Cookies.Delete("basket");
+            // Clear basket session to ensure basket is empty for logged out users
+            HttpContext.Response.Cookies.Delete("BasketSessionId");
             return RedirectToAction("Index", "Home");
         }
         [HttpPost]
@@ -248,7 +252,7 @@ namespace JuanApp.MVC.Controllers
             if (!loginResult.Success)
                 return RedirectToAction("Login", new { error = loginResult.Error });
 
-            HttpContext.Response.Cookies.Delete("basket");
+            TempData["TransferBasket"] = true;
             return RedirectToAction("Index", "Home");
         }
 
@@ -319,7 +323,7 @@ namespace JuanApp.MVC.Controllers
                 return View(model);
             }
 
-            HttpContext.Response.Cookies.Delete("basket");
+            TempData["TransferBasket"] = true;
             TempData["SuccessMessage"] = "Your account has been successfully created and linked with Google!";
             return RedirectToAction("Index", "Home");
         }
@@ -345,7 +349,7 @@ namespace JuanApp.MVC.Controllers
                 var result = await _accountService.LoginWithTwoFactorCodeAsync(model.TwoFactorCode, model.RememberMe);
                 if (result.Success)
                 {
-                    HttpContext.Response.Cookies.Delete("basket");
+                    TempData["TransferBasket"] = true;
                     return RedirectToAction("Index", "Home");
                 }
             }
@@ -376,7 +380,63 @@ namespace JuanApp.MVC.Controllers
                 EmailSubscribed = user.IsSubscribed
             };
 
+            // Load user orders if on orders tab
+            if (tab == "orders")
+            {
+                var orders = await _orderService.GetUserOrdersAsync(user.Id);
+                userProfileVm.UserOrders = orders.Select(o => new UserOrderViewModel
+                {
+                    Id = o.Id,
+                    OrderNumber = o.OrderNumber,
+                    CustomerName = o.CustomerName,
+                    CustomerSurname = o.CustomerSurname,
+                    Address = o.Address,
+                    City = o.City,
+                    TotalAmount = o.TotalAmount,
+                    OrderDate = o.OrderDate,
+                    Status = o.Status,
+                    ItemCount = o.OrderItems.Count
+                }).ToList();
+            }
+
             return View(userProfileVm);
+        }
+
+        [Authorize(Roles = "Member")]
+        public async Task<IActionResult> OrderDetail(int id)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var order = await _orderService.GetOrderByIdAsync(id);
+            
+            if (order == null || order.UserId != userId)
+            {
+                TempData["Error"] = "Order not found or access denied.";
+                return RedirectToAction("UserProfile", new { tab = "orders" });
+            }
+
+            var viewModel = new UserOrderDetailViewModel
+            {
+                Id = order.Id,
+                OrderNumber = order.OrderNumber,
+                CustomerName = order.CustomerName,
+                CustomerSurname = order.CustomerSurname,
+                Address = order.Address,
+                City = order.City,
+                TotalAmount = order.TotalAmount,
+                OrderDate = order.OrderDate,
+                Status = order.Status,
+                OrderItems = order.OrderItems.Select(oi => new UserOrderItemViewModel
+                {
+                    ProductName = oi.ProductName,
+                    Price = oi.Price,
+                    Quantity = oi.Quantity,
+                    Size = oi.Size,
+                    Color = oi.Color,
+                    Total = oi.Total
+                }).ToList()
+            };
+
+            return View(viewModel);
         }
 
         [HttpPost]

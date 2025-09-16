@@ -1,0 +1,115 @@
+﻿using JuanApp.Application.Services.Interfaces;
+using JuanApp.MVC.ViewModels;
+using Microsoft.AspNetCore.Mvc;
+
+namespace JuanApp.MVC.Controllers
+{
+    public class ProductController : Controller
+    {
+        private readonly IProductService _productService;
+        private readonly ICategoryService _categoryService;
+        private readonly IColorService _colorService;
+        private readonly ISizeService _sizeService;
+        private readonly ITagService _tagService;
+
+        public ProductController(
+            IProductService productService,
+            ICategoryService categoryService,
+            IColorService colorService,
+            ISizeService sizeService,
+            ITagService tagService)
+        {
+            _productService = productService;
+            _categoryService = categoryService;
+            _colorService = colorService;
+            _sizeService = sizeService;
+            _tagService = tagService;
+        }
+        public async Task<IActionResult> Detail(int id)
+        {
+            var product = await _productService.GetByIdAsync(id);
+            if (product == null)
+                return NotFound();
+
+            // Get all data needed for the product detail page
+            var colors = await _colorService.GetAllAsync();
+            var sizes = await _sizeService.GetAllAsync();
+            var tags = await _tagService.GetAllAsync();
+            var allProducts = await _productService.GetAllAsync();
+
+            // Get related products based on tags
+            var relatedProducts = allProducts
+                .Where(p => p.Id != product.Id && 
+                           p.SelectedTagIds.Any(tagId => product.SelectedTagIds.Contains(tagId)))
+                .Take(4)
+                .Select(p => new ProductItemViewModel
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    Price = p.Price,
+                    Discount = p.Discount,
+                    MainImageUrl = p.MainImageUrl,
+                    CategoryName = p.CategoryName,
+                    Stock = p.Stock
+                }).ToList();
+
+            // If no related products by tags, get products from same category
+            if (!relatedProducts.Any())
+            {
+                relatedProducts = allProducts
+                    .Where(p => p.Id != product.Id && p.CategoryId == product.CategoryId)
+                    .Take(4)
+                    .Select(p => new ProductItemViewModel
+                    {
+                        Id = p.Id,
+                        Name = p.Name,
+                        Price = p.Price,
+                        Discount = p.Discount,
+                        MainImageUrl = p.MainImageUrl,
+                        CategoryName = p.CategoryName,
+                        Stock = p.Stock
+                    }).ToList();
+            }
+
+            var viewModel = new ProductDetailViewModel
+            {
+                Id = product.Id,
+                Name = product.Name,
+                Price = product.Price,
+                Discount = product.Discount,
+                Description = product.Description,
+                Stock = product.Stock,
+                Gender = product.Gender,
+                MainImageUrl = product.MainImageUrl,
+                CategoryName = product.CategoryName,
+                ProductImages = product.ProductImages.Select(pi => new ProductImageItemViewModel
+                {
+                    Id = pi.Id,
+                    ImageUrl = pi.ImageUrl
+                }).ToList(),
+                AvailableColors = colors.Where(c => product.SelectedColorIds.Contains(c.Id))
+                    .Select(c => new ColorItemViewModel
+                    {
+                        Id = c.Id,
+                        Name = c.Name,
+                        HexCode = "" // Color entity doesn't have HexCode, use empty string
+                    }).ToList(),
+                AvailableSizes = sizes.Where(s => product.SelectedSizeIds.Contains(s.Id))
+                    .Select(s => new SizeItemViewModel
+                    {
+                        Id = s.Id,
+                        Size = s.ShoeSize.ToString()
+                    }).ToList(),
+                Tags = tags.Where(t => product.SelectedTagIds.Contains(t.Id))
+                    .Select(t => new TagItemViewModel
+                    {
+                        Id = t.Id,
+                        Name = t.Name
+                    }).ToList(),
+                RelatedProducts = relatedProducts
+            };
+
+            return View(viewModel);
+        }
+    }
+}

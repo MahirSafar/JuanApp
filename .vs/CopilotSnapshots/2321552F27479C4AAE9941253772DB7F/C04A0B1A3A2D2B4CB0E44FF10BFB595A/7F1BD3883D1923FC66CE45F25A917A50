@@ -1,0 +1,278 @@
+﻿using JuanApp.Application.Helper;
+using JuanApp.Application.Services.Interfaces;
+using JuanApp.MVC.ViewModels;
+using Microsoft.AspNetCore.Mvc;
+
+namespace JuanApp.MVC.Controllers
+{
+    public class ShopController : Controller
+    {
+        private readonly IProductService _productService;
+        private readonly ICategoryService _categoryService;
+        private readonly IColorService _colorService;
+        private readonly ISizeService _sizeService;
+
+        public ShopController(
+            IProductService productService,
+            ICategoryService categoryService,
+            IColorService colorService,
+            ISizeService sizeService)
+        {
+            _productService = productService;
+            _categoryService = categoryService;
+            _colorService = colorService;
+            _sizeService = sizeService;
+        }
+
+        public async Task<IActionResult> Index(ShopFilterViewModel filters)
+        {
+            try
+            {
+                // Ensure valid page
+                if (filters.Page < 1) filters.Page = 1;
+                if (filters.PageSize < 6) filters.PageSize = 12;
+                if (filters.PageSize > 48) filters.PageSize = 48;
+
+                // Get all products
+                var allProducts = await _productService.GetAllAsync();
+                var filteredProducts = allProducts.AsQueryable();
+
+                // Apply search filter
+                if (!string.IsNullOrWhiteSpace(filters.SearchTerm))
+                {
+                    var searchLower = filters.SearchTerm.ToLower();
+                    filteredProducts = filteredProducts.Where(p => 
+                        p.Name.ToLower().Contains(searchLower) ||
+                        p.Description.ToLower().Contains(searchLower) ||
+                        p.CategoryName.ToLower().Contains(searchLower));
+                }
+
+                // Apply category filter
+                if (filters.CategoryId.HasValue && filters.CategoryId > 0)
+                {
+                    filteredProducts = filteredProducts.Where(p => p.CategoryId == filters.CategoryId);
+                }
+
+                // Apply gender filter
+                if (!string.IsNullOrWhiteSpace(filters.Gender))
+                {
+                    filteredProducts = filteredProducts.Where(p => p.Gender.Equals(filters.Gender, StringComparison.OrdinalIgnoreCase));
+                }
+
+                // Apply color filter
+                if (filters.ColorIds.Any())
+                {
+                    filteredProducts = filteredProducts.Where(p => 
+                        p.SelectedColorIds.Any(colorId => filters.ColorIds.Contains(colorId)));
+                }
+
+                // Apply size filter
+                if (filters.SizeIds.Any())
+                {
+                    filteredProducts = filteredProducts.Where(p => 
+                        p.SelectedSizeIds.Any(sizeId => filters.SizeIds.Contains(sizeId)));
+                }
+
+                // Apply price filter
+                if (filters.MinPrice.HasValue)
+                {
+                    filteredProducts = filteredProducts.Where(p => 
+                        (p.Discount > 0 ? p.Price - (p.Price * p.Discount / 100) : p.Price) >= filters.MinPrice);
+                }
+
+                if (filters.MaxPrice.HasValue)
+                {
+                    filteredProducts = filteredProducts.Where(p => 
+                        (p.Discount > 0 ? p.Price - (p.Price * p.Discount / 100) : p.Price) <= filters.MaxPrice);
+                }
+
+                // Apply sorting
+                filteredProducts = filters.SortBy switch
+                {
+                    "price-low-high" => filteredProducts.OrderBy(p => 
+                        p.Discount > 0 ? p.Price - (p.Price * p.Discount / 100) : p.Price),
+                    "price-high-low" => filteredProducts.OrderByDescending(p => 
+                        p.Discount > 0 ? p.Price - (p.Price * p.Discount / 100) : p.Price),
+                    "name-asc" => filteredProducts.OrderBy(p => p.Name),
+                    "name-desc" => filteredProducts.OrderByDescending(p => p.Name),
+                    "newest" => filteredProducts.OrderByDescending(p => p.Created),
+                    _ => filteredProducts.OrderByDescending(p => p.Created)
+                };
+
+                // Get total count before pagination
+                var totalProducts = filteredProducts.Count();
+
+                // Apply pagination
+                var paginatedProducts = filteredProducts
+                    .Skip((filters.Page - 1) * filters.PageSize)
+                    .Take(filters.PageSize)
+                    .ToList();
+
+                // Convert to view models
+                var productViewModels = paginatedProducts.Select(p => new ProductItemViewModel
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    Price = p.Price,
+                    Discount = p.Discount,
+                    MainImageUrl = p.MainImageUrl,
+                    CategoryName = p.CategoryName,
+                    Stock = p.Stock
+                }).ToList();
+
+                // Load filter data
+                var categories = await _categoryService.GetAllAsync();
+                var colors = await _colorService.GetAllAsync();
+                var sizes = await _sizeService.GetAllAsync();
+
+                // Calculate total pages
+                var totalPages = (int)Math.Ceiling((double)totalProducts / filters.PageSize);
+
+                // Create view model
+                var viewModel = new ShopIndexViewModel
+                {
+                    Products = productViewModels,
+                    Categories = categories.Select(c => new CategoryItemViewModel
+                    {
+                        Id = c.Id,
+                        Name = c.Name
+                    }).ToList(),
+                    Colors = colors.Select(c => new ColorItemViewModel
+                    {
+                        Id = c.Id,
+                        Name = c.Name,
+                        HexCode = GenerateColorHex(c.Name)
+                    }).ToList(),
+                    Sizes = sizes.Select(s => new SizeItemViewModel
+                    {
+                        Id = s.Id,
+                        Size = s.ShoeSize.ToString()
+                    }).ToList(),
+                    Filters = filters,
+                    CurrentPage = filters.Page,
+                    TotalPages = totalPages,
+                    PageSize = filters.PageSize,
+                    TotalProducts = totalProducts,
+                    ViewMode = filters.ViewMode
+                };
+
+                // Store price range for slider
+                if (allProducts.Any())
+                {
+                    var allPrices = allProducts.Select(p => 
+                        p.Discount > 0 ? p.Price - (p.Price * p.Discount / 100) : p.Price).ToList();
+                    ViewBag.MinPrice = allPrices.Min();
+                    ViewBag.MaxPrice = allPrices.Max();
+                }
+                else
+                {
+                    ViewBag.MinPrice = 0;
+                    ViewBag.MaxPrice = 1000;
+                }
+
+                return View(viewModel);
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "An error occurred while loading products. Please try again.";
+                return View(new ShopIndexViewModel());
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetPriceRange()
+        {
+            try
+            {
+                var allProducts = await _productService.GetAllAsync();
+                if (allProducts.Any())
+                {
+                    var allPrices = allProducts.Select(p => 
+                        p.Discount > 0 ? p.Price - (p.Price * p.Discount / 100) : p.Price).ToList();
+                    
+                    return Json(new PriceRangeViewModel
+                    {
+                        MinPrice = allPrices.Min(),
+                        MaxPrice = allPrices.Max()
+                    });
+                }
+
+                return Json(new PriceRangeViewModel
+                {
+                    MinPrice = 0,
+                    MaxPrice = 1000
+                });
+            }
+            catch
+            {
+                return Json(new PriceRangeViewModel
+                {
+                    MinPrice = 0,
+                    MaxPrice = 1000
+                });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult SetViewMode(string viewMode)
+        {
+            if (viewMode == "grid-view" || viewMode == "list-view")
+            {
+                HttpContext.Session.SetString("ViewMode", viewMode);
+                return Json(new { success = true });
+            }
+            return Json(new { success = false });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> QuickView(int id)
+        {
+            try
+            {
+                var product = await _productService.GetByIdAsync(id);
+                if (product == null)
+                    return NotFound();
+
+                var colors = await _colorService.GetAllAsync();
+                var sizes = await _sizeService.GetAllAsync();
+
+                var viewModel = new ProductDetailViewModel
+                {
+                    Id = product.Id,
+                    Name = product.Name,
+                    Price = product.Price,
+                    Discount = product.Discount,
+                    Description = product.Description,
+                    Stock = product.Stock,
+                    Gender = product.Gender,
+                    MainImageUrl = product.MainImageUrl,
+                    CategoryName = product.CategoryName,
+                    ProductImages = product.ProductImages.Select(pi => new ProductImageItemViewModel
+                    {
+                        Id = pi.Id,
+                        ImageUrl = pi.ImageUrl
+                    }).ToList(),
+                    AvailableColors = colors.Where(c => product.SelectedColorIds.Contains(c.Id))
+                                          .Select(c => new ColorItemViewModel
+                                          {
+                                              Id = c.Id,
+                                              Name = c.Name,
+                                              HexCode = GenerateColorHex(c.Name)
+                                          }).ToList(),
+                    AvailableSizes = sizes.Where(s => product.SelectedSizeIds.Contains(s.Id))
+                                        .Select(s => new SizeItemViewModel
+                                        {
+                                            Id = s.Id,
+                                            Size = s.ShoeSize.ToString()
+                                        }).ToList()
+                };
+
+                return PartialView("_QuickView", viewModel);
+            }
+            catch
+            {
+                return NotFound();
+            }
+        }
+    }
+}

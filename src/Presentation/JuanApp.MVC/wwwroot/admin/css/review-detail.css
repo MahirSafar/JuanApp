@@ -1,0 +1,518 @@
+/* Review Detail Page Styles */
+/* CSS Variables Definition */
+:root {
+    --primary-bg: #111217;
+    --sidebar-bg: #0a0b0e;
+    --card-bg: #181a20;
+    --header-bg: #16171c;
+    --gold: #d4af37;
+    --cyan-teal: #1de9b6;
+    --cyan-teal-dark: #0e3c36;
+    --text-main: #f0f0f0;
+    --text-muted: #b0b0c0;
+    --border: #23242a;
+    --shadow: 0 4px 32px 0 rgba(30,30,36,0.18);
+    --success: #28a745;
+    --danger: #dc3545;
+    --warning: #ffc107;
+}
+
+/* Page Layout */
+.zenith-page-wrapper {
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+.zenith-page-header {
+    margin-bottom: 2rem;
+}
+
+.zenith-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+.zenith-breadcrumb-item {
+    color: var(--cyan-teal);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: color 0.2s;
+}
+
+.zenith-breadcrumb-item:hover {
+    color: var(--gold);
+}
+
+.zenith-breadcrumb-separator {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+
+.zenith-breadcrumb-current {
+    color: var(--text-muted);
+}
+
+.zenith-header-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+}
+
+.zenith-page-title {
+    font-family: 'Fira Code', monospace;
+    font-size: 2rem;
+    color: var(--gold);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    letter-spacing: 0.05em;
+}
+
+/* Content Grid */
+.zenith-content-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+}
+
+.zenith-main-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.zenith-sidebar-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+/* Card Styles */
+.zenith-card {
+    background: rgba(24,26,32,0.95);
+    border-radius: 1rem;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.zenith-card:hover {
+    border-color: var(--cyan-teal);
+    box-shadow: 0 0 20px rgba(29, 233, 182, 0.1), var(--shadow);
+}
+
+.zenith-card-header {
+    background: linear-gradient(135deg, var(--card-bg) 0%, var(--sidebar-bg) 100%);
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.zenith-card-title {
+    font-family: 'Fira Code', monospace;
+    font-size: 1.1rem;
+    color: var(--gold);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    letter-spacing: 0.05em;
+}
+
+.zenith-card-body {
+    padding: 2rem;
+}
+
+/* Review Details */
+.zenith-review-details {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.zenith-review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.zenith-reviewer-info {
+    flex: 1;
+}
+
+.zenith-reviewer-name {
+    color: var(--gold);
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem 0;
+}
+
+.zenith-reviewer-email {
+    color: var(--text-muted);
+    font-size: 1rem;
+    margin: 0;
+}
+
+.zenith-review-rating {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.zenith-star-filled {
+    color: var(--warning);
+    font-size: 1.5rem;
+}
+
+.zenith-star-empty {
+    color: var(--text-muted);
+    font-size: 1.5rem;
+}
+
+.zenith-rating-text {
+    color: var(--text-muted);
+    font-size: 1rem;
+    margin-left: 0.5rem;
+}
+
+/* Review Meta */
+.zenith-review-meta {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    padding: 1.5rem;
+    background: var(--sidebar-bg);
+    border-radius: 0.5rem;
+}
+
+.zenith-meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.zenith-meta-label {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 600;
+}
+
+.zenith-meta-value {
+    color: var(--text-main);
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+/* Review Comment */
+.zenith-review-comment {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.zenith-comment-label {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 600;
+}
+
+.zenith-comment-content {
+    background: var(--sidebar-bg);
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    color: var(--text-main);
+    line-height: 1.6;
+    font-size: 1rem;
+    border-left: 4px solid var(--cyan-teal);
+}
+
+/* Status Badge */
+.zenith-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.zenith-status-warning {
+    background: rgba(255, 193, 7, 0.2);
+    color: var(--warning);
+    border: 1px solid rgba(255, 193, 7, 0.4);
+}
+
+.zenith-status-success {
+    background: rgba(40, 167, 69, 0.2);
+    color: var(--success);
+    border: 1px solid rgba(40, 167, 69, 0.4);
+}
+
+.zenith-status-danger {
+    background: rgba(220, 53, 69, 0.2);
+    color: var(--danger);
+    border: 1px solid rgba(220, 53, 69, 0.4);
+}
+
+/* Button Styles */
+.zenith-btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+}
+
+.zenith-btn-secondary {
+    background: var(--card-bg);
+    color: var(--text-main);
+    border: 1px solid var(--border);
+}
+
+.zenith-btn-secondary:hover {
+    background: var(--border);
+    color: var(--gold);
+}
+
+.zenith-btn-success {
+    background: var(--success);
+    color: white;
+}
+
+.zenith-btn-success:hover {
+    background: #218838;
+    transform: translateY(-1px);
+}
+
+.zenith-btn-danger {
+    background: var(--danger);
+    color: white;
+}
+
+.zenith-btn-danger:hover {
+    background: #c82333;
+    transform: translateY(-1px);
+}
+
+.zenith-btn-warning {
+    background: var(--warning);
+    color: var(--sidebar-bg);
+}
+
+.zenith-btn-warning:hover {
+    background: #e0a800;
+    transform: translateY(-1px);
+}
+
+.zenith-btn-outline-danger {
+    background: transparent;
+    color: var(--danger);
+    border: 1px solid var(--danger);
+}
+
+.zenith-btn-outline-danger:hover {
+    background: var(--danger);
+    color: white;
+}
+
+.zenith-btn-full {
+    width: 100%;
+    justify-content: center;
+}
+
+/* Action Section */
+.zenith-action-section {
+    margin-bottom: 2rem;
+}
+
+.zenith-action-title {
+    color: var(--text-main);
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0 0 1rem 0;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.zenith-action-form {
+    margin-bottom: 1rem;
+}
+
+/* Danger Zone */
+.zenith-danger-zone {
+    padding: 1.5rem;
+    background: rgba(220, 53, 69, 0.1);
+    border-radius: 0.5rem;
+    border: 1px solid rgba(220, 53, 69, 0.3);
+}
+
+.zenith-danger-title {
+    color: var(--danger);
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0 0 1rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.zenith-danger-title::before {
+    content: '??';
+    font-size: 1.2rem;
+}
+
+/* Timeline Styles */
+.zenith-timeline {
+    position: relative;
+    padding-left: 2rem;
+}
+
+.zenith-timeline::before {
+    content: '';
+    position: absolute;
+    left: 0.75rem;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--border);
+}
+
+.zenith-timeline-item {
+    position: relative;
+    margin-bottom: 2rem;
+}
+
+.zenith-timeline-item:last-child {
+    margin-bottom: 0;
+}
+
+.zenith-timeline-marker {
+    position: absolute;
+    left: -1.75rem;
+    top: 0.25rem;
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 50%;
+    background: var(--border);
+    border: 2px solid var(--card-bg);
+    transition: all 0.3s ease;
+}
+
+.zenith-timeline-completed .zenith-timeline-marker {
+    background: var(--cyan-teal);
+    box-shadow: 0 0 0 3px rgba(29, 233, 182, 0.3);
+}
+
+.zenith-timeline-content {
+    padding-left: 0.5rem;
+}
+
+.zenith-timeline-title {
+    color: var(--text-main);
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin: 0 0 0.25rem 0;
+}
+
+.zenith-timeline-time {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    margin-bottom: 0.25rem;
+}
+
+.zenith-timeline-desc {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    line-height: 1.4;
+}
+
+.zenith-timeline-completed .zenith-timeline-title {
+    color: var(--cyan-teal);
+}
+
+.zenith-timeline-completed .zenith-timeline-time {
+    color: var(--text-main);
+}
+
+/* Alert Styles */
+.alert {
+    padding: 1rem 1.5rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid transparent;
+}
+
+.alert-success {
+    background: rgba(40, 167, 69, 0.15);
+    color: var(--success);
+    border-color: rgba(40, 167, 69, 0.3);
+}
+
+.alert-danger {
+    background: rgba(220, 53, 69, 0.15);
+    color: var(--danger);
+    border-color: rgba(220, 53, 69, 0.3);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .zenith-content-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .zenith-review-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .zenith-header-actions {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .zenith-card-body {
+        padding: 1.5rem;
+    }
+    
+    .zenith-review-meta {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        padding: 1rem;
+    }
+    
+    .zenith-page-title {
+        font-size: 1.5rem;
+    }
+    
+    .zenith-reviewer-name {
+        font-size: 1.2rem;
+    }
+}

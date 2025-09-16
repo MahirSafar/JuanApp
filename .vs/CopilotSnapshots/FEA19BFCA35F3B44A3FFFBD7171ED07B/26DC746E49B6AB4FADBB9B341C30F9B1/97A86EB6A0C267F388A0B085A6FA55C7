@@ -1,0 +1,183 @@
+﻿@model JuanApp.MVC.ViewComponents.FooterViewModel
+
+<!-- Start Footer Area Wrapper -->
+<footer class="footer-wrapper">
+    <!-- footer main area start -->
+    <div class="footer-widget-area section-padding">
+        <div class="container">
+            <div class="row mtn-40">
+                <!-- footer widget item start -->
+                <div class="col-xl-5 col-lg-3 col-md-6">
+                    <div class="widget-item mt-40">
+                        <h5 class="widget-title">Contact Info</h5>
+                        <div class="widget-body">
+                            <ul class="location-wrap">
+                                <li>
+                                    <i class="ion-ios-location-outline"></i>
+                                    @Model.Settings.GetValueOrDefault("Address", "184 Main Rd E, St Albans VIC 3021, Australia")
+                                </li>
+                                <li>
+                                    <i class="ion-ios-email-outline"></i>Mail Us:
+                                    <a href="mailto:@Model.Settings.GetValueOrDefault("Email", "info@juanstore.com")">
+                                        @Model.Settings.GetValueOrDefault("Email", "info@juanstore.com")
+                                    </a>
+                                </li>
+                                <li>
+                                    <i class="ion-ios-telephone-outline"></i>Phone:
+                                    <a href="tel:@Model.Settings.GetValueOrDefault("Phone", "+1-555-123-4567")">
+                                        @Model.Settings.GetValueOrDefault("Phone", "+1 (555) 123-4567")
+                                    </a>
+                                </li>
+                            </ul>
+                            
+                            <!-- Newsletter Subscription -->
+                            <div class="newsletter-section mt-4">
+                                <h6>Subscribe to our newsletter</h6>
+                                <form asp-controller="Subscribe" asp-action="Subscribe" method="post" id="subscription-form" class="mt-3">
+                                    <div class="input-group">
+                                        <input type="email" name="email" class="form-control" placeholder="Enter your email" required />
+                                        <button type="submit" class="btn btn-primary">Subscribe</button>
+                                    </div>
+                                </form>
+                                
+                                @if (TempData["SuccessMessage"] != null)
+                                {
+                                    <div class="alert alert-success mt-2">
+                                        @TempData["SuccessMessage"]
+                                    </div>
+                                }
+
+                                @if (TempData["ErrorMessage"] != null)
+                                {
+                                    <div class="alert alert-danger mt-2">
+                                        @TempData["ErrorMessage"]
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- footer widget item end -->
+                
+                <!-- footer widget item start -->
+                <div class="col-xl-2 col-lg-3 col-md-6">
+                    <div class="widget-item mt-40">
+                        <h5 class="widget-title">Categories</h5>
+                        <div class="widget-body">
+                            <ul class="useful-link">
+                                @if (Model.Categories.Any())
+                                {
+                                    @foreach (var category in Model.Categories)
+                                    {
+                                        <li>
+                                            <a asp-controller="Home" asp-action="ProductsByCategory" asp-route-id="@category.Id">
+                                                @category.Name
+                                            </a>
+                                        </li>
+                                    }
+                                }
+                                else
+                                {
+                                    <li><a href="#">Men's Shoes</a></li>
+                                    <li><a href="#">Women's Shoes</a></li>
+                                    <li><a href="#">Sports Shoes</a></li>
+                                    <li><a href="#">Casual Shoes</a></li>
+                                    <li><a href="#">Formal Shoes</a></li>
+                                    <li><a href="#">Kids Shoes</a></li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <!-- footer widget item end -->
+                
+                <!-- footer widget item start -->
+                <div class="col-xl-2 col-lg-3 col-md-6">
+                    <div class="widget-item mt-40">
+                        <h5 class="widget-title">Information</h5>
+                        <div class="widget-body">
+                            <ul class="useful-link">
+                                <li><a asp-controller="Home" asp-action="Index">Home</a></li>
+                                <li><a asp-controller="Home" asp-action="About">About Us</a></li>
+                                <li><a asp-controller="Home" asp-action="Contact">Contact Us</a></li>
+                                <li><a href="#">Returns & Exchanges</a></li>
+                                <li><a href="#">Shipping & Delivery</a></li>
+                                <li><a href="#">Privacy Policy</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <!-- footer widget item end -->
+                
+                <!-- footer widget item start -->
+                <div class="col-xl-2 col-lg-3 offset-xl-1 col-md-6">
+                    <div class="widget-item mt-40">
+                        <h5 class="widget-title">Quick Links</h5>
+                        <div class="widget-body">
+                            <ul class="useful-link">
+                                <li><a href="#">Store Location</a></li>
+                                <li><a asp-controller="Account" asp-action="UserProfile">My Account</a></li>
+                                <li><a href="#">Orders Tracking</a></li>
+                                <li><a href="#">Size Guide</a></li>
+                                <li><a href="#">Shipping Rates</a></li>
+                                <li><a asp-controller="Home" asp-action="Contact">Contact Us</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <!-- footer widget item end -->
+            </div>
+        </div>
+    </div>
+    <!-- footer main area end -->
+    
+    <!-- footer bottom area start -->
+    <div class="footer-bottom">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 order-2 order-md-1">
+                    <div class="copyright-text text-center text-md-left">
+                        <p>
+                            Copyright @DateTime.Now.Year 
+                            <a asp-controller="Home" asp-action="Index">
+                                @Model.Settings.GetValueOrDefault("CompanyName", "Juan Store")
+                            </a>. 
+                            @Model.Settings.GetValueOrDefault("FooterCopyright", "All Rights Reserved")
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-6 order-1 order-md-2">
+                    <div class="footer-social-link text-center text-md-right">
+                        @if (!string.IsNullOrEmpty(Model.Settings.GetValueOrDefault("FacebookUrl")) && Model.Settings["FacebookUrl"] != "#")
+                        {
+                            <a href="@Model.Settings["FacebookUrl"]" target="_blank"><i class="fa fa-facebook"></i></a>
+                        }
+                        @if (!string.IsNullOrEmpty(Model.Settings.GetValueOrDefault("TwitterUrl")) && Model.Settings["TwitterUrl"] != "#")
+                        {
+                            <a href="@Model.Settings["TwitterUrl"]" target="_blank"><i class="fa fa-twitter"></i></a>
+                        }
+                        @if (!string.IsNullOrEmpty(Model.Settings.GetValueOrDefault("LinkedInUrl")) && Model.Settings["LinkedInUrl"] != "#")
+                        {
+                            <a href="@Model.Settings["LinkedInUrl"]" target="_blank"><i class="fa fa-linkedin"></i></a>
+                        }
+                        @if (!string.IsNullOrEmpty(Model.Settings.GetValueOrDefault("InstagramUrl")) && Model.Settings["InstagramUrl"] != "#")
+                        {
+                            <a href="@Model.Settings["InstagramUrl"]" target="_blank"><i class="fa fa-instagram"></i></a>
+                        }
+                        
+                        <!-- Default social links if no settings -->
+                        @if (string.IsNullOrEmpty(Model.Settings.GetValueOrDefault("FacebookUrl")) || Model.Settings["FacebookUrl"] == "#")
+                        {
+                            <a href="#"><i class="fa fa-facebook"></i></a>
+                            <a href="#"><i class="fa fa-twitter"></i></a>
+                            <a href="#"><i class="fa fa-linkedin"></i></a>
+                            <a href="#"><i class="fa fa-instagram"></i></a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- footer bottom area end -->
+</footer>
+<!-- End Footer Area Wrapper -->

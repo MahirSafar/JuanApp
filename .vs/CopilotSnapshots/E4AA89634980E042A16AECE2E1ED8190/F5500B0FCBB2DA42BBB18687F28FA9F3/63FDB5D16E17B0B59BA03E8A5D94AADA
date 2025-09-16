@@ -1,0 +1,52 @@
+﻿using AutoMapper;
+using JuanApp.Application.Models.BlogDtos;
+using JuanApp.Application.Models.CategoryDtos;
+using JuanApp.Application.Models.ColorDtos;
+using JuanApp.Application.Models.ProductDtos;
+using JuanApp.Application.Models.ServiceDtos;
+using JuanApp.Application.Models.SettingDtos;
+using JuanApp.Application.Models.SizeDtos;
+using JuanApp.Application.Models.SliderDtos;
+using JuanApp.Application.Models.TagDtos;
+using JuanApp.Domain.Models;
+
+namespace JuanApp.Application.Profiles
+{
+    public class MapperProfile : Profile
+    {
+        public MapperProfile()
+        {
+            CreateMap<Slider, SliderDto>().ReverseMap();
+            CreateMap<CreateSliderDto, Slider>().ReverseMap();
+
+            CreateMap<Service, ServiceDto>().ReverseMap();
+            CreateMap<CreateServiceDto, Service>().ReverseMap();
+
+            CreateMap<Color, ColorDto>().ReverseMap();
+            CreateMap<CreateColorDto, Color>().ReverseMap();
+
+            CreateMap<Size, SizeDto>().ReverseMap();
+            CreateMap<CreateSizeDto, Size>().ReverseMap();
+
+            CreateMap<Category, CategoryDto>().ReverseMap();
+            CreateMap<CreateCategoryDto, Category>().ReverseMap();
+
+            CreateMap<Tag, TagDto>().ReverseMap();
+            CreateMap<CreateTagDto, Tag>().ReverseMap();
+
+            CreateMap<Setting, SettingDto>().ReverseMap();
+            CreateMap<CreateSettingDto, Setting>().ReverseMap();
+
+            CreateMap<Blog, BlogDto>().ReverseMap();
+            CreateMap<CreateBlogDto, Blog>().ReverseMap();
+
+            CreateMap<Product, ProductDto>()
+                .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name))
+                .ReverseMap()
+                .ForMember(dest => dest.Category, opt => opt.Ignore());
+            CreateMap<CreateProductDto, Product>().ReverseMap();
+
+            CreateMap<ProductImage, ProductImageDto>().ReverseMap();
+        }
+    }
+}

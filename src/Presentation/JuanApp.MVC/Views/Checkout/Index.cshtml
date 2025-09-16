@@ -1,0 +1,214 @@
+@model CheckoutViewModel
+@{
+    ViewData["Title"] = "Checkout";
+}
+
+@section Styles {
+    <link href="~/assets/css/checkout.css" rel="stylesheet" />
+}
+
+<div class="breadcrumb-area pt-35 pb-35 bg-gray">
+    <div class="container">
+        <div class="breadcrumb-content text-center">
+            <ul>
+                <li>
+                    <a asp-controller="Home" asp-action="Index">Home</a>
+                </li>
+                <li>
+                    <a asp-controller="Basket" asp-action="Index">Shopping Cart</a>
+                </li>
+                <li class="active">Checkout</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- checkout main wrapper start -->
+<div class="checkout-page-wrapper pt-100 pb-100">
+    <div class="container">
+        <form asp-action="Index" method="post" id="checkout-form">
+            <div class="row">
+                <div class="col-lg-6 col-12">
+                    <div class="checkout-form-container">
+                        <h3><i class="fa fa-user-circle me-2"></i>Billing Details</h3>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="checkout-form-list">
+                                    <label asp-for="CustomerName">First Name <span class="required">*</span></label>
+                                    <input asp-for="CustomerName" type="text" placeholder="Enter your first name" />
+                                    <span asp-validation-for="CustomerName" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="checkout-form-list">
+                                    <label asp-for="CustomerSurname">Last Name <span class="required">*</span></label>
+                                    <input asp-for="CustomerSurname" type="text" placeholder="Enter your last name" />
+                                    <span asp-validation-for="CustomerSurname" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="checkout-form-list">
+                                    <label asp-for="Address">Address <span class="required">*</span></label>
+                                    <input asp-for="Address" type="text" placeholder="Street address, apartment, suite, etc." />
+                                    <span asp-validation-for="Address" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="checkout-form-list">
+                                    <label asp-for="City">Town / City <span class="required">*</span></label>
+                                    <input asp-for="City" type="text" placeholder="Town / City" />
+                                    <span asp-validation-for="City" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-12">
+                    <div class="your-order">
+                        <h3><i class="fa fa-shopping-bag me-2"></i>Your Order</h3>
+                        <div class="your-order-table table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th class="cart-product-name">Product</th>
+                                        <th class="cart-product-total">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.BasketItems)
+                                    {
+                                        <tr class="cart_item">
+                                            <td class="cart-product-name">
+                                                <div class="product-info">
+                                                    <strong>@item.ProductName</strong>
+                                                    <div class="product-quantity">Qty: @item.Quantity</div>
+                                                    @if (!string.IsNullOrEmpty(item.Size) || !string.IsNullOrEmpty(item.Color))
+                                                    {
+                                                        <div class="product-variants">
+                                                            <small class="text-muted">
+                                                                @if (!string.IsNullOrEmpty(item.Size))
+                                                                {
+                                                                    <span><i class="fa fa-tag"></i> Size: @item.Size</span>
+                                                                }
+                                                                @if (!string.IsNullOrEmpty(item.Color))
+                                                                {
+                                                                    @if (!string.IsNullOrEmpty(item.Size)) { <text> • </text> }
+                                                                    <span><i class="fa fa-palette"></i> Color: @item.Color</span>
+                                                                }
+                                                            </small>
+                                                        </div>
+                                                    }
+                                                </div>
+                                            </td>
+                                            <td class="cart-product-total">@item.Total.ToString("C")</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                                <tfoot>
+                                    <tr class="cart-subtotal">
+                                        <th><i class="fa fa-calculator me-2"></i>Subtotal</th>
+                                        <td><span class="amount">@Model.TotalAmount.ToString("C")</span></td>
+                                    </tr>
+                                    <tr class="order-total">
+                                        <th><i class="fa fa-credit-card me-2"></i>Total</th>
+                                        <td><strong><span class="amount">@Model.TotalAmount.ToString("C")</span></strong></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                        <div class="payment-method">
+                            <div class="payment-accordion">
+                                <div id="accordion">
+                                    <div class="card">
+                                        <div class="card-header" id="payment-1">
+                                            <h5 class="panel-title">
+                                                <a class="" data-toggle="collapse" data-target="#collapseOne"
+                                                   aria-expanded="true" aria-controls="collapseOne">
+                                                    <i class="fa fa-money-bill me-2"></i>Cash on Delivery
+                                                </a>
+                                            </h5>
+                                        </div>
+                                        <div id="collapseOne" class="collapse show" aria-labelledby="payment-1"
+                                             data-parent="#accordion">
+                                            <div class="card-body">
+                                                <p><i class="fa fa-info-circle me-2"></i>Pay when you receive your order. Cash on delivery is available for orders within the delivery area.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="order-button-payment">
+                                <button type="submit" class="btn btn-place-order" id="place-order-btn">
+                                    <i class="fa fa-lock me-2"></i>Place Order Securely
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- checkout main wrapper end -->
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        $(document).ready(function() {
+            // Enhanced form submission with loading state
+            $('#checkout-form').on('submit', function() {
+                var form = $(this);
+                var submitBtn = $('#place-order-btn');
+                
+                if (form.valid()) {
+                    submitBtn.addClass('loading').prop('disabled', true);
+                    form.addClass('form-loading');
+                }
+            });
+            
+            // Add focus effects to form inputs
+            $('.checkout-form-list input').on('focus', function() {
+                $(this).closest('.checkout-form-list').addClass('focused');
+            }).on('blur', function() {
+                $(this).closest('.checkout-form-list').removeClass('focused');
+            });
+            
+            // Smooth scroll to validation errors
+            if ($('.field-validation-error:visible').length > 0) {
+                $('html, body').animate({
+                    scrollTop: $('.field-validation-error:visible').first().closest('.checkout-form-list').offset().top - 100
+                }, 500);
+            }
+            
+            // Add animation to order summary
+            $('.your-order').addClass('form-success');
+        });
+    </script>
+}
+
+<style>
+    .checkout-form-list.focused label {
+        color: #3498db;
+        transform: translateY(-2px);
+        transition: all 0.3s ease;
+    }
+    
+    .product-info {
+        line-height: 1.4;
+    }
+    
+    .product-quantity {
+        color: #7f8c8d;
+        font-size: 12px;
+        margin-top: 3px;
+    }
+    
+    .product-variants {
+        margin-top: 5px;
+    }
+    
+    .me-2 {
+        margin-right: 0.5rem;
+    }
+</style>

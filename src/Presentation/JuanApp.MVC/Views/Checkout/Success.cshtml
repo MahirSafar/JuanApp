@@ -1,0 +1,271 @@
+@model CheckoutSuccessViewModel
+@{
+    ViewData["Title"] = "Order Confirmation";
+}
+
+@section Styles {
+    <link href="~/assets/css/checkout.css" rel="stylesheet" />
+    <style>
+        .success-page {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            min-height: 100vh;
+        }
+        
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 30px;
+            animation: checkmark 0.6s ease-in-out;
+        }
+        
+        .success-icon i {
+            color: white;
+            font-size: 32px;
+        }
+        
+        @@keyframes checkmark {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        
+        .order-confirmation-content {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+            animation: slideInUp 0.8s ease-out;
+        }
+        
+        @@keyframes slideInUp {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .order-details-card,
+        .order-items-card {
+            margin-top: 30px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 20px;
+            font-weight: 600;
+        }
+        
+        .order-actions {
+            margin-top: 40px;
+        }
+        
+        .btn-primary-custom {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            color: white;
+            text-decoration: none;
+            display: inline-block;
+            margin: 0 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+        
+        .btn-outline-custom {
+            border: 2px solid #3498db;
+            color: #3498db;
+            background: transparent;
+            padding: 12px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            display: inline-block;
+            margin: 0 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-outline-custom:hover {
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            transform: translateY(-2px);
+        }
+        
+        .order-notification {
+            background: linear-gradient(135deg, #e8f5e8, #d5e7d5);
+            border: 1px solid #27ae60;
+            border-radius: 8px;
+            padding: 20px;
+            color: #2c3e50;
+        }
+    </style>
+}
+
+<div class="breadcrumb-area pt-35 pb-35 bg-gray">
+    <div class="container">
+        <div class="breadcrumb-content text-center">
+            <ul>
+                <li>
+                    <a asp-controller="Home" asp-action="Index">Home</a>
+                </li>
+                <li>
+                    <a asp-controller="Basket" asp-action="Index">Shopping Cart</a>
+                </li>
+                <li>
+                    <a asp-controller="Checkout" asp-action="Index">Checkout</a>
+                </li>
+                <li class="active">Order Confirmation</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- order confirmation wrapper start -->
+<div class="success-page pt-100 pb-100">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 offset-lg-2">
+                <div class="order-confirmation-content">
+                    <div class="success-icon">
+                        <i class="fa fa-check"></i>
+                    </div>
+                    
+                    <h2 class="mb-3" style="color: #2c3e50; font-weight: 700;">Thank You for Your Order!</h2>
+                    <p class="lead mb-4" style="color: #7f8c8d;">Your order has been placed successfully and is being processed.</p>
+                    
+                    <div class="order-details-card">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="mb-0"><i class="fa fa-receipt me-2"></i>Order Details</h4>
+                            </div>
+                            <div class="card-body" style="padding: 30px;">
+                                <div class="row mb-3">
+                                    <div class="col-sm-6 text-start">
+                                        <strong><i class="fa fa-hashtag me-2"></i>Order Number:</strong>
+                                    </div>
+                                    <div class="col-sm-6 text-end">
+                                        <span class="badge bg-primary" style="font-size: 14px; padding: 8px 12px;">@Model.OrderNumber</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="row mb-3">
+                                    <div class="col-sm-6 text-start">
+                                        <strong><i class="fa fa-calendar me-2"></i>Order Date:</strong>
+                                    </div>
+                                    <div class="col-sm-6 text-end">
+                                        @Model.OrderDate.ToString("MMMM dd, yyyy 'at' HH:mm")
+                                    </div>
+                                </div>
+                                
+                                <div class="row mb-3">
+                                    <div class="col-sm-6 text-start">
+                                        <strong><i class="fa fa-user me-2"></i>Customer Name:</strong>
+                                    </div>
+                                    <div class="col-sm-6 text-end">
+                                        @Model.CustomerName @Model.CustomerSurname
+                                    </div>
+                                </div>
+                                
+                                <div class="row mb-0">
+                                    <div class="col-sm-6 text-start">
+                                        <strong><i class="fa fa-dollar-sign me-2"></i>Total Amount:</strong>
+                                    </div>
+                                    <div class="col-sm-6 text-end">
+                                        <strong style="color: #27ae60; font-size: 18px;">@Model.TotalAmount.ToString("C")</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="order-items-card">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0"><i class="fa fa-shopping-bag me-2"></i>Order Items</h5>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table mb-0" style="border: none;">
+                                        <thead style="background-color: #f8f9fa;">
+                                            <tr>
+                                                <th style="border: none; padding: 20px;"><i class="fa fa-box me-2"></i>Product</th>
+                                                <th style="border: none; padding: 20px;"><i class="fa fa-dollar-sign me-2"></i>Price</th>
+                                                <th style="border: none; padding: 20px;"><i class="fa fa-sort-numeric-up me-2"></i>Quantity</th>
+                                                <th style="border: none; padding: 20px;"><i class="fa fa-calculator me-2"></i>Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var item in Model.OrderItems)
+                                            {
+                                                <tr>
+                                                    <td style="border: none; padding: 20px;">
+                                                        <div>
+                                                            <strong>@item.ProductName</strong>
+                                                            @if (!string.IsNullOrEmpty(item.Size) || !string.IsNullOrEmpty(item.Color))
+                                                            {
+                                                                <br>
+                                                                <small class="text-muted">
+                                                                    @if (!string.IsNullOrEmpty(item.Size))
+                                                                    {
+                                                                        <span><i class="fa fa-tag"></i> Size: @item.Size</span>
+                                                                    }
+                                                                    @if (!string.IsNullOrEmpty(item.Color))
+                                                                    {
+                                                                        @if (!string.IsNullOrEmpty(item.Size)) { <text> • </text> }
+                                                                        <span><i class="fa fa-palette"></i> Color: @item.Color</span>
+                                                                    }
+                                                                </small>
+                                                            }
+                                                        </div>
+                                                    </td>
+                                                    <td style="border: none; padding: 20px;">@item.Price.ToString("C")</td>
+                                                    <td style="border: none; padding: 20px;">@item.Quantity</td>
+                                                    <td style="border: none; padding: 20px;"><strong style="color: #27ae60;">@item.Total.ToString("C")</strong></td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="order-actions">
+                        <a asp-controller="Home" asp-action="Index" class="btn-primary-custom">
+                            <i class="fa fa-arrow-left me-2"></i>Continue Shopping
+                        </a>
+                        <a asp-controller="Account" asp-action="UserProfile" asp-route-tab="orders" class="btn-outline-custom">
+                            <i class="fa fa-list me-2"></i>View My Orders
+                        </a>
+                    </div>
+                    
+                    <div class="order-notification mt-4">
+                        <i class="fa fa-info-circle me-2"></i>
+                        <strong>What's next?</strong> We'll send you a confirmation email shortly. Your order will be processed and shipped within 1-2 business days.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- order confirmation wrapper end -->
